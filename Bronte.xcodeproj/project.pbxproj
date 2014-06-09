@@ -1,0 +1,454 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		813E42701946651700260C0E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 813E426F1946651700260C0E /* Foundation.framework */; };
+		813E42721946651700260C0E /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 813E42711946651700260C0E /* CoreGraphics.framework */; };
+		813E42741946651700260C0E /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 813E42731946651700260C0E /* UIKit.framework */; };
+		813E427A1946651700260C0E /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 813E42781946651700260C0E /* InfoPlist.strings */; };
+		813E427C1946651700260C0E /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 813E427B1946651700260C0E /* main.m */; };
+		813E42801946651700260C0E /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 813E427F1946651700260C0E /* AppDelegate.m */; };
+		813E42821946651700260C0E /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 813E42811946651700260C0E /* Images.xcassets */; };
+		813E42891946651700260C0E /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 813E42881946651700260C0E /* XCTest.framework */; };
+		813E428A1946651700260C0E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 813E426F1946651700260C0E /* Foundation.framework */; };
+		813E428B1946651700260C0E /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 813E42731946651700260C0E /* UIKit.framework */; };
+		813E42931946651700260C0E /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 813E42911946651700260C0E /* InfoPlist.strings */; };
+		813E42951946651700260C0E /* BronteTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 813E42941946651700260C0E /* BronteTests.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		813E428C1946651700260C0E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 813E42641946651700260C0E /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 813E426B1946651700260C0E;
+			remoteInfo = Bronte;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		813E426C1946651700260C0E /* Bronte.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Bronte.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		813E426F1946651700260C0E /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		813E42711946651700260C0E /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		813E42731946651700260C0E /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		813E42771946651700260C0E /* Bronte-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Bronte-Info.plist"; sourceTree = "<group>"; };
+		813E42791946651700260C0E /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		813E427B1946651700260C0E /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		813E427D1946651700260C0E /* Bronte-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Bronte-Prefix.pch"; sourceTree = "<group>"; };
+		813E427E1946651700260C0E /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		813E427F1946651700260C0E /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		813E42811946651700260C0E /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		813E42871946651700260C0E /* BronteTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BronteTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		813E42881946651700260C0E /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
+		813E42901946651700260C0E /* BronteTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "BronteTests-Info.plist"; sourceTree = "<group>"; };
+		813E42921946651700260C0E /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		813E42941946651700260C0E /* BronteTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BronteTests.m; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		813E42691946651700260C0E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				813E42721946651700260C0E /* CoreGraphics.framework in Frameworks */,
+				813E42741946651700260C0E /* UIKit.framework in Frameworks */,
+				813E42701946651700260C0E /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		813E42841946651700260C0E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				813E42891946651700260C0E /* XCTest.framework in Frameworks */,
+				813E428B1946651700260C0E /* UIKit.framework in Frameworks */,
+				813E428A1946651700260C0E /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		813E42631946651700260C0E = {
+			isa = PBXGroup;
+			children = (
+				813E42751946651700260C0E /* Bronte */,
+				813E428E1946651700260C0E /* BronteTests */,
+				813E426E1946651700260C0E /* Frameworks */,
+				813E426D1946651700260C0E /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		813E426D1946651700260C0E /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				813E426C1946651700260C0E /* Bronte.app */,
+				813E42871946651700260C0E /* BronteTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		813E426E1946651700260C0E /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				813E426F1946651700260C0E /* Foundation.framework */,
+				813E42711946651700260C0E /* CoreGraphics.framework */,
+				813E42731946651700260C0E /* UIKit.framework */,
+				813E42881946651700260C0E /* XCTest.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		813E42751946651700260C0E /* Bronte */ = {
+			isa = PBXGroup;
+			children = (
+				813E427E1946651700260C0E /* AppDelegate.h */,
+				813E427F1946651700260C0E /* AppDelegate.m */,
+				813E42811946651700260C0E /* Images.xcassets */,
+				813E42761946651700260C0E /* Supporting Files */,
+			);
+			path = Bronte;
+			sourceTree = "<group>";
+		};
+		813E42761946651700260C0E /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				813E42771946651700260C0E /* Bronte-Info.plist */,
+				813E42781946651700260C0E /* InfoPlist.strings */,
+				813E427B1946651700260C0E /* main.m */,
+				813E427D1946651700260C0E /* Bronte-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		813E428E1946651700260C0E /* BronteTests */ = {
+			isa = PBXGroup;
+			children = (
+				813E42941946651700260C0E /* BronteTests.m */,
+				813E428F1946651700260C0E /* Supporting Files */,
+			);
+			path = BronteTests;
+			sourceTree = "<group>";
+		};
+		813E428F1946651700260C0E /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				813E42901946651700260C0E /* BronteTests-Info.plist */,
+				813E42911946651700260C0E /* InfoPlist.strings */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		813E426B1946651700260C0E /* Bronte */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 813E42981946651700260C0E /* Build configuration list for PBXNativeTarget "Bronte" */;
+			buildPhases = (
+				813E42681946651700260C0E /* Sources */,
+				813E42691946651700260C0E /* Frameworks */,
+				813E426A1946651700260C0E /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Bronte;
+			productName = Bronte;
+			productReference = 813E426C1946651700260C0E /* Bronte.app */;
+			productType = "com.apple.product-type.application";
+		};
+		813E42861946651700260C0E /* BronteTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 813E429B1946651700260C0E /* Build configuration list for PBXNativeTarget "BronteTests" */;
+			buildPhases = (
+				813E42831946651700260C0E /* Sources */,
+				813E42841946651700260C0E /* Frameworks */,
+				813E42851946651700260C0E /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				813E428D1946651700260C0E /* PBXTargetDependency */,
+			);
+			name = BronteTests;
+			productName = BronteTests;
+			productReference = 813E42871946651700260C0E /* BronteTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		813E42641946651700260C0E /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0510;
+				ORGANIZATIONNAME = "Lory & Ludlow";
+				TargetAttributes = {
+					813E42861946651700260C0E = {
+						TestTargetID = 813E426B1946651700260C0E;
+					};
+				};
+			};
+			buildConfigurationList = 813E42671946651700260C0E /* Build configuration list for PBXProject "Bronte" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 813E42631946651700260C0E;
+			productRefGroup = 813E426D1946651700260C0E /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				813E426B1946651700260C0E /* Bronte */,
+				813E42861946651700260C0E /* BronteTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		813E426A1946651700260C0E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				813E427A1946651700260C0E /* InfoPlist.strings in Resources */,
+				813E42821946651700260C0E /* Images.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		813E42851946651700260C0E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				813E42931946651700260C0E /* InfoPlist.strings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		813E42681946651700260C0E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				813E42801946651700260C0E /* AppDelegate.m in Sources */,
+				813E427C1946651700260C0E /* main.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		813E42831946651700260C0E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				813E42951946651700260C0E /* BronteTests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		813E428D1946651700260C0E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 813E426B1946651700260C0E /* Bronte */;
+			targetProxy = 813E428C1946651700260C0E /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		813E42781946651700260C0E /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				813E42791946651700260C0E /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		813E42911946651700260C0E /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				813E42921946651700260C0E /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		813E42961946651700260C0E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = 2;
+			};
+			name = Debug;
+		};
+		813E42971946651700260C0E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = 2;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		813E42991946651700260C0E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Bronte/Bronte-Prefix.pch";
+				INFOPLIST_FILE = "Bronte/Bronte-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		813E429A1946651700260C0E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Bronte/Bronte-Prefix.pch";
+				INFOPLIST_FILE = "Bronte/Bronte-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+		813E429C1946651700260C0E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/Bronte.app/Bronte";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Bronte/Bronte-Prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = "BronteTests/BronteTests-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUNDLE_LOADER)";
+				WRAPPER_EXTENSION = xctest;
+			};
+			name = Debug;
+		};
+		813E429D1946651700260C0E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/Bronte.app/Bronte";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Bronte/Bronte-Prefix.pch";
+				INFOPLIST_FILE = "BronteTests/BronteTests-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUNDLE_LOADER)";
+				WRAPPER_EXTENSION = xctest;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		813E42671946651700260C0E /* Build configuration list for PBXProject "Bronte" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				813E42961946651700260C0E /* Debug */,
+				813E42971946651700260C0E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		813E42981946651700260C0E /* Build configuration list for PBXNativeTarget "Bronte" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				813E42991946651700260C0E /* Debug */,
+				813E429A1946651700260C0E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+		813E429B1946651700260C0E /* Build configuration list for PBXNativeTarget "BronteTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				813E429C1946651700260C0E /* Debug */,
+				813E429D1946651700260C0E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 813E42641946651700260C0E /* Project object */;
+}
