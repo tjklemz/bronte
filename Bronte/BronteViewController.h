@@ -19,6 +19,8 @@
     
     CALayer * _docLayer;
     UIScrollView * _scrollView;
+    
+    BOOL _isDraggingClipboard;
 }
 
 @end

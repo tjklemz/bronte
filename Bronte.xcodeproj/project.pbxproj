@@ -39,6 +39,7 @@
 		813E42D319466E3E00260C0E /* BronteViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 813E42D219466E3E00260C0E /* BronteViewController.m */; };
 		813E42D619466EA800260C0E /* UIColor+Bronte.m in Sources */ = {isa = PBXBuildFile; fileRef = 813E42D519466EA800260C0E /* UIColor+Bronte.m */; };
 		813E42D919466EBC00260C0E /* UIFont+Bronte.m in Sources */ = {isa = PBXBuildFile; fileRef = 813E42D819466EBC00260C0E /* UIFont+Bronte.m */; };
+		813E42DD19479EC100260C0E /* DocumentScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 813E42DC19479EC100260C0E /* DocumentScrollView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -86,6 +87,8 @@
 		813E42D519466EA800260C0E /* UIColor+Bronte.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+Bronte.m"; sourceTree = "<group>"; };
 		813E42D719466EBC00260C0E /* UIFont+Bronte.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIFont+Bronte.h"; sourceTree = "<group>"; };
 		813E42D819466EBC00260C0E /* UIFont+Bronte.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIFont+Bronte.m"; sourceTree = "<group>"; };
+		813E42DB19479EC100260C0E /* DocumentScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DocumentScrollView.h; sourceTree = "<group>"; };
+		813E42DC19479EC100260C0E /* DocumentScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DocumentScrollView.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -149,6 +152,8 @@
 				813E42761946651700260C0E /* Supporting Files */,
 				813E42D119466E3E00260C0E /* BronteViewController.h */,
 				813E42D219466E3E00260C0E /* BronteViewController.m */,
+				813E42DB19479EC100260C0E /* DocumentScrollView.h */,
+				813E42DC19479EC100260C0E /* DocumentScrollView.m */,
 			);
 			path = Bronte;
 			sourceTree = "<group>";
@@ -291,6 +296,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				813E42801946651700260C0E /* AppDelegate.m in Sources */,
+				813E42DD19479EC100260C0E /* DocumentScrollView.m in Sources */,
 				813E42A619466CC000260C0E /* BronteEditView.m in Sources */,
 				813E42D319466E3E00260C0E /* BronteViewController.m in Sources */,
 				813E42A019466C5800260C0E /* CALayer+Bronte.m in Sources */,

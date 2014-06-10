@@ -10,6 +10,7 @@
 #import "UIFont+Bronte.h"
 #import "UIColor+Bronte.h"
 #import "CALayer+Bronte.h"
+#import "DocumentScrollView.h"
 
 @interface BronteViewController ()
 
@@ -24,7 +25,7 @@
 }
 
 - (id)init {
-    self = [super init];
+    self = [super initWithNibName:nil bundle:nil];
     if (self) {
         _defaultAttr = [UIFont bronteDefaultFontAttributes];
         
@@ -36,7 +37,8 @@
         
         //self.view.backgroundColor = [UIColor bronteBackgroundColor];
         
-        UIScrollView * scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.height, self.view.bounds.size.width)];
+        DocumentScrollView * scrollView = [[DocumentScrollView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.height, self.view.bounds.size.width)];
+        scrollView.touchDelegate = self;
         scrollView.backgroundColor = [UIColor bronteBackgroundColor];
         _docLayer = scrollView.layer;
         [scrollView.panGestureRecognizer setMinimumNumberOfTouches:2];
@@ -44,16 +46,23 @@
         [scrollView setScrollIndicatorInsets:[self scrollViewInsets]];
         scrollView.indicatorStyle = UIScrollViewIndicatorStyleBlack;
         scrollView.bouncesZoom = NO;
-        
-        UIPinchGestureRecognizer * pinchGesture = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(zoomDocument:)];
-        [scrollView addGestureRecognizer:pinchGesture];
+
         [self.view addSubview:scrollView];
         _scrollView = scrollView;
         
-        scrollView.contentSize = CGSizeMake(scrollView.bounds.size.width, scrollView.bounds.size.height*2);
+        scrollView.contentSize = CGSizeMake(scrollView.bounds.size.width, scrollView.bounds.size.height);
+        [self adjustScrollViewContentSize];
         
-        //self.view.layer.backgroundColor = [UIColor bronteBackgroundColor].CGColor;
-        //self.view.layer.anchorPoint = CGPointMake(1.0, 1.0);
+        UIScreenEdgePanGestureRecognizer * edgeGesture = [[UIScreenEdgePanGestureRecognizer alloc] initWithTarget:self action:@selector(panGesture:)];
+        edgeGesture.edges = UIRectEdgeRight;
+        edgeGesture.maximumNumberOfTouches = 1;
+        edgeGesture.minimumNumberOfTouches = 1;
+        [self.view addGestureRecognizer:edgeGesture];
+        
+        UIPanGestureRecognizer * panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(panGesture:)];
+        panGesture.maximumNumberOfTouches = 1;
+        panGesture.minimumNumberOfTouches = 1;
+        [self.view addGestureRecognizer:panGesture];
         
         [self newLine];
         
@@ -102,6 +111,11 @@
 
 - (CGPoint)lineOriginForLineNumber:(NSUInteger)n {
     return CGPointMake(([self width] - [UIFont bronteLineWidth])/2.0 - [self lineHandleWidth] + 15, 50 + n*[self lineHeight]);
+}
+
+- (void)adjustScrollViewContentSize {
+    float currentScale = _scrollView.bounds.size.width/[self width];
+    _scrollView.contentSize = CGSizeMake(_scrollView.frame.size.width, currentScale*[self lineOriginForLineNumber:_lines.count+3].y);
 }
 
 - (CATextLayer *)makeWord:(NSString *)word {
@@ -194,42 +208,40 @@
 
 #pragma mark - Gestures
 
+- (CGRect)clipboardHandle {
+    float p = 0.13;
+    float s = p*_scrollView.bounds.size.width;
+    return CGRectMake(_scrollView.bounds.size.width - s, 0, s*2, _scrollView.bounds.size.height);
+}
+
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
-    
-}
 
-- (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event {
-    
-}
-
-- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
-    
 }
 
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
-    
+
+}
+
+- (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event {
+
+}
+
+- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
+
 }
 
 #pragma mark - Global Gestures
 
-- (void)zoomDocument:(UIPinchGestureRecognizer *)gesture {
-    static CGFloat currentScale = 1.0;
-    static CGFloat lastScale = 1.0;
-    
+- (void)zoomDocument:(float)currentScale {
     static const CGFloat minScale = 0.475;
     static const CGFloat maxScale = 1.0f;
     
     float fullW = fmaxf(self.view.frame.size.width, self.view.frame.size.height);
     
-    currentScale += gesture.scale - lastScale;
-    lastScale = gesture.state == UIGestureRecognizerStateEnded ? 1.0 : gesture.scale;
-    
     //check max
     currentScale = currentScale > maxScale ? maxScale : currentScale;
-    lastScale = lastScale > maxScale ? maxScale : lastScale;
     //check min
     currentScale = currentScale < minScale ? minScale : currentScale;
-    lastScale = lastScale < minScale ? minScale : lastScale;
     
     _scrollView.frame = CGRectMake(0, 0, currentScale*fullW, _scrollView.frame.size.height);
     UIEdgeInsets insets = [self scrollViewInsets];
@@ -245,10 +257,25 @@
     }
     [CATransaction commit];
     
-    _scrollView.contentSize = CGSizeMake(_scrollView.frame.size.width, currentScale*[self lineOriginForLineNumber:_lines.count+3].y);
+    [self adjustScrollViewContentSize];
+}
+
+- (void)panGesture:(UIPanGestureRecognizer *)gesture {
+    if (gesture.state == UIGestureRecognizerStateBegan) {
+        CGPoint p = [gesture locationInView:self.view];
+        CGRect clipboardHandle = [self clipboardHandle];
+        _isDraggingClipboard = CGRectContainsPoint(clipboardHandle, p);
+    } else if (gesture.state == UIGestureRecognizerStateEnded) {
+        _isDraggingClipboard = NO;
+    }
     
-    //_scrollView.transform = CGAffineTransformScale(CGAffineTransformIdentity, currentScale, 1.0);
-    //_scrollView.center = CGPointMake(_scrollView.frame.size.width/2.0, _scrollView.frame.size.height/2.0);
+    if (_isDraggingClipboard) {
+        CGPoint t = [gesture translationInView:self.view];
+        CGFloat currentScale = _scrollView.bounds.size.width / [self width];
+        CGFloat scale = currentScale + t.x / [self width];
+        [self zoomDocument:scale];
+        [gesture setTranslation:CGPointZero inView:self.view];
+    }
 }
 
 
