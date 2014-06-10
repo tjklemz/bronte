@@ -16,7 +16,7 @@
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "813E426B1946651700260C0E"
                BuildableName = "Bronte.app"
-               BlueprintName = "Bronte"
+               BlueprintName = "Bront&#xeb;"
                ReferencedContainer = "container:Bronte.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -44,7 +44,7 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "813E426B1946651700260C0E"
             BuildableName = "Bronte.app"
-            BlueprintName = "Bronte"
+            BlueprintName = "Bront&#xeb;"
             ReferencedContainer = "container:Bronte.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -63,7 +63,7 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "813E426B1946651700260C0E"
             BuildableName = "Bronte.app"
-            BlueprintName = "Bronte"
+            BlueprintName = "Bront&#xeb;"
             ReferencedContainer = "container:Bronte.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -81,7 +81,7 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "813E426B1946651700260C0E"
             BuildableName = "Bronte.app"
-            BlueprintName = "Bronte"
+            BlueprintName = "Bront&#xeb;"
             ReferencedContainer = "container:Bronte.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>

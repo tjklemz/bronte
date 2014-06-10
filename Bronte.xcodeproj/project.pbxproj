@@ -14,22 +14,32 @@
 		813E427C1946651700260C0E /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 813E427B1946651700260C0E /* main.m */; };
 		813E42801946651700260C0E /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 813E427F1946651700260C0E /* AppDelegate.m */; };
 		813E42821946651700260C0E /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 813E42811946651700260C0E /* Images.xcassets */; };
-		813E42891946651700260C0E /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 813E42881946651700260C0E /* XCTest.framework */; };
-		813E428A1946651700260C0E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 813E426F1946651700260C0E /* Foundation.framework */; };
-		813E428B1946651700260C0E /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 813E42731946651700260C0E /* UIKit.framework */; };
-		813E42931946651700260C0E /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 813E42911946651700260C0E /* InfoPlist.strings */; };
-		813E42951946651700260C0E /* BronteTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 813E42941946651700260C0E /* BronteTests.m */; };
+		813E42A019466C5800260C0E /* CALayer+Bronte.m in Sources */ = {isa = PBXBuildFile; fileRef = 813E429F19466C5800260C0E /* CALayer+Bronte.m */; };
+		813E42A319466CB200260C0E /* BronteTextInput.m in Sources */ = {isa = PBXBuildFile; fileRef = 813E42A219466CB200260C0E /* BronteTextInput.m */; };
+		813E42A619466CC000260C0E /* BronteEditView.m in Sources */ = {isa = PBXBuildFile; fileRef = 813E42A519466CC000260C0E /* BronteEditView.m */; };
+		813E42B519466CE200260C0E /* edit_icons_backspace_l.png in Resources */ = {isa = PBXBuildFile; fileRef = 813E42A819466CE200260C0E /* edit_icons_backspace_l.png */; };
+		813E42B619466CE200260C0E /* edit_icons_brackets.png in Resources */ = {isa = PBXBuildFile; fileRef = 813E42A919466CE200260C0E /* edit_icons_brackets.png */; };
+		813E42B719466CE200260C0E /* edit_icons_cap.png in Resources */ = {isa = PBXBuildFile; fileRef = 813E42AA19466CE200260C0E /* edit_icons_cap.png */; };
+		813E42B819466CE200260C0E /* edit_icons_delete.png in Resources */ = {isa = PBXBuildFile; fileRef = 813E42AB19466CE200260C0E /* edit_icons_delete.png */; };
+		813E42B919466CE200260C0E /* edit_icons_insert-left_gray.png in Resources */ = {isa = PBXBuildFile; fileRef = 813E42AC19466CE200260C0E /* edit_icons_insert-left_gray.png */; };
+		813E42BA19466CE200260C0E /* edit_icons_insert-left.png in Resources */ = {isa = PBXBuildFile; fileRef = 813E42AD19466CE200260C0E /* edit_icons_insert-left.png */; };
+		813E42BB19466CE200260C0E /* edit_icons_insert-right_gray.png in Resources */ = {isa = PBXBuildFile; fileRef = 813E42AE19466CE200260C0E /* edit_icons_insert-right_gray.png */; };
+		813E42BC19466CE200260C0E /* edit_icons_insert-right.png in Resources */ = {isa = PBXBuildFile; fileRef = 813E42AF19466CE200260C0E /* edit_icons_insert-right.png */; };
+		813E42BD19466CE200260C0E /* edit_icons_insert.png in Resources */ = {isa = PBXBuildFile; fileRef = 813E42B019466CE200260C0E /* edit_icons_insert.png */; };
+		813E42BE19466CE200260C0E /* edit_icons_lc.png in Resources */ = {isa = PBXBuildFile; fileRef = 813E42B119466CE200260C0E /* edit_icons_lc.png */; };
+		813E42BF19466CE200260C0E /* edit_icons_parentheses.png in Resources */ = {isa = PBXBuildFile; fileRef = 813E42B219466CE200260C0E /* edit_icons_parentheses.png */; };
+		813E42C019466CE200260C0E /* edit_icons_quote1.png in Resources */ = {isa = PBXBuildFile; fileRef = 813E42B319466CE200260C0E /* edit_icons_quote1.png */; };
+		813E42C119466CE200260C0E /* edit_icons_quote2.png in Resources */ = {isa = PBXBuildFile; fileRef = 813E42B419466CE200260C0E /* edit_icons_quote2.png */; };
+		813E42CB19466D6A00260C0E /* milk_gray.png in Resources */ = {isa = PBXBuildFile; fileRef = 813E42C519466D6A00260C0E /* milk_gray.png */; };
+		813E42CC19466D6A00260C0E /* milk.png in Resources */ = {isa = PBXBuildFile; fileRef = 813E42C619466D6A00260C0E /* milk.png */; };
+		813E42CD19466D6A00260C0E /* mix_gray.png in Resources */ = {isa = PBXBuildFile; fileRef = 813E42C719466D6A00260C0E /* mix_gray.png */; };
+		813E42CE19466D6A00260C0E /* mix.png in Resources */ = {isa = PBXBuildFile; fileRef = 813E42C819466D6A00260C0E /* mix.png */; };
+		813E42CF19466D6A00260C0E /* sugar_gray.png in Resources */ = {isa = PBXBuildFile; fileRef = 813E42C919466D6A00260C0E /* sugar_gray.png */; };
+		813E42D019466D6A00260C0E /* sugar.png in Resources */ = {isa = PBXBuildFile; fileRef = 813E42CA19466D6A00260C0E /* sugar.png */; };
+		813E42D319466E3E00260C0E /* BronteViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 813E42D219466E3E00260C0E /* BronteViewController.m */; };
+		813E42D619466EA800260C0E /* UIColor+Bronte.m in Sources */ = {isa = PBXBuildFile; fileRef = 813E42D519466EA800260C0E /* UIColor+Bronte.m */; };
+		813E42D919466EBC00260C0E /* UIFont+Bronte.m in Sources */ = {isa = PBXBuildFile; fileRef = 813E42D819466EBC00260C0E /* UIFont+Bronte.m */; };
 /* End PBXBuildFile section */
-
-/* Begin PBXContainerItemProxy section */
-		813E428C1946651700260C0E /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 813E42641946651700260C0E /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 813E426B1946651700260C0E;
-			remoteInfo = Bronte;
-		};
-/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		813E426C1946651700260C0E /* Bronte.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Bronte.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -43,11 +53,39 @@
 		813E427E1946651700260C0E /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		813E427F1946651700260C0E /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		813E42811946651700260C0E /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
-		813E42871946651700260C0E /* BronteTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BronteTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		813E42881946651700260C0E /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
-		813E42901946651700260C0E /* BronteTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "BronteTests-Info.plist"; sourceTree = "<group>"; };
-		813E42921946651700260C0E /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		813E42941946651700260C0E /* BronteTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BronteTests.m; sourceTree = "<group>"; };
+		813E429E19466C5800260C0E /* CALayer+Bronte.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "CALayer+Bronte.h"; sourceTree = "<group>"; };
+		813E429F19466C5800260C0E /* CALayer+Bronte.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "CALayer+Bronte.m"; sourceTree = "<group>"; };
+		813E42A119466CB200260C0E /* BronteTextInput.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BronteTextInput.h; sourceTree = "<group>"; };
+		813E42A219466CB200260C0E /* BronteTextInput.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BronteTextInput.m; sourceTree = "<group>"; };
+		813E42A419466CC000260C0E /* BronteEditView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BronteEditView.h; sourceTree = "<group>"; };
+		813E42A519466CC000260C0E /* BronteEditView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BronteEditView.m; sourceTree = "<group>"; };
+		813E42A819466CE200260C0E /* edit_icons_backspace_l.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = edit_icons_backspace_l.png; sourceTree = "<group>"; };
+		813E42A919466CE200260C0E /* edit_icons_brackets.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = edit_icons_brackets.png; sourceTree = "<group>"; };
+		813E42AA19466CE200260C0E /* edit_icons_cap.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = edit_icons_cap.png; sourceTree = "<group>"; };
+		813E42AB19466CE200260C0E /* edit_icons_delete.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = edit_icons_delete.png; sourceTree = "<group>"; };
+		813E42AC19466CE200260C0E /* edit_icons_insert-left_gray.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "edit_icons_insert-left_gray.png"; sourceTree = "<group>"; };
+		813E42AD19466CE200260C0E /* edit_icons_insert-left.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "edit_icons_insert-left.png"; sourceTree = "<group>"; };
+		813E42AE19466CE200260C0E /* edit_icons_insert-right_gray.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "edit_icons_insert-right_gray.png"; sourceTree = "<group>"; };
+		813E42AF19466CE200260C0E /* edit_icons_insert-right.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "edit_icons_insert-right.png"; sourceTree = "<group>"; };
+		813E42B019466CE200260C0E /* edit_icons_insert.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = edit_icons_insert.png; sourceTree = "<group>"; };
+		813E42B119466CE200260C0E /* edit_icons_lc.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = edit_icons_lc.png; sourceTree = "<group>"; };
+		813E42B219466CE200260C0E /* edit_icons_parentheses.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = edit_icons_parentheses.png; sourceTree = "<group>"; };
+		813E42B319466CE200260C0E /* edit_icons_quote1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = edit_icons_quote1.png; sourceTree = "<group>"; };
+		813E42B419466CE200260C0E /* edit_icons_quote2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = edit_icons_quote2.png; sourceTree = "<group>"; };
+		813E42C219466CF000260C0E /* Lekton-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Lekton-Regular.ttf"; sourceTree = "<group>"; };
+		813E42C519466D6A00260C0E /* milk_gray.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = milk_gray.png; sourceTree = "<group>"; };
+		813E42C619466D6A00260C0E /* milk.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = milk.png; sourceTree = "<group>"; };
+		813E42C719466D6A00260C0E /* mix_gray.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = mix_gray.png; sourceTree = "<group>"; };
+		813E42C819466D6A00260C0E /* mix.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = mix.png; sourceTree = "<group>"; };
+		813E42C919466D6A00260C0E /* sugar_gray.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sugar_gray.png; sourceTree = "<group>"; };
+		813E42CA19466D6A00260C0E /* sugar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sugar.png; sourceTree = "<group>"; };
+		813E42D119466E3E00260C0E /* BronteViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BronteViewController.h; sourceTree = "<group>"; };
+		813E42D219466E3E00260C0E /* BronteViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BronteViewController.m; sourceTree = "<group>"; };
+		813E42D419466EA800260C0E /* UIColor+Bronte.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+Bronte.h"; sourceTree = "<group>"; };
+		813E42D519466EA800260C0E /* UIColor+Bronte.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+Bronte.m"; sourceTree = "<group>"; };
+		813E42D719466EBC00260C0E /* UIFont+Bronte.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIFont+Bronte.h"; sourceTree = "<group>"; };
+		813E42D819466EBC00260C0E /* UIFont+Bronte.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIFont+Bronte.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -61,16 +99,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		813E42841946651700260C0E /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				813E42891946651700260C0E /* XCTest.framework in Frameworks */,
-				813E428B1946651700260C0E /* UIKit.framework in Frameworks */,
-				813E428A1946651700260C0E /* Foundation.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -78,7 +106,6 @@
 			isa = PBXGroup;
 			children = (
 				813E42751946651700260C0E /* Bronte */,
-				813E428E1946651700260C0E /* BronteTests */,
 				813E426E1946651700260C0E /* Frameworks */,
 				813E426D1946651700260C0E /* Products */,
 			);
@@ -88,7 +115,6 @@
 			isa = PBXGroup;
 			children = (
 				813E426C1946651700260C0E /* Bronte.app */,
-				813E42871946651700260C0E /* BronteTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -107,10 +133,22 @@
 		813E42751946651700260C0E /* Bronte */ = {
 			isa = PBXGroup;
 			children = (
+				813E42D719466EBC00260C0E /* UIFont+Bronte.h */,
+				813E42D819466EBC00260C0E /* UIFont+Bronte.m */,
+				813E42D419466EA800260C0E /* UIColor+Bronte.h */,
+				813E42D519466EA800260C0E /* UIColor+Bronte.m */,
+				813E42A419466CC000260C0E /* BronteEditView.h */,
+				813E42A519466CC000260C0E /* BronteEditView.m */,
+				813E42A119466CB200260C0E /* BronteTextInput.h */,
+				813E42A219466CB200260C0E /* BronteTextInput.m */,
+				813E429E19466C5800260C0E /* CALayer+Bronte.h */,
+				813E429F19466C5800260C0E /* CALayer+Bronte.m */,
 				813E427E1946651700260C0E /* AppDelegate.h */,
 				813E427F1946651700260C0E /* AppDelegate.m */,
 				813E42811946651700260C0E /* Images.xcassets */,
 				813E42761946651700260C0E /* Supporting Files */,
+				813E42D119466E3E00260C0E /* BronteViewController.h */,
+				813E42D219466E3E00260C0E /* BronteViewController.m */,
 			);
 			path = Bronte;
 			sourceTree = "<group>";
@@ -118,6 +156,8 @@
 		813E42761946651700260C0E /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				813E42C319466CF300260C0E /* fonts */,
+				813E42A719466CD400260C0E /* images */,
 				813E42771946651700260C0E /* Bronte-Info.plist */,
 				813E42781946651700260C0E /* InfoPlist.strings */,
 				813E427B1946651700260C0E /* main.m */,
@@ -126,30 +166,54 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		813E428E1946651700260C0E /* BronteTests */ = {
+		813E42A719466CD400260C0E /* images */ = {
 			isa = PBXGroup;
 			children = (
-				813E42941946651700260C0E /* BronteTests.m */,
-				813E428F1946651700260C0E /* Supporting Files */,
+				813E42C519466D6A00260C0E /* milk_gray.png */,
+				813E42C619466D6A00260C0E /* milk.png */,
+				813E42C719466D6A00260C0E /* mix_gray.png */,
+				813E42C819466D6A00260C0E /* mix.png */,
+				813E42C919466D6A00260C0E /* sugar_gray.png */,
+				813E42CA19466D6A00260C0E /* sugar.png */,
+				813E42C419466D4600260C0E /* editing */,
 			);
-			path = BronteTests;
+			name = images;
 			sourceTree = "<group>";
 		};
-		813E428F1946651700260C0E /* Supporting Files */ = {
+		813E42C319466CF300260C0E /* fonts */ = {
 			isa = PBXGroup;
 			children = (
-				813E42901946651700260C0E /* BronteTests-Info.plist */,
-				813E42911946651700260C0E /* InfoPlist.strings */,
+				813E42C219466CF000260C0E /* Lekton-Regular.ttf */,
 			);
-			name = "Supporting Files";
+			name = fonts;
+			sourceTree = "<group>";
+		};
+		813E42C419466D4600260C0E /* editing */ = {
+			isa = PBXGroup;
+			children = (
+				813E42A819466CE200260C0E /* edit_icons_backspace_l.png */,
+				813E42A919466CE200260C0E /* edit_icons_brackets.png */,
+				813E42AA19466CE200260C0E /* edit_icons_cap.png */,
+				813E42AB19466CE200260C0E /* edit_icons_delete.png */,
+				813E42AC19466CE200260C0E /* edit_icons_insert-left_gray.png */,
+				813E42AD19466CE200260C0E /* edit_icons_insert-left.png */,
+				813E42AE19466CE200260C0E /* edit_icons_insert-right_gray.png */,
+				813E42AF19466CE200260C0E /* edit_icons_insert-right.png */,
+				813E42B019466CE200260C0E /* edit_icons_insert.png */,
+				813E42B119466CE200260C0E /* edit_icons_lc.png */,
+				813E42B219466CE200260C0E /* edit_icons_parentheses.png */,
+				813E42B319466CE200260C0E /* edit_icons_quote1.png */,
+				813E42B419466CE200260C0E /* edit_icons_quote2.png */,
+			);
+			name = editing;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		813E426B1946651700260C0E /* Bronte */ = {
+		813E426B1946651700260C0E /* Brontë */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 813E42981946651700260C0E /* Build configuration list for PBXNativeTarget "Bronte" */;
+			buildConfigurationList = 813E42981946651700260C0E /* Build configuration list for PBXNativeTarget "Brontë" */;
 			buildPhases = (
 				813E42681946651700260C0E /* Sources */,
 				813E42691946651700260C0E /* Frameworks */,
@@ -159,28 +223,10 @@
 			);
 			dependencies = (
 			);
-			name = Bronte;
+			name = "Brontë";
 			productName = Bronte;
 			productReference = 813E426C1946651700260C0E /* Bronte.app */;
 			productType = "com.apple.product-type.application";
-		};
-		813E42861946651700260C0E /* BronteTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 813E429B1946651700260C0E /* Build configuration list for PBXNativeTarget "BronteTests" */;
-			buildPhases = (
-				813E42831946651700260C0E /* Sources */,
-				813E42841946651700260C0E /* Frameworks */,
-				813E42851946651700260C0E /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				813E428D1946651700260C0E /* PBXTargetDependency */,
-			);
-			name = BronteTests;
-			productName = BronteTests;
-			productReference = 813E42871946651700260C0E /* BronteTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
 
@@ -190,11 +236,6 @@
 			attributes = {
 				LastUpgradeCheck = 0510;
 				ORGANIZATIONNAME = "Lory & Ludlow";
-				TargetAttributes = {
-					813E42861946651700260C0E = {
-						TestTargetID = 813E426B1946651700260C0E;
-					};
-				};
 			};
 			buildConfigurationList = 813E42671946651700260C0E /* Build configuration list for PBXProject "Bronte" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -208,8 +249,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				813E426B1946651700260C0E /* Bronte */,
-				813E42861946651700260C0E /* BronteTests */,
+				813E426B1946651700260C0E /* Brontë */,
 			);
 		};
 /* End PBXProject section */
@@ -219,16 +259,27 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				813E42B719466CE200260C0E /* edit_icons_cap.png in Resources */,
+				813E42D019466D6A00260C0E /* sugar.png in Resources */,
+				813E42B819466CE200260C0E /* edit_icons_delete.png in Resources */,
+				813E42BC19466CE200260C0E /* edit_icons_insert-right.png in Resources */,
+				813E42BF19466CE200260C0E /* edit_icons_parentheses.png in Resources */,
+				813E42BA19466CE200260C0E /* edit_icons_insert-left.png in Resources */,
+				813E42CF19466D6A00260C0E /* sugar_gray.png in Resources */,
 				813E427A1946651700260C0E /* InfoPlist.strings in Resources */,
+				813E42CE19466D6A00260C0E /* mix.png in Resources */,
+				813E42B919466CE200260C0E /* edit_icons_insert-left_gray.png in Resources */,
+				813E42CD19466D6A00260C0E /* mix_gray.png in Resources */,
+				813E42B619466CE200260C0E /* edit_icons_brackets.png in Resources */,
+				813E42BE19466CE200260C0E /* edit_icons_lc.png in Resources */,
+				813E42B519466CE200260C0E /* edit_icons_backspace_l.png in Resources */,
+				813E42BB19466CE200260C0E /* edit_icons_insert-right_gray.png in Resources */,
+				813E42CC19466D6A00260C0E /* milk.png in Resources */,
 				813E42821946651700260C0E /* Images.xcassets in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		813E42851946651700260C0E /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				813E42931946651700260C0E /* InfoPlist.strings in Resources */,
+				813E42BD19466CE200260C0E /* edit_icons_insert.png in Resources */,
+				813E42C019466CE200260C0E /* edit_icons_quote1.png in Resources */,
+				813E42C119466CE200260C0E /* edit_icons_quote2.png in Resources */,
+				813E42CB19466D6A00260C0E /* milk_gray.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -240,41 +291,23 @@
 			buildActionMask = 2147483647;
 			files = (
 				813E42801946651700260C0E /* AppDelegate.m in Sources */,
+				813E42A619466CC000260C0E /* BronteEditView.m in Sources */,
+				813E42D319466E3E00260C0E /* BronteViewController.m in Sources */,
+				813E42A019466C5800260C0E /* CALayer+Bronte.m in Sources */,
+				813E42D919466EBC00260C0E /* UIFont+Bronte.m in Sources */,
 				813E427C1946651700260C0E /* main.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		813E42831946651700260C0E /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				813E42951946651700260C0E /* BronteTests.m in Sources */,
+				813E42A319466CB200260C0E /* BronteTextInput.m in Sources */,
+				813E42D619466EA800260C0E /* UIColor+Bronte.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXTargetDependency section */
-		813E428D1946651700260C0E /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 813E426B1946651700260C0E /* Bronte */;
-			targetProxy = 813E428C1946651700260C0E /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		813E42781946651700260C0E /* InfoPlist.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
 				813E42791946651700260C0E /* en */,
-			);
-			name = InfoPlist.strings;
-			sourceTree = "<group>";
-		};
-		813E42911946651700260C0E /* InfoPlist.strings */ = {
-			isa = PBXVariantGroup;
-			children = (
-				813E42921946651700260C0E /* en */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
@@ -380,46 +413,6 @@
 			};
 			name = Release;
 		};
-		813E429C1946651700260C0E /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/Bronte.app/Bronte";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-					"$(DEVELOPER_FRAMEWORKS_DIR)",
-				);
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "Bronte/Bronte-Prefix.pch";
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				INFOPLIST_FILE = "BronteTests/BronteTests-Info.plist";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUNDLE_LOADER)";
-				WRAPPER_EXTENSION = xctest;
-			};
-			name = Debug;
-		};
-		813E429D1946651700260C0E /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/Bronte.app/Bronte";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-					"$(DEVELOPER_FRAMEWORKS_DIR)",
-				);
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "Bronte/Bronte-Prefix.pch";
-				INFOPLIST_FILE = "BronteTests/BronteTests-Info.plist";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUNDLE_LOADER)";
-				WRAPPER_EXTENSION = xctest;
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -432,19 +425,11 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		813E42981946651700260C0E /* Build configuration list for PBXNativeTarget "Bronte" */ = {
+		813E42981946651700260C0E /* Build configuration list for PBXNativeTarget "Brontë" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				813E42991946651700260C0E /* Debug */,
 				813E429A1946651700260C0E /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-		};
-		813E429B1946651700260C0E /* Build configuration list for PBXNativeTarget "BronteTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				813E429C1946651700260C0E /* Debug */,
-				813E429D1946651700260C0E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 		};
