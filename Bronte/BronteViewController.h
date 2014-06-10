@@ -16,6 +16,9 @@
     UIImage * _wordIcon;
     UIImage * _lineIcon;
     UIImage * _paraIcon;
+    
+    CALayer * _docLayer;
+    UIScrollView * _scrollView;
 }
 
 @end

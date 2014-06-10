@@ -17,6 +17,12 @@
 
 @implementation BronteViewController
 
+- (UIEdgeInsets)scrollViewInsets {
+    CGPoint o = [self lineOriginForLineNumber:0];
+    float p = o.y + 10;
+    return UIEdgeInsetsMake(p, 0, p, [self width] - (o.x + [self lineWidth] + 50));
+}
+
 - (id)init {
     self = [super init];
     if (self) {
@@ -28,14 +34,42 @@
         _lineIcon = [UIImage imageNamed:@"sugar_gray.png"];
         _paraIcon = [UIImage imageNamed:@"mix_gray.png"];
         
-        self.view.layer.backgroundColor = [UIColor bronteBackgroundColor].CGColor;
+        //self.view.backgroundColor = [UIColor bronteBackgroundColor];
+        
+        UIScrollView * scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.height, self.view.bounds.size.width)];
+        scrollView.backgroundColor = [UIColor bronteBackgroundColor];
+        _docLayer = scrollView.layer;
+        [scrollView.panGestureRecognizer setMinimumNumberOfTouches:2];
+        [scrollView.panGestureRecognizer setMaximumNumberOfTouches:2];
+        [scrollView setScrollIndicatorInsets:[self scrollViewInsets]];
+        scrollView.indicatorStyle = UIScrollViewIndicatorStyleBlack;
+        scrollView.bouncesZoom = NO;
+        
+        UIPinchGestureRecognizer * pinchGesture = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(zoomDocument:)];
+        [scrollView addGestureRecognizer:pinchGesture];
+        [self.view addSubview:scrollView];
+        _scrollView = scrollView;
+        
+        scrollView.contentSize = CGSizeMake(scrollView.bounds.size.width, scrollView.bounds.size.height*2);
+        
+        //self.view.layer.backgroundColor = [UIColor bronteBackgroundColor].CGColor;
+        //self.view.layer.anchorPoint = CGPointMake(1.0, 1.0);
         
         [self newLine];
         
         //testing only
         [self addText:@"Mary had a little lamb, its fleece was white as snow; and everywhere that Mary went, the lamb was sure to go. It followed her to school one day, which was against the rule. It made the children laugh and play, to see a lamb at school. And so the teacher turned it out, but still it lingered near and waited patiently about till Mary did appear. \"Why does the lamb love Mary so?\" the eager children cry; \"Why, Mary loves the lamb, you know\" the teacher did reply." toLine:_lines.firstObject];
+        
+        [self newLine];
+        [self newLine];
+        
+        [self addText:@"Mary had a little lamb, its fleece was white as snow; and everywhere that Mary went, the lamb was sure to go. It followed her to school one day, which was against the rule. It made the children laugh and play, to see a lamb at school. And so the teacher turned it out, but still it lingered near and waited patiently about till Mary did appear. \"Why does the lamb love Mary so?\" the eager children cry; \"Why, Mary loves the lamb, you know\" the teacher did reply." toLine:_lines.lastObject];
     }
     return self;
+}
+
+- (BOOL)prefersStatusBarHidden {
+    return YES;
 }
 
 - (void)didReceiveMemoryWarning
@@ -100,14 +134,14 @@
     CALayer * l = [self makeLine];
     l.position = [self lineOriginForLineNumber:_lines.count];
     //l.backgroundColor = [UIColor colorWithWhite:1.0 alpha:0.5].CGColor;
-    [self.view.layer addSublayer:l];
+    [_docLayer addSublayer:l];
     [_lines addObject:l];
 }
 
 - (CALayer *)insertLineAfter:(CALayer *)l {
     NSUInteger n = [_lines indexOfObject:l];
     CALayer * newLine = [self makeLine];
-    [self.view.layer addSublayer:newLine];
+    [_docLayer addSublayer:newLine];
     [_lines insertObject:newLine atIndex:n+1];
     
     for (NSUInteger i = n+1; i < _lines.count; ++i) {
@@ -174,6 +208,47 @@
 
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
     
+}
+
+#pragma mark - Global Gestures
+
+- (void)zoomDocument:(UIPinchGestureRecognizer *)gesture {
+    static CGFloat currentScale = 1.0;
+    static CGFloat lastScale = 1.0;
+    
+    static const CGFloat minScale = 0.475;
+    static const CGFloat maxScale = 1.0f;
+    
+    float fullW = fmaxf(self.view.frame.size.width, self.view.frame.size.height);
+    
+    currentScale += gesture.scale - lastScale;
+    lastScale = gesture.state == UIGestureRecognizerStateEnded ? 1.0 : gesture.scale;
+    
+    //check max
+    currentScale = currentScale > maxScale ? maxScale : currentScale;
+    lastScale = lastScale > maxScale ? maxScale : lastScale;
+    //check min
+    currentScale = currentScale < minScale ? minScale : currentScale;
+    lastScale = lastScale < minScale ? minScale : lastScale;
+    
+    _scrollView.frame = CGRectMake(0, 0, currentScale*fullW, _scrollView.frame.size.height);
+    UIEdgeInsets insets = [self scrollViewInsets];
+    _scrollView.scrollIndicatorInsets = UIEdgeInsetsMake(currentScale*insets.top, currentScale*insets.left, currentScale*insets.bottom, currentScale*insets.right);
+    
+    [CATransaction begin];
+    [CATransaction setAnimationDuration:0];
+    for (int i = 0; i < _lines.count; ++i) {
+        CALayer * line = _lines[i];
+        line.transform = CATransform3DMakeScale(currentScale, currentScale, 1.0);
+        CGPoint o = [self lineOriginForLineNumber:i];
+        line.position = CGPointMake(o.x*currentScale, o.y*currentScale);
+    }
+    [CATransaction commit];
+    
+    _scrollView.contentSize = CGSizeMake(_scrollView.frame.size.width, currentScale*[self lineOriginForLineNumber:_lines.count+3].y);
+    
+    //_scrollView.transform = CGAffineTransformScale(CGAffineTransformIdentity, currentScale, 1.0);
+    //_scrollView.center = CGPointMake(_scrollView.frame.size.width/2.0, _scrollView.frame.size.height/2.0);
 }
 
 
