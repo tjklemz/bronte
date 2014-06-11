@@ -21,6 +21,10 @@
     UIScrollView * _scrollView;
     
     BOOL _isDraggingClipboard;
+    
+    NSMutableDictionary * _selectionInfo;
+    
+    BOOL _touchDidMove;
 }
 
 @end

@@ -131,7 +131,7 @@
     textLayer.contentsScale = [[UIScreen mainScreen] scale];
     textLayer.anchorPoint = CGPointZero;
     textLayer.string = str;
-    textLayer.frame = CGRectMake(0, 0, s.width + 2, [self lineHeight]);
+    textLayer.frame = CGRectMake(0, 0, s.width + 2 + [UIFont bronteWordSpacing], [self lineHeight]);
     
     return textLayer;
 }
@@ -213,7 +213,7 @@
         [self newParagraphSeparator];
     }
     
-    float spacing = [UIFont bronteWordSpacing];
+    float spacing = 0;//[UIFont bronteWordSpacing];
     CALayer * lastWord = [self wordsForLine:line].lastObject;
     
     float newX = lastWord ? [lastWord maxX] + spacing : w.position.x;
@@ -244,49 +244,71 @@
 #pragma mark - Moving words
 
 - (NSDictionary *)wordForPoint:(CGPoint)p {
+    __unsafe_unretained Class cls = [CATextLayer class];
+    
     for (int i = 0; i < _lines.count; ++i) {
         CALayer * line = _lines[i];
         CALayer * word = [line hitTest:p];
-        if (word) {
+        if (word && [word isKindOfClass:cls]) {
             return @{ @"word" : word, @"line" : line, @"lineNo" : [NSNumber numberWithInt:i] };
         }
     }
     return nil;
 }
 
-- (void)markSelection:(NSDictionary *)selectionInfo {
-    CGPoint p1 = [selectionInfo[@"firstPoint"] CGPointValue];
-    CGPoint p2 = [selectionInfo[@"lastPoint"] CGPointValue];
+- (void)configureSelection:(NSDictionary *)selectionInfo withAttributes:(NSDictionary *)attr {
+    NSDictionary * hitInfo1 = selectionInfo[@"first"];
+    NSDictionary * hitInfo2 = selectionInfo[@"last"];
     
-    NSDictionary * hitInfo1 = [self wordForPoint:p1];
-    NSDictionary * hitInfo2 = [self wordForPoint:p2];
-    
-    CALayer * w1 = hitInfo1[@"word"];
-    CALayer * w2 = hitInfo2[@"word"];
-    
-    if (w1 == w2) return;
-    
-    if (w2.position.x < w1.position.x && w2.position.y <= w1.position.y) {
-        NSDictionary * t = hitInfo1;
-        hitInfo1 = hitInfo2;
-        hitInfo2 = t;
-        t = nil;
-        
-        w1 = hitInfo1[@"word"];
-        w2 = hitInfo2[@"word"];
-    }
+    CATextLayer * w1 = hitInfo1[@"word"];
+    CATextLayer * w2 = hitInfo2[@"word"];
     
     int beginLine = [hitInfo1[@"lineNo"] intValue], endLine = [hitInfo2[@"lineNo"] intValue];
     
     for (int i = beginLine; i <= endLine; ++i) {
         NSArray * words = [self wordsForLine:_lines[i]];
         
+        NSLog(@"%@ %@", w1.string, w2.string);
+        NSLog(@"%@", words);
+        
         NSUInteger beginWord = i == beginLine ? [words indexOfObject:w1] : 0;
         NSUInteger endWord = i == endLine ? [words indexOfObject:w2] : words.count-1;
         
         for (NSUInteger j = beginWord; j <= endWord; ++j) {
             CATextLayer * word = words[j];
-            word.backgroundColor = [UIColor blueColor].CGColor;
+            word.string = [[NSAttributedString alloc] initWithString:((NSAttributedString *)(word.string)).string attributes:attr];
+        }
+    }
+}
+
+- (void)unmarkSelection {
+    if (_selectionInfo) {
+        [self configureSelection:_selectionInfo withAttributes:[UIFont bronteDefaultFontAttributes]];
+        _selectionInfo = nil;
+    }
+}
+
+- (void)markSelection:(NSDictionary *)selectionInfo {
+    [self unmarkSelection];
+    
+    NSMutableDictionary * attr = [[UIFont bronteDefaultFontAttributes] mutableCopy];
+    attr[NSForegroundColorAttributeName] = (id)[UIColor blueColor].CGColor;
+    [self configureSelection:selectionInfo withAttributes:attr];
+    _selectionInfo = [selectionInfo mutableCopy];
+}
+
+- (void)commitMarkedSelection {
+    if (_selectionInfo) {
+        NSDictionary * hitInfo1 = _selectionInfo[@"first"];
+        NSDictionary * hitInfo2 = _selectionInfo[@"last"];
+        
+        CALayer * w1 = hitInfo1[@"word"];
+        CALayer * w2 = hitInfo2[@"word"];
+        
+        if (w1 == w2) {
+            [self unmarkSelection];
+        } else {
+            
         }
     }
 }
@@ -300,23 +322,53 @@
 }
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
-
+    _touchDidMove = NO;
 }
 
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
-
+    _touchDidMove = YES;
 }
 
 - (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event {
-
+    _touchDidMove = NO;
 }
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
+    if (!_touchDidMove) {
+        [self unmarkSelection];
+    }
+    _touchDidMove = NO;
+}
 
+- (NSDictionary *)processSelectionInfo:(NSDictionary *)selectionInfo {
+    CGPoint p1 = [selectionInfo[@"firstPoint"] CGPointValue];
+    CGPoint p2 = [selectionInfo[@"lastPoint"] CGPointValue];
+    
+    NSDictionary * hitInfo1 = [self wordForPoint:p1];
+    NSDictionary * hitInfo2 = [self wordForPoint:p2];
+    
+    if (!hitInfo1 || !hitInfo2) return nil;
+    
+    CALayer * w1 = hitInfo1[@"word"];
+    CALayer * w2 = hitInfo2[@"word"];
+    
+    int lineNo1 = [hitInfo1[@"lineNo"] intValue];
+    int lineNo2 = [hitInfo2[@"lineNo"] intValue];
+    
+    if (lineNo2 < lineNo1 || (w2.position.x < w1.position.x && lineNo2 <= lineNo1)) {
+        NSDictionary * t = hitInfo1;
+        hitInfo1 = hitInfo2;
+        hitInfo2 = t;
+        t = nil;
+    }
+    
+    return @{ @"first": hitInfo1, @"last": hitInfo2 };
 }
 
 - (void)multiSelect:(MultiSelectGestureRecognizer *)gesture {
     static NSMutableDictionary * selectionInfo = nil;
+    
+    [self unmarkSelection];
     
     if (gesture.state == UIGestureRecognizerStateBegan) {
         selectionInfo = [NSMutableDictionary new];
@@ -324,8 +376,16 @@
     } else {
         selectionInfo[@"lastPoint"] = [NSValue valueWithCGPoint:[gesture locationInView:_scrollView]];
         
+        NSDictionary * processedSelectionInfo = [self processSelectionInfo:selectionInfo];
+        if (processedSelectionInfo) {
+            [self markSelection:processedSelectionInfo];
+            if (gesture.state == UIGestureRecognizerStateEnded) {
+                [self commitMarkedSelection];
+            }
+            processedSelectionInfo = nil;
+        }
+        
         if (gesture.state == UIGestureRecognizerStateEnded) {
-            [self markSelection:selectionInfo];
             selectionInfo = nil;
         }
     }
