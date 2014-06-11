@@ -197,7 +197,8 @@
 }
 
 - (NSArray *)wordsForLine:(CALayer *)line {
-    return [line.sublayers sortedArrayUsingComparator:^NSComparisonResult(CALayer * obj1, CALayer * obj2) {
+    NSArray * words = [line.sublayers filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"self isKindOfClass:%@", [CATextLayer class]]];
+    return [words sortedArrayUsingComparator:^NSComparisonResult(CALayer * obj1, CALayer * obj2) {
         return obj1.position.x - obj2.position.x;
     }];
 }
@@ -263,20 +264,20 @@
     CATextLayer * w1 = hitInfo1[@"word"];
     CATextLayer * w2 = hitInfo2[@"word"];
     
+    if (!w1 || !w2) return;
+    
     int beginLine = [hitInfo1[@"lineNo"] intValue], endLine = [hitInfo2[@"lineNo"] intValue];
     
     for (int i = beginLine; i <= endLine; ++i) {
         NSArray * words = [self wordsForLine:_lines[i]];
-        
-        NSLog(@"%@ %@", w1.string, w2.string);
-        NSLog(@"%@", words);
-        
-        NSUInteger beginWord = i == beginLine ? [words indexOfObject:w1] : 0;
-        NSUInteger endWord = i == endLine ? [words indexOfObject:w2] : words.count-1;
-        
-        for (NSUInteger j = beginWord; j <= endWord; ++j) {
-            CATextLayer * word = words[j];
-            word.string = [[NSAttributedString alloc] initWithString:((NSAttributedString *)(word.string)).string attributes:attr];
+        if (words.count) {
+            NSUInteger beginWord = i == beginLine ? [words indexOfObject:w1] : 0;
+            NSUInteger endWord = i == endLine ? [words indexOfObject:w2] : words.count-1;
+            
+            for (NSUInteger j = beginWord; j <= endWord; ++j) {
+                CATextLayer * word = words[j];
+                word.string = [[NSAttributedString alloc] initWithString:((NSAttributedString *)(word.string)).string attributes:attr];
+            }
         }
     }
 }
@@ -284,6 +285,10 @@
 - (void)unmarkSelection {
     if (_selectionInfo) {
         [self configureSelection:_selectionInfo withAttributes:[UIFont bronteDefaultFontAttributes]];
+        CALayer * icon = _selectionInfo[@"icon"];
+        if (icon) {
+            [icon removeFromSuperlayer];
+        }
         _selectionInfo = nil;
     }
 }
@@ -308,7 +313,21 @@
         if (w1 == w2) {
             [self unmarkSelection];
         } else {
+            CALayer * wordIcon = [CALayer layer];
+            wordIcon.frame = CGRectMake(0, 0, 50, 50);
+            wordIcon.contents = (id)_wordIcon.CGImage;
             
+            int lineNo1 = [hitInfo1[@"lineNo"] intValue];
+            int lineNo2 = [hitInfo2[@"lineNo"] intValue];
+            
+            CGPoint o = CGPointMake([self lineWidth] + 30, 0.5*(lineNo2 - lineNo1 + 1.0)*[self lineHeight]);
+            float currentScale = _scrollView.bounds.size.width/[self width];
+            wordIcon.position = CGPointMake(o.x*currentScale, o.y*currentScale);
+            
+            CALayer * line = hitInfo1[@"line"];
+            [line addSublayer:wordIcon];
+            
+            _selectionInfo[@"icon"] = wordIcon;
         }
     }
 }
