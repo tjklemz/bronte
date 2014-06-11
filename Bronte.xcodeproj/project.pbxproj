@@ -41,6 +41,8 @@
 		813E42D919466EBC00260C0E /* UIFont+Bronte.m in Sources */ = {isa = PBXBuildFile; fileRef = 813E42D819466EBC00260C0E /* UIFont+Bronte.m */; };
 		813E42DD19479EC100260C0E /* DocumentScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 813E42DC19479EC100260C0E /* DocumentScrollView.m */; };
 		813E42E01947D04800260C0E /* MultiSelectGestureRecognizer.m in Sources */ = {isa = PBXBuildFile; fileRef = 813E42DF1947D04800260C0E /* MultiSelectGestureRecognizer.m */; };
+		813E42E2194802FE00260C0E /* Lekton-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 813E42E11948013200260C0E /* Lekton-Bold.ttf */; };
+		813E42E31948030100260C0E /* Lekton-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 813E42C219466CF000260C0E /* Lekton-Regular.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -92,6 +94,7 @@
 		813E42DC19479EC100260C0E /* DocumentScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DocumentScrollView.m; sourceTree = "<group>"; };
 		813E42DE1947D04800260C0E /* MultiSelectGestureRecognizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MultiSelectGestureRecognizer.h; sourceTree = "<group>"; };
 		813E42DF1947D04800260C0E /* MultiSelectGestureRecognizer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MultiSelectGestureRecognizer.m; sourceTree = "<group>"; };
+		813E42E11948013200260C0E /* Lekton-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Lekton-Bold.ttf"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -193,6 +196,7 @@
 		813E42C319466CF300260C0E /* fonts */ = {
 			isa = PBXGroup;
 			children = (
+				813E42E11948013200260C0E /* Lekton-Bold.ttf */,
 				813E42C219466CF000260C0E /* Lekton-Regular.ttf */,
 			);
 			name = fonts;
@@ -278,11 +282,13 @@
 				813E42CF19466D6A00260C0E /* sugar_gray.png in Resources */,
 				813E427A1946651700260C0E /* InfoPlist.strings in Resources */,
 				813E42CE19466D6A00260C0E /* mix.png in Resources */,
+				813E42E31948030100260C0E /* Lekton-Regular.ttf in Resources */,
 				813E42B919466CE200260C0E /* edit_icons_insert-left_gray.png in Resources */,
 				813E42CD19466D6A00260C0E /* mix_gray.png in Resources */,
 				813E42B619466CE200260C0E /* edit_icons_brackets.png in Resources */,
 				813E42BE19466CE200260C0E /* edit_icons_lc.png in Resources */,
 				813E42B519466CE200260C0E /* edit_icons_backspace_l.png in Resources */,
+				813E42E2194802FE00260C0E /* Lekton-Bold.ttf in Resources */,
 				813E42BB19466CE200260C0E /* edit_icons_insert-right_gray.png in Resources */,
 				813E42CC19466D6A00260C0E /* milk.png in Resources */,
 				813E42821946651700260C0E /* Images.xcassets in Resources */,

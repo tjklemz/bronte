@@ -38,9 +38,18 @@
     return [UIFont fontWithName:@"Lekton-Regular" size:[UIFont bronteFontSize]];
 }
 
++ (UIFont *)bronteFontBold {
+    return [UIFont fontWithName:@"Lekton-Bold" size:[UIFont bronteFontSize]];
+}
+
 + (NSDictionary *)bronteDefaultFontAttributes {
     return @{ NSFontAttributeName : [UIFont bronteFontRegular],
               NSForegroundColorAttributeName: (id)([UIColor bronteFontColor].CGColor) };
+}
+
++ (NSDictionary *)bronteSelectedFontAttributes {
+    return @{ NSFontAttributeName : [UIFont bronteFontBold],
+              NSForegroundColorAttributeName: (id)[UIColor bronteSelectedFontColor].CGColor };
 }
 
 @end

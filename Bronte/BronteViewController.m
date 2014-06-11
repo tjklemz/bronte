@@ -22,7 +22,7 @@
 - (UIEdgeInsets)scrollViewInsets {
     CGPoint o = [self lineOriginForLineNumber:0];
     float p = o.y + 10;
-    return UIEdgeInsetsMake(p, 0, p, [self width] - (o.x + [self lineWidth] + 50));
+    return UIEdgeInsetsMake(p, 0, p, [self width] - (o.x + [self lineWidth] + 60));
 }
 
 - (id)init {
@@ -32,9 +32,9 @@
         
         _lines = [NSMutableArray new];
         
-        _wordIcon = [UIImage imageNamed:@"milk_gray.png"];
+        _wordIcon = [UIImage imageNamed:@"milk.png"];
         _lineIcon = [UIImage imageNamed:@"sugar_gray.png"];
-        _paraIcon = [UIImage imageNamed:@"mix_gray.png"];
+        _paraIcon = [UIImage imageNamed:@"mix.png"];
         
         //self.view.backgroundColor = [UIColor bronteBackgroundColor];
         
@@ -296,8 +296,7 @@
 - (void)markSelection:(NSDictionary *)selectionInfo {
     [self unmarkSelection];
     
-    NSMutableDictionary * attr = [[UIFont bronteDefaultFontAttributes] mutableCopy];
-    attr[NSForegroundColorAttributeName] = (id)[UIColor blueColor].CGColor;
+    NSDictionary * attr = [UIFont bronteSelectedFontAttributes];
     [self configureSelection:selectionInfo withAttributes:attr];
     _selectionInfo = [selectionInfo mutableCopy];
 }

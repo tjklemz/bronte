@@ -17,5 +17,6 @@
 + (float)bronteLineWidth;
 + (UIFont *)bronteFontRegular;
 + (NSDictionary *)bronteDefaultFontAttributes;
++ (NSDictionary *)bronteSelectedFontAttributes;
 
 @end
