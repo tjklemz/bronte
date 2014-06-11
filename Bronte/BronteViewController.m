@@ -319,9 +319,7 @@
             int lineNo1 = [hitInfo1[@"lineNo"] intValue];
             int lineNo2 = [hitInfo2[@"lineNo"] intValue];
             
-            CGPoint o = CGPointMake([self lineWidth] + 30, 0.5*(lineNo2 - lineNo1 + 1.0)*[self lineHeight]);
-            float currentScale = _scrollView.bounds.size.width/[self width];
-            wordIcon.position = CGPointMake(o.x*currentScale, o.y*currentScale);
+            wordIcon.position = CGPointMake([self lineWidth] + 30, 0.5*(lineNo2 - lineNo1 + 1.0)*[self lineHeight]);
             
             CALayer * line = hitInfo1[@"line"];
             [line addSublayer:wordIcon];
