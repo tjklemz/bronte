@@ -15,6 +15,7 @@
     
     UIImage * _wordIcon;
     UIImage * _lineIcon;
+    UIImage * _lineIconActive;
     UIImage * _paraIcon;
     
     CALayer * _docLayer;
@@ -25,6 +26,7 @@
     NSMutableDictionary * _selectionInfo;
     
     BOOL _touchDidMove;
+    NSMutableDictionary * _touchInfo;
 }
 
 @end

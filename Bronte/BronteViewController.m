@@ -34,6 +34,7 @@
         
         _wordIcon = [UIImage imageNamed:@"milk.png"];
         _lineIcon = [UIImage imageNamed:@"sugar_gray.png"];
+        _lineIconActive = [UIImage imageNamed:@"sugar.png"];
         _paraIcon = [UIImage imageNamed:@"mix.png"];
         
         //self.view.backgroundColor = [UIColor bronteBackgroundColor];
@@ -42,6 +43,7 @@
         scrollView.touchDelegate = self;
         scrollView.backgroundColor = [UIColor bronteBackgroundColor];
         _docLayer = scrollView.layer;
+        _docLayer.masksToBounds = NO;
         [scrollView.panGestureRecognizer setMinimumNumberOfTouches:2];
         [scrollView.panGestureRecognizer setMaximumNumberOfTouches:2];
         [scrollView setScrollIndicatorInsets:[self scrollViewInsets]];
@@ -159,7 +161,6 @@
     
     l.contents = (id)_paraIcon.CGImage;
     l.contentsGravity = kCAGravityCenter;
-    
     l.name = @"P";
     
     return l;
@@ -242,22 +243,53 @@
     return l;
 }
 
-#pragma mark - Moving words
+#pragma mark - Moving stuff
 
-- (NSDictionary *)wordForPoint:(CGPoint)p {
+- (NSDictionary *)hitForPoint:(CGPoint)p {
     __unsafe_unretained Class cls = [CATextLayer class];
     
     for (int i = 0; i < _lines.count; ++i) {
         CALayer * line = _lines[i];
-        CALayer * word = [line hitTest:p];
-        if (word && [word isKindOfClass:cls]) {
-            return @{ @"word" : word, @"line" : line, @"lineNo" : [NSNumber numberWithInt:i] };
+        CALayer * hit = [line hitTest:p];
+        
+        if (hit) {
+            NSMutableDictionary * hitInfo = [NSMutableDictionary new];
+            hitInfo[@"line"] = line;
+            hitInfo[@"lineNo"] = [NSNumber numberWithInt:i];
+            if ([hit isKindOfClass:cls]) {
+                hitInfo[@"word"] = hit;
+            } else {
+                CGFloat currentScale = _scrollView.bounds.size.width / [self width];
+                if (p.x < line.position.x + currentScale*[self lineHandleWidth]) {
+                    hitInfo[@"hitLineHandle"] = @YES;
+                }
+            }
+            return hitInfo;
         }
     }
     return nil;
 }
 
-- (void)configureSelection:(NSDictionary *)selectionInfo withAttributes:(NSDictionary *)attr {
+- (NSArray *)paragraphForLineNumber:(int)lineNo {
+    NSMutableArray * lines = [NSMutableArray new];
+    [lines addObject:_lines[lineNo]];
+    
+    for (int i = lineNo-1; i >= 0; --i) {
+        CALayer * line = _lines[i];
+        if ([line.name isEqualToString:@"P"]) {
+            break;
+        }
+        [lines insertObject:line atIndex:0];
+    }
+    
+    return lines;
+}
+
+- (void)configureWord:(CATextLayer *)word withAttributes:(NSDictionary *)attr {
+    word.string = [[NSAttributedString alloc] initWithString:((NSAttributedString *)(word.string)).string attributes:attr];
+}
+
+- (void)configureMultiWordSelection:(NSDictionary *)selectionInfo withAttributes:(NSDictionary *)attr {
     NSDictionary * hitInfo1 = selectionInfo[@"first"];
     NSDictionary * hitInfo2 = selectionInfo[@"last"];
     
@@ -276,15 +308,15 @@
             
             for (NSUInteger j = beginWord; j <= endWord; ++j) {
                 CATextLayer * word = words[j];
-                word.string = [[NSAttributedString alloc] initWithString:((NSAttributedString *)(word.string)).string attributes:attr];
+                [self configureWord:word withAttributes:attr];
             }
         }
     }
 }
 
-- (void)unmarkSelection {
+- (void)unmarkMultiWordSelection {
     if (_selectionInfo) {
-        [self configureSelection:_selectionInfo withAttributes:[UIFont bronteDefaultFontAttributes]];
+        [self configureMultiWordSelection:_selectionInfo withAttributes:[UIFont bronteDefaultFontAttributes]];
         CALayer * icon = _selectionInfo[@"icon"];
         if (icon) {
             [icon removeFromSuperlayer];
@@ -293,15 +325,15 @@
     }
 }
 
-- (void)markSelection:(NSDictionary *)selectionInfo {
-    [self unmarkSelection];
+- (void)markMultiWordSelection:(NSDictionary *)selectionInfo {
+    [self unmarkMultiWordSelection];
     
     NSDictionary * attr = [UIFont bronteSelectedFontAttributes];
-    [self configureSelection:selectionInfo withAttributes:attr];
+    [self configureMultiWordSelection:selectionInfo withAttributes:attr];
     _selectionInfo = [selectionInfo mutableCopy];
 }
 
-- (void)commitMarkedSelection {
+- (void)commitMarkedMultiWordSelection {
     if (_selectionInfo) {
         NSDictionary * hitInfo1 = _selectionInfo[@"first"];
         NSDictionary * hitInfo2 = _selectionInfo[@"last"];
@@ -310,7 +342,7 @@
         CALayer * w2 = hitInfo2[@"word"];
         
         if (w1 == w2) {
-            [self unmarkSelection];
+            [self unmarkMultiWordSelection];
         } else {
             CALayer * wordIcon = [CALayer layer];
             wordIcon.frame = CGRectMake(0, 0, 50, 50);
@@ -327,6 +359,56 @@
             _selectionInfo[@"icon"] = wordIcon;
         }
     }
+}
+
+- (void)configureSelection:(NSArray *)selection withAttributes:(NSDictionary *)attr {
+    __unsafe_unretained Class cls = [CATextLayer class];
+    
+    BOOL activateLineIcon = attr[@"BronteActivateLineIcon"];
+    BOOL deactivateLineIcon = attr[@"BronteDeactivateLineIcon"];
+    
+    for (CALayer * l in selection) {
+        if ([l.name isEqualToString:@"L"]) {
+            NSArray * words = [self wordsForLine:l];
+            for (CATextLayer * word in words) {
+                [self configureWord:word withAttributes:attr];
+            }
+            
+            if (activateLineIcon) {
+                l.contents = (id)_lineIconActive.CGImage;
+            } else if (deactivateLineIcon) {
+                l.contents = (id)_lineIcon.CGImage;
+            }
+        } else if ([l isKindOfClass:cls]) {
+            CATextLayer * word = (CATextLayer *)l;
+            [self configureWord:word withAttributes:attr];
+        }
+    }
+}
+
+- (void)markSelection:(NSArray *)selection {
+    NSMutableDictionary * attr = [[UIFont bronteSelectedFontAttributes] mutableCopy];
+    attr[@"BronteActivateLineIcon"] = @YES;
+    [self configureSelection:selection withAttributes:attr];
+}
+
+- (void)unmarkSelection:(NSArray *)selection {
+    NSMutableDictionary * attr = [[UIFont bronteDefaultFontAttributes] mutableCopy];
+    attr[@"BronteDeactivateLineIcon"] = @YES;
+    [self configureSelection:selection withAttributes:attr];
+}
+
+- (NSArray *)selectionForHit:(NSDictionary *)hitInfo {
+    CALayer * line = hitInfo[@"line"];
+    
+    if ([line.name isEqualToString:@"P"]) {
+        return [self paragraphForLineNumber:[hitInfo[@"lineNo"] intValue]];
+    } else if ([line.name isEqualToString:@"L"]) {
+        if (hitInfo[@"hitLineHandle"]) {
+            return @[line];
+        }
+    }
+    return @[];
 }
 
 #pragma mark - Gestures
@@ -351,7 +433,7 @@
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
     if (!_touchDidMove) {
-        [self unmarkSelection];
+        [self unmarkMultiWordSelection];
     }
     _touchDidMove = NO;
 }
@@ -360,13 +442,15 @@
     CGPoint p1 = [selectionInfo[@"firstPoint"] CGPointValue];
     CGPoint p2 = [selectionInfo[@"lastPoint"] CGPointValue];
     
-    NSDictionary * hitInfo1 = [self wordForPoint:p1];
-    NSDictionary * hitInfo2 = [self wordForPoint:p2];
+    NSDictionary * hitInfo1 = [self hitForPoint:p1];
+    NSDictionary * hitInfo2 = [self hitForPoint:p2];
     
     if (!hitInfo1 || !hitInfo2) return nil;
     
     CALayer * w1 = hitInfo1[@"word"];
     CALayer * w2 = hitInfo2[@"word"];
+    
+    if (!w1 || !w2) return nil;
     
     int lineNo1 = [hitInfo1[@"lineNo"] intValue];
     int lineNo2 = [hitInfo2[@"lineNo"] intValue];
@@ -384,7 +468,7 @@
 - (void)multiSelect:(MultiSelectGestureRecognizer *)gesture {
     static NSMutableDictionary * selectionInfo = nil;
     
-    [self unmarkSelection];
+    [self unmarkMultiWordSelection];
     
     if (gesture.state == UIGestureRecognizerStateBegan) {
         selectionInfo = [NSMutableDictionary new];
@@ -394,9 +478,9 @@
         
         NSDictionary * processedSelectionInfo = [self processSelectionInfo:selectionInfo];
         if (processedSelectionInfo) {
-            [self markSelection:processedSelectionInfo];
+            [self markMultiWordSelection:processedSelectionInfo];
             if (gesture.state == UIGestureRecognizerStateEnded) {
-                [self commitMarkedSelection];
+                [self commitMarkedMultiWordSelection];
             }
             processedSelectionInfo = nil;
         }
@@ -452,6 +536,38 @@
         CGFloat scale = currentScale + t.x / [self width];
         [self zoomDocument:scale];
         [gesture setTranslation:CGPointZero inView:self.view];
+    } else {
+        if (gesture.state == UIGestureRecognizerStateBegan) {
+            _touchInfo = [NSMutableDictionary new];
+            
+            CGPoint p = [gesture locationInView:_scrollView];
+            NSDictionary * hitInfo = [self hitForPoint:p];
+            if (hitInfo) {
+                NSArray * selection = [self selectionForHit:hitInfo];
+                [self markSelection:selection];
+                _touchInfo[@"selection"] = selection;
+            }
+        } else {
+            NSArray * selection = _touchInfo[@"selection"];
+            if (selection) {
+                if (gesture.state == UIGestureRecognizerStateEnded) {
+                    [self unmarkSelection:selection];
+                } else {
+                    CGPoint t = [gesture translationInView:_scrollView];
+                    
+                    [CATransaction begin];
+                    [CATransaction setAnimationDuration:0];
+                    
+                    for (CALayer * l in selection) {
+                        l.position = CGPointMake(l.position.x + t.x, l.position.y + t.y);
+                    }
+                    
+                    [CATransaction commit];
+                    
+                    [gesture setTranslation:CGPointZero inView:_scrollView];
+                }
+            }
+        }
     }
 }
 
