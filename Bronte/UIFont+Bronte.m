@@ -35,21 +35,37 @@
 }
 
 + (UIFont *)bronteFontRegular {
-    return [UIFont fontWithName:@"Lekton-Regular" size:[UIFont bronteFontSize]];
+    static UIFont * font = nil;
+    if (!font) {
+        font = [UIFont fontWithName:@"Lekton-Regular" size:[UIFont bronteFontSize]];
+    }
+    return font;
 }
 
 + (UIFont *)bronteFontBold {
-    return [UIFont fontWithName:@"Lekton-Bold" size:[UIFont bronteFontSize]];
+    static UIFont * font = nil;
+    if (!font) {
+        font = [UIFont fontWithName:@"Lekton-Bold" size:[UIFont bronteFontSize]];
+    }
+    return font;
 }
 
 + (NSDictionary *)bronteDefaultFontAttributes {
-    return @{ NSFontAttributeName : [UIFont bronteFontRegular],
-              NSForegroundColorAttributeName: (id)([UIColor bronteFontColor].CGColor) };
+    static NSDictionary * attr = nil;
+    if (!attr) {
+        attr = @{ NSFontAttributeName : [UIFont bronteFontRegular],
+                  NSForegroundColorAttributeName: (id)([UIColor bronteFontColor].CGColor) };
+    }
+    return attr;
 }
 
 + (NSDictionary *)bronteSelectedFontAttributes {
-    return @{ NSFontAttributeName : [UIFont bronteFontBold],
-              NSForegroundColorAttributeName: (id)[UIColor bronteSelectedFontColor].CGColor };
+    static NSDictionary * attr = nil;
+    if (!attr) {
+        attr = @{ NSFontAttributeName : [UIFont bronteFontBold],
+                  NSForegroundColorAttributeName: (id)[UIColor bronteSelectedFontColor].CGColor };
+    }
+    return attr;
 }
 
 @end

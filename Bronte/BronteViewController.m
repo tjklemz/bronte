@@ -76,7 +76,11 @@
         
         [self newParagraphSeparator];
         
-        [self addText:@"Mary had a little lamb, its fleece was white as snow; and everywhere that Mary went, the lamb was sure to go. It followed her to school one day, which was against the rule. It made the children laugh and play, to see a lamb at school. And so the teacher turned it out, but still it lingered near and waited patiently about till Mary did appear. \"Why does the lamb love Mary so?\" the eager children cry; \"Why, Mary loves the lamb, you know\" the teacher did reply." toLine:_lines.lastObject];
+        for (int i = 0; i < 3; ++i) {
+            [self addText:@"Mary had a little lamb, its fleece was white as snow; and everywhere that Mary went, the lamb was sure to go. It followed her to school one day, which was against the rule. It made the children laugh and play, to see a lamb at school. And so the teacher turned it out, but still it lingered near and waited patiently about till Mary did appear. \"Why does the lamb love Mary so?\" the eager children cry; \"Why, Mary loves the lamb, you know\" the teacher did reply." toLine:_lines.lastObject];
+        }
+        
+        // end of testing code
         
         [self adjustScrollViewContentSize];
     }
@@ -256,6 +260,7 @@
             NSMutableDictionary * hitInfo = [NSMutableDictionary new];
             hitInfo[@"line"] = line;
             hitInfo[@"lineNo"] = [NSNumber numberWithInt:i];
+            hitInfo[@"origPoint"] = [NSValue valueWithCGPoint:p];
             if ([hit isKindOfClass:cls]) {
                 hitInfo[@"word"] = hit;
             } else {
@@ -407,8 +412,20 @@
         if (hitInfo[@"hitLineHandle"]) {
             return @[line];
         }
+        CALayer * word = hitInfo[@"word"];
+        if (word) {
+            return @[word];
+        }
     }
     return @[];
+}
+
+- (void)didDropSelection:(NSDictionary *)selectionInfo {
+    NSArray * selection = selectionInfo[@"selection"];
+    NSDictionary * hitInfo = selectionInfo[@"hitInfo"];
+    CGPoint dropPoint = [selectionInfo[@"dropPoint"] CGPointValue];
+    
+    [self unmarkSelection:selection];
 }
 
 #pragma mark - Gestures
@@ -546,12 +563,15 @@
                 NSArray * selection = [self selectionForHit:hitInfo];
                 [self markSelection:selection];
                 _touchInfo[@"selection"] = selection;
+                _touchInfo[@"hitInfo"] = hitInfo;
             }
         } else {
             NSArray * selection = _touchInfo[@"selection"];
             if (selection) {
                 if (gesture.state == UIGestureRecognizerStateEnded) {
-                    [self unmarkSelection:selection];
+                    _touchInfo[@"dropPoint"] = [NSValue valueWithCGPoint:[gesture locationInView:self.view]];
+                    [self didDropSelection:_touchInfo];
+                    _touchInfo = nil;
                 } else {
                     CGPoint t = [gesture translationInView:_scrollView];
                     
