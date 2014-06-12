@@ -290,8 +290,8 @@
     CALayer * icon = _selectionInfo[@"icon"];
     if (!icon) return NO;
     CGPoint p = [hitInfo[@"origPoint"] CGPointValue];
-    CALayer * hit = [icon.superlayer hitTest:p];
-    return [hit.name isEqualToString:@"M"];
+    CALayer * hit = [icon.superlayer.superlayer hitTest:p];
+    return hit && [hit.name isEqualToString:@"M"];
 }
 
 - (BOOL)didHitHandle:(NSDictionary *)hitInfo {
@@ -313,11 +313,7 @@
     return lines;
 }
 
-- (void)configureWord:(CATextLayer *)word withAttributes:(NSDictionary *)attr {
-    word.string = [[NSAttributedString alloc] initWithString:((NSAttributedString *)(word.string)).string attributes:attr];
-}
-
-- (void)configureMultiWordSelection:(NSDictionary *)selectionInfo withAttributes:(NSDictionary *)attr {
+- (void)forEachWordInMultiSelection:(NSDictionary *)selectionInfo Do:(void (^)(CATextLayer * word))block {
     NSDictionary * hitInfo1 = selectionInfo[@"first"];
     NSDictionary * hitInfo2 = selectionInfo[@"last"];
     
@@ -336,10 +332,30 @@
             
             for (NSUInteger j = beginWord; j <= endWord; ++j) {
                 CATextLayer * word = words[j];
-                [self configureWord:word withAttributes:attr];
+                block(word);
             }
         }
     }
+}
+
+- (void)configureWord:(CATextLayer *)word withAttributes:(NSDictionary *)attr {
+    word.string = [[NSAttributedString alloc] initWithString:((NSAttributedString *)(word.string)).string attributes:attr];
+}
+
+- (void)configureMultiWordSelection:(NSDictionary *)selectionInfo withAttributes:(NSDictionary *)attr {
+    [self forEachWordInMultiSelection:selectionInfo Do:^(CATextLayer *word) {
+        [self configureWord:word withAttributes:attr];
+    }];
+}
+
+- (NSArray *)wordsForMultiSelection:(NSDictionary *)selectionInfo {
+    NSMutableArray * words = [NSMutableArray new];
+    
+    [self forEachWordInMultiSelection:selectionInfo Do:^(CATextLayer *word) {
+        [words addObject:word];
+    }];
+    
+    return words;
 }
 
 - (void)unmarkMultiWordSelection {
@@ -380,12 +396,11 @@
             int lineNo1 = [hitInfo1[@"lineNo"] intValue];
             int lineNo2 = [hitInfo2[@"lineNo"] intValue];
             
-            wordIcon.position = CGPointMake([self lineWidth] + 30, 0.5*(lineNo2 - lineNo1 + 1.0)*[self lineHeight]);
-            
-            CALayer * line = hitInfo1[@"line"];
-            [line addSublayer:wordIcon];
-            
+            wordIcon.position = CGPointMake((w1.superlayer.bounds.size.width - w1.position.x) + 30, 0.5*(lineNo2 - lineNo1 + 0.675)*[self lineHeight]);
+            [w1 addSublayer:wordIcon];
             _selectionInfo[@"icon"] = wordIcon;
+            
+            _selectionInfo[@"selection"] = [self wordsForMultiSelection:_selectionInfo];
         }
     }
 }
@@ -428,9 +443,11 @@
 }
 
 - (NSArray *)selectionForHit:(NSDictionary *)hitInfo {
-    CALayer * line = hitInfo[@"line"];
+    if (!hitInfo) return nil;
     
     NSArray * selection = @[];
+    
+    CALayer * line = hitInfo[@"line"];
     
     if ([line.name isEqualToString:@"P"]) {
         selection = [self paragraphForLineNumber:[hitInfo[@"lineNo"] intValue]];
@@ -440,7 +457,26 @@
         } else {
             CALayer * word = hitInfo[@"word"];
             if (word) {
-                selection = @[word];
+                if (_selectionInfo) {
+                    // see if just grabbed the multi selection
+                    NSArray * multiSelection = _selectionInfo[@"selection"];
+                    if ([multiSelection containsObject:word]) {
+                        selection = multiSelection;
+                    }
+                } else if (_touchInfo && _touchInfo[@"selection"]) {
+                    // see if just grabbed the current selection
+                    NSArray * currentSelection = _touchInfo[@"selection"];
+                    for (CALayer * s in currentSelection) {
+                        if ([s.sublayers containsObject:word]) {
+                            selection = currentSelection;
+                            break;
+                        }
+                    }
+                } else {
+                    selection = @[word];
+                }
+            } else if ([self didHitMultiSelectHandle:hitInfo]) {
+                selection = _selectionInfo[@"selection"];
             }
         }
     }
@@ -457,17 +493,28 @@
     NSDictionary * hitInfo = selectionInfo[@"hitInfo"];
     CGPoint dropPoint = [selectionInfo[@"dropPoint"] CGPointValue];
     
-    [self unmarkSelection:selection];
+    [CATransaction begin];
+    [CATransaction setCompletionBlock:^{
+        if (selection) {
+            [self unmarkSelection:selection];
+        }
+        
+        if (_selectionInfo) {
+            [self unmarkMultiWordSelection];
+        }
+    }];
     
     for (CALayer * l in selection) {
         l.position = l.originalPosition;
     }
+    
+    [CATransaction commit];
 }
 
 #pragma mark - Gestures
 
 - (CGRect)clipboardHandle {
-    float p = 0.13;
+    float p = 0.08;
     float s = p*_scrollView.bounds.size.width;
     return CGRectMake(_scrollView.bounds.size.width - s, 0, s*2, _scrollView.bounds.size.height);
 }
@@ -698,22 +745,27 @@
     } else {
         if (gesture.state == UIGestureRecognizerStateBegan) {
             CGPoint p = [gesture locationInView:_scrollView];
-            
-            NSArray * previousSelection = _touchInfo[@"selection"];
-            if (previousSelection) {
-                [self unmarkSelection:previousSelection];
-            }
-            [self unmarkMultiWordSelection];
-            
-            _touchInfo = [NSMutableDictionary new];
-            
             NSDictionary * hitInfo = [self hitForPoint:p];
+            NSArray * selection = [self selectionForHit:hitInfo];
             
-            if (hitInfo) {
-                NSArray * selection = [self selectionForHit:hitInfo];
-                [self markSelection:selection];
-                _touchInfo[@"selection"] = selection;
-                _touchInfo[@"hitInfo"] = hitInfo;
+            if (![selection count]) {
+                [self dismissSelections];
+            } else {
+                NSArray * currentSelection = _selectionInfo ? _selectionInfo[@"selection"] : (_touchInfo ? _touchInfo[@"selection"] : nil);
+                if (![currentSelection count]) {
+                    [self markSelection:selection];
+                    _touchInfo = [NSMutableDictionary new];
+                    _touchInfo[@"selection"] = selection;
+                    _touchInfo[@"hitInfo"] = hitInfo;
+                } else {
+                    if ([currentSelection isEqualToArray:selection]) {
+                        _touchInfo = [NSMutableDictionary new];
+                        _touchInfo[@"selection"] = selection;
+                        _touchInfo[@"hitInfo"] = hitInfo;
+                    } else {
+                        [self dismissSelections];
+                    }
+                }
             }
         } else {
             NSArray * selection = _touchInfo[@"selection"];
