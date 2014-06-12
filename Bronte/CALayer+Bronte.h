@@ -10,6 +10,8 @@
 
 @interface CALayer (Bronte)
 
+@property (nonatomic) CGPoint originalPosition;
+
 - (float)maxX;
 - (float)minX;
 

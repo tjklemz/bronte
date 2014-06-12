@@ -10,6 +10,8 @@
 
 @implementation CALayer (Bronte)
 
+@dynamic originalPosition;
+
 - (float)maxX {
     return self.position.x + self.bounds.size.width - self.anchorPoint.x*self.bounds.size.width;
 }

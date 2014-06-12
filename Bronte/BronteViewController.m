@@ -275,6 +275,29 @@
     return nil;
 }
 
+- (BOOL)didHitParagraphHandle:(NSDictionary *)hitInfo {
+    CALayer * line = hitInfo[@"line"];
+    return line && [line.name isEqualToString:@"P"];
+}
+
+- (BOOL)didHitLineHandle:(NSDictionary *)hitInfo {
+    CALayer * line = hitInfo[@"line"];
+    return line && [line.name isEqualToString:@"L"] && hitInfo[@"hitLineHandle"];
+}
+
+- (BOOL)didHitMultiSelectHandle:(NSDictionary *)hitInfo {
+    if (!_selectionInfo) return NO;
+    CALayer * icon = _selectionInfo[@"icon"];
+    if (!icon) return NO;
+    CGPoint p = [hitInfo[@"origPoint"] CGPointValue];
+    CALayer * hit = [icon.superlayer hitTest:p];
+    return [hit.name isEqualToString:@"M"];
+}
+
+- (BOOL)didHitHandle:(NSDictionary *)hitInfo {
+    return [self didHitParagraphHandle:hitInfo] || [self didHitLineHandle:hitInfo] || [self didHitMultiSelectHandle:hitInfo];
+}
+
 - (NSArray *)paragraphForLineNumber:(int)lineNo {
     NSMutableArray * lines = [NSMutableArray new];
     [lines addObject:_lines[lineNo]];
@@ -352,6 +375,7 @@
             CALayer * wordIcon = [CALayer layer];
             wordIcon.frame = CGRectMake(0, 0, 50, 50);
             wordIcon.contents = (id)_wordIcon.CGImage;
+            wordIcon.name = @"M";
             
             int lineNo1 = [hitInfo1[@"lineNo"] intValue];
             int lineNo2 = [hitInfo2[@"lineNo"] intValue];
@@ -406,18 +430,26 @@
 - (NSArray *)selectionForHit:(NSDictionary *)hitInfo {
     CALayer * line = hitInfo[@"line"];
     
+    NSArray * selection = @[];
+    
     if ([line.name isEqualToString:@"P"]) {
-        return [self paragraphForLineNumber:[hitInfo[@"lineNo"] intValue]];
+        selection = [self paragraphForLineNumber:[hitInfo[@"lineNo"] intValue]];
     } else if ([line.name isEqualToString:@"L"]) {
         if (hitInfo[@"hitLineHandle"]) {
-            return @[line];
-        }
-        CALayer * word = hitInfo[@"word"];
-        if (word) {
-            return @[word];
+            selection = @[line];
+        } else {
+            CALayer * word = hitInfo[@"word"];
+            if (word) {
+                selection = @[word];
+            }
         }
     }
-    return @[];
+    
+    for (CALayer * l in selection) {
+        l.originalPosition = l.position;
+    }
+    
+    return selection;
 }
 
 - (void)didDropSelection:(NSDictionary *)selectionInfo {
@@ -426,6 +458,10 @@
     CGPoint dropPoint = [selectionInfo[@"dropPoint"] CGPointValue];
     
     [self unmarkSelection:selection];
+    
+    for (CALayer * l in selection) {
+        l.position = l.originalPosition;
+    }
 }
 
 #pragma mark - Gestures
@@ -434,6 +470,92 @@
     float p = 0.13;
     float s = p*_scrollView.bounds.size.width;
     return CGRectMake(_scrollView.bounds.size.width - s, 0, s*2, _scrollView.bounds.size.height);
+}
+
+- (void)dismissSelections {
+    NSArray * currentSelection = _touchInfo[@"selection"];
+    
+    if (currentSelection) {
+        [self unmarkSelection:currentSelection];
+    }
+    if (_selectionInfo) {
+        [self unmarkMultiWordSelection];
+    }
+    _touchInfo = nil;
+}
+
+- (void)handleSingleTapOnHandle:(NSDictionary *)hitInfo {
+    NSArray * selection = [self selectionForHit:hitInfo];
+    NSArray * currentSelection = _touchInfo[@"selection"];
+    
+    if (!_selectionInfo) {
+        
+        if (currentSelection) {
+            // check if hit should deselect or bring up edit menu
+            
+            BOOL shouldBringUpEditMenu = NO;
+            
+            if ([self didHitParagraphHandle:hitInfo]) {
+                // see if the current selection is the hit paragraph
+                
+                if (hitInfo[@"line"] == currentSelection.lastObject) {
+                    NSArray * paragraph = [self paragraphForLineNumber:[hitInfo[@"lineNo"] intValue]];
+                    if (paragraph.firstObject == currentSelection.firstObject) {
+                        shouldBringUpEditMenu = YES;
+                    }
+                }
+                
+            } else {
+                // has to be a line
+                
+                if (hitInfo[@"line"] == currentSelection.lastObject) {
+                    shouldBringUpEditMenu = YES;
+                }
+            }
+            
+            if (shouldBringUpEditMenu) {
+                // bring up edit menu
+            } else {
+                [self dismissSelections];
+            }
+        } else {
+            // no multi select, no current selection, so go ahead and mark the new selection
+            [self markSelection:selection];
+            _touchInfo = [NSMutableDictionary new];
+            _touchInfo[@"selection"] = selection;
+            _touchInfo[@"hitInfo"] = hitInfo;
+        }
+    } else {
+        // see if the handle hit was on the multi select handle.
+        // if so, bring up the edit menu for it, as it is already selected.
+        
+        if ([self didHitMultiSelectHandle:hitInfo]) {
+            // bring up edit menu (there can only be one multi select handle
+        } else {
+            // ...else, dismiss everything
+            [self dismissSelections];
+        }
+    }
+}
+
+- (void)handleDoubleTapOnHandle:(NSDictionary *)hitInfo {
+    NSArray * selection = [self selectionForHit:hitInfo];
+    NSArray * currentSelection = _touchInfo[@"selection"];
+
+    // check if anything is selected.
+    // if nothing is selected, then select and bring up the edit menu.
+    // if something is selected, dismiss everything
+    
+    if (_selectionInfo || currentSelection) {
+        [self dismissSelections];
+    } else {
+        [self markSelection:selection];
+        _touchInfo = [NSMutableDictionary new];
+        _touchInfo[@"selection"] = selection;
+        _touchInfo[@"hitInfo"] = hitInfo;
+        
+        //TODO: bring up edit menu
+    }
 }
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
@@ -449,8 +571,30 @@
 }
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
+    
     if (!_touchDidMove) {
-        [self unmarkMultiWordSelection];
+        // step 1. did it hit an icon?
+        
+        CGPoint p = [[touches anyObject] locationInView:_scrollView];
+        NSDictionary * hitInfo = [self hitForPoint:p];
+        
+        BOOL didHitHandle = hitInfo && [self didHitHandle:hitInfo];
+        
+        if (touches.count == 1) {
+            NSUInteger tapCount = [[touches anyObject] tapCount];
+            
+            if (didHitHandle) {
+                // N.B. This is the only place where Handle _taps_ are accounted for.
+                
+                if (tapCount == 1) {
+                    [self handleSingleTapOnHandle:hitInfo];
+                } else {
+                    [self handleDoubleTapOnHandle:hitInfo];
+                }
+            } else {
+                [self dismissSelections];
+            }
+        }
     }
     _touchDidMove = NO;
 }
@@ -543,8 +687,6 @@
         CGPoint p = [gesture locationInView:self.view];
         CGRect clipboardHandle = [self clipboardHandle];
         _isDraggingClipboard = CGRectContainsPoint(clipboardHandle, p);
-    } else if (gesture.state == UIGestureRecognizerStateEnded) {
-        _isDraggingClipboard = NO;
     }
     
     if (_isDraggingClipboard) {
@@ -555,10 +697,18 @@
         [gesture setTranslation:CGPointZero inView:self.view];
     } else {
         if (gesture.state == UIGestureRecognizerStateBegan) {
+            CGPoint p = [gesture locationInView:_scrollView];
+            
+            NSArray * previousSelection = _touchInfo[@"selection"];
+            if (previousSelection) {
+                [self unmarkSelection:previousSelection];
+            }
+            [self unmarkMultiWordSelection];
+            
             _touchInfo = [NSMutableDictionary new];
             
-            CGPoint p = [gesture locationInView:_scrollView];
             NSDictionary * hitInfo = [self hitForPoint:p];
+            
             if (hitInfo) {
                 NSArray * selection = [self selectionForHit:hitInfo];
                 [self markSelection:selection];
@@ -575,11 +725,15 @@
                 } else {
                     CGPoint t = [gesture translationInView:_scrollView];
                     
+                    __unsafe_unretained Class cls = [CATextLayer class];
+                    
+                    float currentScale = [selection.firstObject isKindOfClass:cls] ? _scrollView.bounds.size.width/[self width] : 1.0f;
+                    
                     [CATransaction begin];
                     [CATransaction setAnimationDuration:0];
                     
                     for (CALayer * l in selection) {
-                        l.position = CGPointMake(l.position.x + t.x, l.position.y + t.y);
+                        l.position = CGPointMake(l.position.x + t.x/currentScale, l.position.y + t.y/currentScale);
                     }
                     
                     [CATransaction commit];
@@ -588,6 +742,10 @@
                 }
             }
         }
+    }
+    
+    if (gesture.state == UIGestureRecognizerStateEnded) {
+        _isDraggingClipboard = NO;
     }
 }
 
