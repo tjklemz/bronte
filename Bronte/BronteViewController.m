@@ -729,6 +729,55 @@
     [self adjustScrollViewContentSize];
 }
 
+- (void)translateSelection:(NSArray *)selection withTranslation:(CGPoint)t {
+    __unsafe_unretained Class cls = [CATextLayer class];
+    
+    float currentScale = [selection.firstObject isKindOfClass:cls] ? _scrollView.bounds.size.width/[self width] : 1.0f;
+    
+    [CATransaction begin];
+    [CATransaction setAnimationDuration:0];
+    
+    for (CALayer * l in selection) {
+        l.position = CGPointMake(l.position.x + t.x/currentScale, l.position.y + t.y/currentScale);
+    }
+    
+    [CATransaction commit];
+}
+
+- (void)scrollBasedOnDrag:(NSNumber *)offsetNumber {
+    NSArray * selection = _touchInfo[@"selection"];
+    if (selection) {
+        float offset = [offsetNumber floatValue];
+        CGPoint offsetPoint = CGPointMake(0, _scrollView.contentOffset.y + offset);
+        
+        if (offsetPoint.y < _scrollView.contentSize.height - _scrollView.bounds.size.height && offsetPoint.y > 0) {
+            [_scrollView setContentOffset:CGPointMake(0, _scrollView.contentOffset.y + offset)];
+            
+            CGPoint t = CGPointMake(0, offset);
+            
+            [self translateSelection:selection withTranslation:t];
+            
+            [self performSelector:@selector(scrollBasedOnDrag:) withObject:offsetNumber afterDelay:0.001];
+        }
+    }
+}
+
+- (void)scrollDownBasedOnDrag:(id)sender {
+    [self scrollBasedOnDrag:@1.0];
+}
+
+- (void)scrollUpBasedOnDrag:(id)sender {
+    [self scrollBasedOnDrag:@(-1.0)];
+}
+
+- (BOOL)pointIsInLowerScrollArea:(CGPoint)p {
+    return CGRectContainsPoint(CGRectMake(0, 0.95*_scrollView.bounds.size.height + _scrollView.contentOffset.y, _scrollView.bounds.size.width, 0.05*_scrollView.bounds.size.height), p);
+}
+
+- (BOOL)pointIsInUpperScrollArea:(CGPoint)p {
+    return CGRectContainsPoint(CGRectMake(0, _scrollView.contentOffset.y, _scrollView.bounds.size.width, 0.05*_scrollView.bounds.size.height), p);
+}
+
 - (void)panGesture:(UIPanGestureRecognizer *)gesture {
     if (gesture.state == UIGestureRecognizerStateBegan) {
         CGPoint p = [gesture locationInView:self.view];
@@ -743,8 +792,9 @@
         [self zoomDocument:scale];
         [gesture setTranslation:CGPointZero inView:self.view];
     } else {
+        CGPoint p = [gesture locationInView:_scrollView];
+        
         if (gesture.state == UIGestureRecognizerStateBegan) {
-            CGPoint p = [gesture locationInView:_scrollView];
             NSDictionary * hitInfo = [self hitForPoint:p];
             NSArray * selection = [self selectionForHit:hitInfo];
             
@@ -769,26 +819,37 @@
             }
         } else {
             NSArray * selection = _touchInfo[@"selection"];
+            
+            static BOOL isScrolling = NO;
+            
             if (selection) {
                 if (gesture.state == UIGestureRecognizerStateEnded) {
+                    [NSObject cancelPreviousPerformRequestsWithTarget:self];
+                    isScrolling = NO;
                     _touchInfo[@"dropPoint"] = [NSValue valueWithCGPoint:[gesture locationInView:self.view]];
                     [self didDropSelection:_touchInfo];
                     _touchInfo = nil;
                 } else {
                     CGPoint t = [gesture translationInView:_scrollView];
                     
-                    __unsafe_unretained Class cls = [CATextLayer class];
+                    [self translateSelection:selection withTranslation:t];
                     
-                    float currentScale = [selection.firstObject isKindOfClass:cls] ? _scrollView.bounds.size.width/[self width] : 1.0f;
+                    NSTimeInterval holdDelay = 0.2;
                     
-                    [CATransaction begin];
-                    [CATransaction setAnimationDuration:0];
-                    
-                    for (CALayer * l in selection) {
-                        l.position = CGPointMake(l.position.x + t.x/currentScale, l.position.y + t.y/currentScale);
+                    if ([self pointIsInLowerScrollArea:p]) {
+                        if (!isScrolling) {
+                            [self performSelector:@selector(scrollDownBasedOnDrag:) withObject:nil afterDelay:holdDelay];
+                            isScrolling = YES;
+                        }
+                    } else if ([self pointIsInUpperScrollArea:p]) {
+                        if (!isScrolling) {
+                            [self performSelector:@selector(scrollUpBasedOnDrag:) withObject:nil afterDelay:holdDelay];
+                            isScrolling = YES;
+                        }
+                    } else {
+                        [NSObject cancelPreviousPerformRequestsWithTarget:self];
+                        isScrolling = NO;
                     }
-                    
-                    [CATransaction commit];
                     
                     [gesture setTranslation:CGPointZero inView:_scrollView];
                 }
