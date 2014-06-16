@@ -543,20 +543,30 @@
         CALayer * dropLine = dropInfo[@"line"];
         int dropLineNo = [dropInfo[@"lineNo"] intValue];
         CGPoint dropLineOrigin = [self lineOriginForLineNumber:dropLineNo];
+        CGPoint origLineOrigin = [self lineOriginForLineNumber:[hitInfo[@"lineNo"] intValue]];
         CGPoint o = [self originForFirstWord];
+        
+        CGPoint origHitPoint = [hitInfo[@"origPoint"] CGPointValue];
+        
         CATextLayer * dropWord = dropInfo[@"word"];
         
         if (dropWord && dealingWithWords) {
             
             NSMutableSet * affectedLines = [NSMutableSet new];
             
+            [CATransaction begin];
+            [CATransaction setAnimationDuration:0];
             for (CATextLayer * w in selection) {
                 [affectedLines addObject:w.superlayer];
                 [w removeFromSuperlayer];
-                w.position = CGPointMake(dropPoint.x - startX, w.position.y - dropLineOrigin.y);
+                //w.position = CGPointMake(dropPoint.x - startX, w.position.y - dropLineOrigin.y);
+                w.position = CGPointMake(dropPoint.x - startX, dropPoint.y - dropLineOrigin.y - (origHitPoint.y - (w.originalPosition.y + origLineOrigin.y)));
+                //w.position = CGPointMake(dropPoint.x - startX - (origHitPoint.x - (w.originalPosition.x + origLineOrigin.x)), dropPoint.y - dropLineOrigin.y - (origHitPoint.y - (w.originalPosition.y + origLineOrigin.y)));
                 w.hidden = NO;
                 [dropLine addSublayer:w];
             }
+            [CATransaction commit];
+            
             [affectedLines addObject:dropLine];
             [self arrangeWordsInLines:affectedLines];
             
