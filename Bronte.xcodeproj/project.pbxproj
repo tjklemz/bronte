@@ -43,10 +43,11 @@
 		813E42E01947D04800260C0E /* MultiSelectGestureRecognizer.m in Sources */ = {isa = PBXBuildFile; fileRef = 813E42DF1947D04800260C0E /* MultiSelectGestureRecognizer.m */; };
 		813E42E2194802FE00260C0E /* Lekton-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 813E42E11948013200260C0E /* Lekton-Bold.ttf */; };
 		813E42E31948030100260C0E /* Lekton-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 813E42C219466CF000260C0E /* Lekton-Regular.ttf */; };
+		81497EC3194F7A310018A1D8 /* UIImage+Bronte.m in Sources */ = {isa = PBXBuildFile; fileRef = 81497EC2194F7A310018A1D8 /* UIImage+Bronte.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		813E426C1946651700260C0E /* Bronte.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Bronte.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		813E426C1946651700260C0E /* Bronte.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = Bronte.app; path = "Brontë.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		813E426F1946651700260C0E /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		813E42711946651700260C0E /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		813E42731946651700260C0E /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
@@ -95,6 +96,8 @@
 		813E42DE1947D04800260C0E /* MultiSelectGestureRecognizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MultiSelectGestureRecognizer.h; sourceTree = "<group>"; };
 		813E42DF1947D04800260C0E /* MultiSelectGestureRecognizer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MultiSelectGestureRecognizer.m; sourceTree = "<group>"; };
 		813E42E11948013200260C0E /* Lekton-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Lekton-Bold.ttf"; sourceTree = "<group>"; };
+		81497EC1194F7A310018A1D8 /* UIImage+Bronte.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+Bronte.h"; sourceTree = "<group>"; };
+		81497EC2194F7A310018A1D8 /* UIImage+Bronte.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+Bronte.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -162,6 +165,8 @@
 				813E42DC19479EC100260C0E /* DocumentScrollView.m */,
 				813E42DE1947D04800260C0E /* MultiSelectGestureRecognizer.h */,
 				813E42DF1947D04800260C0E /* MultiSelectGestureRecognizer.m */,
+				81497EC1194F7A310018A1D8 /* UIImage+Bronte.h */,
+				81497EC2194F7A310018A1D8 /* UIImage+Bronte.m */,
 			);
 			path = Bronte;
 			sourceTree = "<group>";
@@ -306,6 +311,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				81497EC3194F7A310018A1D8 /* UIImage+Bronte.m in Sources */,
 				813E42801946651700260C0E /* AppDelegate.m in Sources */,
 				813E42E01947D04800260C0E /* MultiSelectGestureRecognizer.m in Sources */,
 				813E42DD19479EC100260C0E /* DocumentScrollView.m in Sources */,
@@ -450,6 +456,7 @@
 				813E429A1946651700260C0E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

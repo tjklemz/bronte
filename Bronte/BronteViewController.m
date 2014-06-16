@@ -12,6 +12,7 @@
 #import "CALayer+Bronte.h"
 #import "DocumentScrollView.h"
 #import "MultiSelectGestureRecognizer.h"
+#import "UIImage+Bronte.h"
 
 @interface BronteViewController ()
 
@@ -34,6 +35,7 @@
         
         _wordIcon = [UIImage imageNamed:@"milk.png"];
         _lineIcon = [UIImage imageNamed:@"sugar_gray.png"];
+        _lineIcon = [_lineIcon imageByApplyingAlpha:0.5];
         _lineIconActive = [UIImage imageNamed:@"sugar.png"];
         _paraIcon = [UIImage imageNamed:@"mix.png"];
         
@@ -206,9 +208,10 @@
     [_docLayer addSublayer:newLine];
     [_lines insertObject:newLine atIndex:n+1];
     
+    CGFloat currentScale = _scrollView.bounds.size.width / [self width];
+    
     for (NSUInteger i = n+1; i < _lines.count; ++i) {
-        CALayer * line = _lines[i];
-        line.position = [self lineOriginForLineNumber:i];
+        [self arrangeLineNumber:i basedOnScale:currentScale];
     }
     
     return newLine;
@@ -232,10 +235,8 @@
         [self newParagraphSeparator];
     }
     
-    float spacing = 0;//[UIFont bronteWordSpacing];
     CALayer * lastWord = [self wordsForLine:line].lastObject;
-    
-    float newX = lastWord ? [lastWord maxX] + spacing : w.position.x;
+    float newX = lastWord ? [lastWord maxX] : w.position.x;
     
     if (newX + w.bounds.size.width > [self lineWidth]) {
         l = [self insertLineAfter:l];
@@ -503,15 +504,35 @@
     return selection;
 }
 
+- (void)putBackSelection:(NSArray *)selection {
+    [CATransaction begin];
+    [CATransaction setCompletionBlock:^{
+        if (selection) [self unmarkSelection:selection];
+        if (_selectionInfo) [self unmarkMultiWordSelection];
+    }];
+    
+    for (CALayer * l in selection) {
+        l.hidden = NO;
+        l.position = l.originalPosition;
+    }
+    
+    [CATransaction commit];
+}
+
 - (void)didDropSelection:(NSDictionary *)selectionInfo {
     NSArray * selection = selectionInfo[@"selection"];
     NSDictionary * hitInfo = selectionInfo[@"hitInfo"];
     CGPoint dropPoint = [selectionInfo[@"dropPoint"] CGPointValue];
-
-    NSDictionary * dropInfo = [self hitForPoint:dropPoint];
     
-    if (dropInfo) {
-        // drop must have happened in the document
+    for (CALayer * l in selection) {
+        l.hidden = YES;
+    }
+    
+    float startX = [self lineOriginForLineNumber:0].x;
+    BOOL didDropOnDocument = dropPoint.x >= startX && dropPoint.x <= [self lineWidth] + startX;
+    
+    if (didDropOnDocument) {
+        NSDictionary * dropInfo = [self hitForPoint:dropPoint];
         
         if (selection) [self unmarkSelection:selection];
         if (_selectionInfo) [self unmarkMultiWordSelection];
@@ -521,31 +542,37 @@
         
         CALayer * dropLine = dropInfo[@"line"];
         int dropLineNo = [dropInfo[@"lineNo"] intValue];
+        CGPoint dropLineOrigin = [self lineOriginForLineNumber:dropLineNo];
         CGPoint o = [self originForFirstWord];
+        CATextLayer * dropWord = dropInfo[@"word"];
         
-        if (dealingWithWords) {
-            for (CATextLayer * word in selection) {
-                [word removeFromSuperlayer];
-                word.position = CGPointMake(word.position.x, dropPoint.y - dropLine.position.y);
-                [dropLine addSublayer:word];
+        if (dropWord && dealingWithWords) {
+            
+            NSMutableSet * affectedLines = [NSMutableSet new];
+            
+            for (CATextLayer * w in selection) {
+                [affectedLines addObject:w.superlayer];
+                [w removeFromSuperlayer];
+                w.position = CGPointMake(dropPoint.x - startX, w.position.y - dropLineOrigin.y);
+                w.hidden = NO;
+                [dropLine addSublayer:w];
             }
+            [affectedLines addObject:dropLine];
+            [self arrangeWordsInLines:affectedLines];
+            
+            [self removeBlankLines];
+            CGFloat currentScale = _scrollView.bounds.size.width / [self width];
+            [self arrangeLinesBasedOnScale:currentScale];
+            
+        } else {
+            [self putBackSelection:selection];
         }
         
     } else {
         
         //TODO: check the clipboard and the copy/cut drop areas
         
-        [CATransaction begin];
-        [CATransaction setCompletionBlock:^{
-            if (selection) [self unmarkSelection:selection];
-            if (_selectionInfo) [self unmarkMultiWordSelection];
-        }];
-        
-        for (CALayer * l in selection) {
-            l.position = l.originalPosition;
-        }
-        
-        [CATransaction commit];
+        [self putBackSelection:selection];
     }
 }
 
@@ -747,6 +774,57 @@
     return 0.475;
 }
 
+- (void)arrangeWordsInLines:(NSSet *)lines {
+    for (CALayer * line in lines) {
+        CALayer * l = line;
+        NSArray * words = [self wordsForLine:l];
+        CGPoint o = [self originForFirstWord];
+        
+        for (CATextLayer * word in words) {
+            if (o.x + word.bounds.size.width > [self lineWidth]) {
+                o = [self originForFirstWord];
+                l = [self insertLineAfter:l];
+            }
+            
+            if (word.superlayer != l) {
+                [word removeFromSuperlayer];
+                word.position = o;
+                [l addSublayer:word];
+            } else {
+                word.position = o;
+            }
+            
+            o.x += word.bounds.size.width;
+        }
+    }
+}
+
+- (void)removeBlankLines {
+    NSMutableArray * itemsToRemove = [NSMutableArray new];
+    
+    for (CALayer * line in _lines) {
+        if ([line.name isEqualToString:@"L"] && [self wordsForLine:line].count == 0) {
+            [itemsToRemove addObject:line];
+            [line removeFromSuperlayer];
+        }
+    }
+    
+    [_lines removeObjectsInArray:itemsToRemove];
+}
+
+- (void)arrangeLineNumber:(NSUInteger)lineNo basedOnScale:(float)scale {
+    CALayer * line = _lines[lineNo];
+    line.transform = CATransform3DMakeScale(scale, scale, 1.0);
+    CGPoint o = [self lineOriginForLineNumber:lineNo];
+    line.position = CGPointMake(o.x*scale, o.y*scale);
+}
+
+- (void)arrangeLinesBasedOnScale:(float)scale {
+    for (int i = 0; i < _lines.count; ++i) {
+        [self arrangeLineNumber:i basedOnScale:scale];
+    }
+}
+
 - (void)zoomDocument:(float)currentScale {
     CGFloat minScale = [self minDocScale];
     CGFloat maxScale = [self maxDocScale];
@@ -764,12 +842,7 @@
     
     [CATransaction begin];
     [CATransaction setAnimationDuration:0];
-    for (int i = 0; i < _lines.count; ++i) {
-        CALayer * line = _lines[i];
-        line.transform = CATransform3DMakeScale(currentScale, currentScale, 1.0);
-        CGPoint o = [self lineOriginForLineNumber:i];
-        line.position = CGPointMake(o.x*currentScale, o.y*currentScale);
-    }
+    [self arrangeLinesBasedOnScale:currentScale];
     [CATransaction commit];
     
     [self adjustScrollViewContentSize];
@@ -893,7 +966,7 @@
                 if (gesture.state == UIGestureRecognizerStateEnded) {
                     [NSObject cancelPreviousPerformRequestsWithTarget:self];
                     isScrolling = NO;
-                    _touchInfo[@"dropPoint"] = [NSValue valueWithCGPoint:[gesture locationInView:self.view]];
+                    _touchInfo[@"dropPoint"] = [NSValue valueWithCGPoint:[gesture locationInView:_scrollView]];
                     [self didDropSelection:_touchInfo];
                     _touchInfo = nil;
                 } else {
