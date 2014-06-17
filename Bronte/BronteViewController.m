@@ -77,23 +77,11 @@
         [self addText:@"You don't know about me without you have read a book by the name of The Adventures of Tom Sawyer; but that ain't no matter.  That book was made by Mr. Mark Twain, and he told the truth, mainly.  There was things which he stretched, but mainly he told the truth.  That is nothing.  I never seen anybody but lied one time or another, without it was Aunt Polly, or the widow, or maybe Mary.  Aunt Polly — Tom's Aunt Polly, she is — and Mary, and the Widow Douglas is all told about in that book, which is mostly a true book, with some stretchers, as I said before." toLine:_lines.lastObject];
         [self newParagraphSeparator];
         
-        [self addText:@"Now the way that the book winds up is this:  Tom and me found the money that the robbers hid in the cave, and it made us rich.  We got six thousand dollars apiece — all gold.  It was an awful sight of money when it was piled up.  Well, Judge Thatcher he took it and put it out at interest, and it fetched us a dollar a day apiece all the year round — more than a body could tell what to do with.  The Widow Douglas she took me for her son, and allowed she would sivilize me; but it was rough living in the house all the time, considering how dismal regular and decent the widow was in all her ways; and so when I couldn't stand it no longer I lit out.  I got into my old rags and my sugar-hogshead again, and was free and satisfied.  But Tom Sawyer he hunted me up and said he was going to start a band of robbers, and I might join if I would go back to the widow and be respectable.  So I went back." toLine:_lines.lastObject];
-        
-        [self addText:@"The widow she cried over me, and called me a poor lost lamb, and she called me a lot of other names, too, but she never meant no harm by it. She put me in them new clothes again, and I couldn't do nothing but sweat and sweat, and feel all cramped up.  Well, then, the old thing commenced again.  The widow rung a bell for supper, and you had to come to time. When you got to the table you couldn't go right to eating, but you had to wait for the widow to tuck down her head and grumble a little over the victuals, though there warn't really anything the matter with them, — that is, nothing only everything was cooked by itself.  In a barrel of odds and ends it is different; things get mixed up, and the juice kind of swaps around, and the things go better." toLine:_lines.lastObject];
-        
-        [self addText:@"After supper she got out her book and learned me about Moses and the Bulrushers, and I was in a sweat to find out all about him; but by and by she let it out that Moses had been dead a considerable long time; so then I didn't care no more about him, because I don't take no stock in dead people." toLine:_lines.lastObject];
-        
-        [self addText:@"Now the way that the book winds up is this:  Tom and me found the money that the robbers hid in the cave, and it made us rich.  We got six thousand dollars apiece — all gold.  It was an awful sight of money when it was piled up.  Well, Judge Thatcher he took it and put it out at interest, and it fetched us a dollar a day apiece all the year round — more than a body could tell what to do with.  The Widow Douglas she took me for her son, and allowed she would sivilize me; but it was rough living in the house all the time, considering how dismal regular and decent the widow was in all her ways; and so when I couldn't stand it no longer I lit out.  I got into my old rags and my sugar-hogshead again, and was free and satisfied.  But Tom Sawyer he hunted me up and said he was going to start a band of robbers, and I might join if I would go back to the widow and be respectable.  So I went back." toLine:_lines.lastObject];
-        
-        [self addText:@"The widow she cried over me, and called me a poor lost lamb, and she called me a lot of other names, too, but she never meant no harm by it. She put me in them new clothes again, and I couldn't do nothing but sweat and sweat, and feel all cramped up.  Well, then, the old thing commenced again.  The widow rung a bell for supper, and you had to come to time. When you got to the table you couldn't go right to eating, but you had to wait for the widow to tuck down her head and grumble a little over the victuals, though there warn't really anything the matter with them, — that is, nothing only everything was cooked by itself.  In a barrel of odds and ends it is different; things get mixed up, and the juice kind of swaps around, and the things go better." toLine:_lines.lastObject];
-        
-        [self addText:@"After supper she got out her book and learned me about Moses and the Bulrushers, and I was in a sweat to find out all about him; but by and by she let it out that Moses had been dead a considerable long time; so then I didn't care no more about him, because I don't take no stock in dead people." toLine:_lines.lastObject];
-        
-        [self addText:@"Now the way that the book winds up is this:  Tom and me found the money that the robbers hid in the cave, and it made us rich.  We got six thousand dollars apiece — all gold.  It was an awful sight of money when it was piled up.  Well, Judge Thatcher he took it and put it out at interest, and it fetched us a dollar a day apiece all the year round — more than a body could tell what to do with.  The Widow Douglas she took me for her son, and allowed she would sivilize me; but it was rough living in the house all the time, considering how dismal regular and decent the widow was in all her ways; and so when I couldn't stand it no longer I lit out.  I got into my old rags and my sugar-hogshead again, and was free and satisfied.  But Tom Sawyer he hunted me up and said he was going to start a band of robbers, and I might join if I would go back to the widow and be respectable.  So I went back." toLine:_lines.lastObject];
-        
-        [self addText:@"The widow she cried over me, and called me a poor lost lamb, and she called me a lot of other names, too, but she never meant no harm by it. She put me in them new clothes again, and I couldn't do nothing but sweat and sweat, and feel all cramped up.  Well, then, the old thing commenced again.  The widow rung a bell for supper, and you had to come to time. When you got to the table you couldn't go right to eating, but you had to wait for the widow to tuck down her head and grumble a little over the victuals, though there warn't really anything the matter with them, — that is, nothing only everything was cooked by itself.  In a barrel of odds and ends it is different; things get mixed up, and the juice kind of swaps around, and the things go better." toLine:_lines.lastObject];
-        
-        [self addText:@"After supper she got out her book and learned me about Moses and the Bulrushers, and I was in a sweat to find out all about him; but by and by she let it out that Moses had been dead a considerable long time; so then I didn't care no more about him, because I don't take no stock in dead people." toLine:_lines.lastObject];
+//        [self addText:@"Now the way that the book winds up is this:  Tom and me found the money that the robbers hid in the cave, and it made us rich.  We got six thousand dollars apiece — all gold.  It was an awful sight of money when it was piled up.  Well, Judge Thatcher he took it and put it out at interest, and it fetched us a dollar a day apiece all the year round — more than a body could tell what to do with.  The Widow Douglas she took me for her son, and allowed she would sivilize me; but it was rough living in the house all the time, considering how dismal regular and decent the widow was in all her ways; and so when I couldn't stand it no longer I lit out.  I got into my old rags and my sugar-hogshead again, and was free and satisfied.  But Tom Sawyer he hunted me up and said he was going to start a band of robbers, and I might join if I would go back to the widow and be respectable.  So I went back." toLine:_lines.lastObject];
+//        
+//        [self addText:@"The widow she cried over me, and called me a poor lost lamb, and she called me a lot of other names, too, but she never meant no harm by it. She put me in them new clothes again, and I couldn't do nothing but sweat and sweat, and feel all cramped up.  Well, then, the old thing commenced again.  The widow rung a bell for supper, and you had to come to time. When you got to the table you couldn't go right to eating, but you had to wait for the widow to tuck down her head and grumble a little over the victuals, though there warn't really anything the matter with them, — that is, nothing only everything was cooked by itself.  In a barrel of odds and ends it is different; things get mixed up, and the juice kind of swaps around, and the things go better." toLine:_lines.lastObject];
+//        
+//        [self addText:@"After supper she got out her book and learned me about Moses and the Bulrushers, and I was in a sweat to find out all about him; but by and by she let it out that Moses had been dead a considerable long time; so then I didn't care no more about him, because I don't take no stock in dead people." toLine:_lines.lastObject];
         
         // end of testing code
         
@@ -524,14 +512,19 @@
     NSDictionary * hitInfo = selectionInfo[@"hitInfo"];
     CGPoint dropPoint = [selectionInfo[@"dropPoint"] CGPointValue];
     
+    [CATransaction begin];
+    [CATransaction setAnimationDuration:0];
     for (CALayer * l in selection) {
         l.hidden = YES;
     }
+    [CATransaction commit];
     
     float startX = [self lineOriginForLineNumber:0].x;
     BOOL didDropOnDocument = dropPoint.x >= startX && dropPoint.x <= [self lineWidth] + startX;
     
     if (didDropOnDocument) {
+        CGFloat currentScale = _scrollView.bounds.size.width / [self width];
+        
         NSDictionary * dropInfo = [self hitForPoint:dropPoint];
         
         if (selection) [self unmarkSelection:selection];
@@ -545,15 +538,12 @@
         int dropLineNo = [dropInfo[@"lineNo"] intValue];
         CGPoint dropLineOrigin = [self lineOriginForLineNumber:dropLineNo];
         CGPoint origLineOrigin = [self lineOriginForLineNumber:[hitInfo[@"lineNo"] intValue]];
-        CGPoint o = [self originForFirstWord];
         
         CGPoint origHitPoint = [hitInfo[@"origPoint"] CGPointValue];
         
         CATextLayer * dropWord = dropInfo[@"word"];
         
         if (dropWord && dealingWithWords) {
-            CGFloat currentScale = _scrollView.bounds.size.width / [self width];
-            
             __block NSMutableSet * affectedLines = [NSMutableSet new];
             
             [CATransaction begin];
@@ -561,9 +551,7 @@
             for (CATextLayer * w in selection) {
                 [affectedLines addObject:w.superlayer];
                 [w removeFromSuperlayer];
-                //w.position = CGPointMake(dropPoint.x - startX, w.position.y - dropLineOrigin.y);
                 w.position = CGPointMake(dropPoint.x/currentScale - startX, dropPoint.y/currentScale - dropLineOrigin.y - (origHitPoint.y/currentScale - (w.originalPosition.y + origLineOrigin.y)));
-                //w.position = CGPointMake(dropPoint.x - startX - (origHitPoint.x - (w.originalPosition.x + origLineOrigin.x)), dropPoint.y - dropLineOrigin.y - (origHitPoint.y - (w.originalPosition.y + origLineOrigin.y)));
                 w.hidden = NO;
                 [dropLine addSublayer:w];
             }
@@ -584,8 +572,44 @@
                 [self removeBlankLines];
                 [self arrangeLinesBasedOnScale:currentScale];
             }
+        } else if (!dealingWithWords) {
+            BOOL before = NO;
             
+            if (!dropLine) {
+                CGPoint firstOrigin = [self lineOriginForLineNumber:0];
+                CGPoint lastOrigin = [self lineOriginForLineNumber:_lines.count];
+                if (dropPoint.y < firstOrigin.y) {
+                    [_lines removeObjectsInArray:[[selection reverseObjectEnumerator] allObjects]];
+                    dropLine = _lines.firstObject;
+                    before = YES;
+                } else if (dropPoint.y > lastOrigin.y) {
+                    [_lines removeObjectsInArray:[[selection reverseObjectEnumerator] allObjects]];
+                    dropLine = _lines.lastObject;
+                    before = NO;
+                }
+            } else {
+                before = dropPoint.y < dropLine.position.y + currentScale*[self lineHeight]*0.5;
+                [_lines removeObjectsInArray:[[selection reverseObjectEnumerator] allObjects]];
+            }
             
+            if (dropLine) {
+                NSUInteger n = [_lines indexOfObject:dropLine] + (before ? 0 : 1);
+                
+                NSEnumerator * e = [selection reverseObjectEnumerator];
+                CALayer * l = nil;
+                
+                [CATransaction begin];
+                [CATransaction setAnimationDuration:0];
+                while ((l = [e nextObject])) {
+                    l.hidden = NO;
+                    [_lines insertObject:l atIndex:n];
+                }
+                [CATransaction commit];
+                
+                [self arrangeLinesBasedOnScale:currentScale];
+            } else {
+                [self putBackSelection:selection];
+            }
         } else {
             [self putBackSelection:selection];
         }
@@ -844,6 +868,10 @@
 - (void)arrangeLinesBasedOnScale:(float)scale {
     for (int i = 0; i < _lines.count; ++i) {
         [self arrangeLineNumber:i basedOnScale:scale];
+    }
+    
+    if (!_lines.lastObject || ![((CALayer *)_lines.lastObject).name isEqualToString:@"P"]) {
+        [self newParagraphSeparator];
     }
 }
 

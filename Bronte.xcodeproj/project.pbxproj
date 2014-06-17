@@ -47,7 +47,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		813E426C1946651700260C0E /* Bronte.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = Bronte.app; path = "Brontë.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		813E426C1946651700260C0E /* Brontë.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Brontë.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		813E426F1946651700260C0E /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		813E42711946651700260C0E /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		813E42731946651700260C0E /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
@@ -126,7 +126,7 @@
 		813E426D1946651700260C0E /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				813E426C1946651700260C0E /* Bronte.app */,
+				813E426C1946651700260C0E /* Brontë.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -244,7 +244,7 @@
 			);
 			name = "Brontë";
 			productName = Bronte;
-			productReference = 813E426C1946651700260C0E /* Bronte.app */;
+			productReference = 813E426C1946651700260C0E /* Brontë.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
