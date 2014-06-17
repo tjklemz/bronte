@@ -541,6 +541,7 @@
         BOOL dealingWithWords = [selection.firstObject isKindOfClass:cls];
         
         CALayer * dropLine = dropInfo[@"line"];
+        CALayer * origLine = hitInfo[@"line"];
         int dropLineNo = [dropInfo[@"lineNo"] intValue];
         CGPoint dropLineOrigin = [self lineOriginForLineNumber:dropLineNo];
         CGPoint origLineOrigin = [self lineOriginForLineNumber:[hitInfo[@"lineNo"] intValue]];
@@ -551,8 +552,9 @@
         CATextLayer * dropWord = dropInfo[@"word"];
         
         if (dropWord && dealingWithWords) {
+            CGFloat currentScale = _scrollView.bounds.size.width / [self width];
             
-            NSMutableSet * affectedLines = [NSMutableSet new];
+            __block NSMutableSet * affectedLines = [NSMutableSet new];
             
             [CATransaction begin];
             [CATransaction setAnimationDuration:0];
@@ -560,7 +562,7 @@
                 [affectedLines addObject:w.superlayer];
                 [w removeFromSuperlayer];
                 //w.position = CGPointMake(dropPoint.x - startX, w.position.y - dropLineOrigin.y);
-                w.position = CGPointMake(dropPoint.x - startX, dropPoint.y - dropLineOrigin.y - (origHitPoint.y - (w.originalPosition.y + origLineOrigin.y)));
+                w.position = CGPointMake(dropPoint.x/currentScale - startX, dropPoint.y/currentScale - dropLineOrigin.y - (origHitPoint.y/currentScale - (w.originalPosition.y + origLineOrigin.y)));
                 //w.position = CGPointMake(dropPoint.x - startX - (origHitPoint.x - (w.originalPosition.x + origLineOrigin.x)), dropPoint.y - dropLineOrigin.y - (origHitPoint.y - (w.originalPosition.y + origLineOrigin.y)));
                 w.hidden = NO;
                 [dropLine addSublayer:w];
@@ -568,11 +570,21 @@
             [CATransaction commit];
             
             [affectedLines addObject:dropLine];
-            [self arrangeWordsInLines:affectedLines];
             
-            [self removeBlankLines];
-            CGFloat currentScale = _scrollView.bounds.size.width / [self width];
-            [self arrangeLinesBasedOnScale:currentScale];
+            if (origLine != dropLine) {
+                __weak __block BronteViewController * me = self;
+                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.001 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                    [me arrangeWordsInLines:affectedLines];
+                    [me removeBlankLines];
+                    [me arrangeLinesBasedOnScale:currentScale];
+                    affectedLines = nil;
+                });
+            } else {
+                [self arrangeWordsInLines:affectedLines];
+                [self removeBlankLines];
+                [self arrangeLinesBasedOnScale:currentScale];
+            }
+            
             
         } else {
             [self putBackSelection:selection];
