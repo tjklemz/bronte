@@ -644,6 +644,28 @@
     }
 }
 
+#pragma mark - Editing
+
+- (void)bringUpEditMenuForSelection:(NSArray *)selection {
+    [self dismissSelections];
+    
+    _editView = [[BronteEditView alloc] initWithSelection:selection];
+    _editView.delegate = self;
+    [_scrollView addSubview:_editView];
+    
+    [self markSelection:selection];
+    _touchInfo = [NSMutableDictionary new];
+    _touchInfo[@"selection"] = selection;
+}
+
+- (void)insertBeforeSelection:(NSArray *)selection {
+    
+}
+
+- (void)insertAfterSelection:(NSArray *)selection {
+    
+}
+
 #pragma mark - Gestures
 
 - (CGRect)clipboardHandle {
@@ -653,6 +675,9 @@
 }
 
 - (void)dismissSelections {
+    [_editView removeFromSuperview];
+    _editView = nil;
+    
     NSArray * currentSelection = _touchInfo[@"selection"];
     
     if (currentSelection) {
@@ -694,7 +719,7 @@
             }
             
             if (shouldBringUpEditMenu) {
-                // bring up edit menu
+                [self bringUpEditMenuForSelection:selection];
             } else {
                 [self dismissSelections];
             }
@@ -710,7 +735,8 @@
         // if so, bring up the edit menu for it, as it is already selected.
         
         if ([self didHitMultiSelectHandle:hitInfo]) {
-            // bring up edit menu (there can only be one multi select handle
+            // bring up edit menu (there can only be one multi select handle)
+            [self bringUpEditMenuForSelection:selection];
         } else {
             // ...else, dismiss everything
             [self dismissSelections];
@@ -726,7 +752,7 @@
     // if nothing is selected, then select and bring up the edit menu.
     // if something is selected, dismiss everything
     
-    if (_selectionInfo || currentSelection) {
+    if (_selectionInfo || ![currentSelection isEqualToArray:selection]) {
         [self dismissSelections];
     } else {
         [self markSelection:selection];
@@ -734,7 +760,27 @@
         _touchInfo[@"selection"] = selection;
         _touchInfo[@"hitInfo"] = hitInfo;
         
-        //TODO: bring up edit menu
+        [self bringUpEditMenuForSelection:selection];
+    }
+}
+
+- (void)handleDoubleTapOnWord:(CATextLayer *)word {
+    if (_selectionInfo || _touchInfo[@"selection"]) {
+        [self dismissSelections];
+    } else {
+        [self bringUpEditMenuForSelection:@[word]];
+    }
+}
+
+- (void)handleDoubleTap:(NSDictionary *)hitInfo {
+    BOOL didHitHandle = hitInfo && [self didHitHandle:hitInfo];
+    
+    if (didHitHandle) {
+        [self handleDoubleTapOnHandle:hitInfo];
+    } else if (hitInfo[@"word"]) {
+        [self handleDoubleTapOnWord:hitInfo[@"word"]];
+    } else {
+        [self dismissSelections];
     }
 }
 
@@ -768,9 +814,14 @@
                 
                 if (tapCount == 1) {
                     [self handleSingleTapOnHandle:hitInfo];
-                } else {
+                } else if (tapCount == 2) {
                     [self handleDoubleTapOnHandle:hitInfo];
+                } else {
+                    [self dismissSelections];
                 }
+            } else if (tapCount == 2 && hitInfo[@"word"]) {
+                // double tap on single word
+                [self handleDoubleTapOnWord:hitInfo[@"word"]];
             } else {
                 [self dismissSelections];
             }
@@ -814,6 +865,9 @@
     if (gesture.state == UIGestureRecognizerStateBegan) {
         selectionInfo = [NSMutableDictionary new];
         selectionInfo[@"firstPoint"] = [NSValue valueWithCGPoint:[gesture locationInView:_scrollView]];
+    } else if (gesture.state == UIGestureRecognizerStateEnded && !gesture.didMove) {
+        NSDictionary * hitInfo = [self hitForPoint:[gesture locationInView:_scrollView]];
+        [self handleDoubleTap:hitInfo];
     } else {
         selectionInfo[@"lastPoint"] = [NSValue valueWithCGPoint:[gesture locationInView:_scrollView]];
         

@@ -31,21 +31,23 @@
     return 30;
 }
 
-- (id)initWithSelectionAt:(CGPoint)p width:(float)w
+- (id)initWithSelection:(NSArray *)selection
 {
-    _selectionWidth = w;
-    _selectionPoint = p;
-    _selectionPoint.y = 7;
-    _selectionPoint.x -= 3;
-    _selectionWidth += 3;
+    __unsafe_unretained Class cls = [CATextLayer class];
+    BOOL dealingWithWords = [selection.firstObject isKindOfClass:cls];
     
-    float screenWidth = [UIScreen mainScreen].bounds.size.width;
+    CALayer * l = dealingWithWords ? [selection.lastObject superlayer] : selection.lastObject;
     
-    self = [super initWithFrame:CGRectMake(0, p.y - 10, screenWidth, 340)];
+    _selectionPoint = l.position;
+    _selectionPoint.y += l.bounds.size.height;
+    
+    float screenWidth = [UIScreen mainScreen].bounds.size.height;
+    
+    self = [super initWithFrame:CGRectMake(0, _selectionPoint.y, screenWidth, 360)];
     
     if (self) {
         [self setAutoresizingMask:UIViewAutoresizingFlexibleWidth];
-        [self setBackgroundColor:[UIColor clearColor]];
+        [self setBackgroundColor:[UIColor bronteSecondaryBackgroundColor]];
         
         float w = [self buttonWidth];
         float p = [self buttonPadding];
@@ -146,9 +148,9 @@
 
 - (void)insert:(id)sender {
     if ([self isInsertingLeft]) {
-        [self.delegate insertBefore];
+        [self.delegate insertBeforeSelection:_selection];
     } else {
-        [self.delegate insertAfter];
+        [self.delegate insertAfterSelection:_selection];
     }
 }
 
@@ -181,12 +183,12 @@
     
     BOOL isInsertingLeft = [self isInsertingLeft];
     
-    UIBezierPath * selectionSide = [UIBezierPath bezierPath];
-    float selectionSideX = isInsertingLeft ? _selectionPoint.x : _selectionPoint.x + _selectionWidth + selectionLine.lineWidth;
-    [selectionSide moveToPoint:CGPointMake(selectionSideX, _selectionPoint.y + selectionLine.lineWidth / 2.0)];
-    [selectionSide addLineToPoint:CGPointMake(selectionSideX, 0)];
-    selectionSide.lineWidth = 4.5;
-    [selectionSide stroke];
+//    UIBezierPath * selectionSide = [UIBezierPath bezierPath];
+//    float selectionSideX = isInsertingLeft ? _selectionPoint.x : _selectionPoint.x + _selectionWidth + selectionLine.lineWidth;
+//    [selectionSide moveToPoint:CGPointMake(selectionSideX, _selectionPoint.y + selectionLine.lineWidth / 2.0)];
+//    [selectionSide addLineToPoint:CGPointMake(selectionSideX, 0)];
+//    selectionSide.lineWidth = 4.5;
+//    [selectionSide stroke];
     
     [[UIColor bronteFontColor] setStroke];
     

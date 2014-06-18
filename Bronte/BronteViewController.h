@@ -7,8 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "BronteEditView.h"
 
-@interface BronteViewController : UIViewController {
+@interface BronteViewController : UIViewController <BronteEditDelegate> {
     NSDictionary * _defaultAttr;
     
     NSMutableArray * _lines;
@@ -27,6 +28,8 @@
     
     BOOL _touchDidMove;
     NSMutableDictionary * _touchInfo;
+    
+    BronteEditView * _editView;
 }
 
 @end

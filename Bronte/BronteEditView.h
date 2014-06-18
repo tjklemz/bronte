@@ -10,8 +10,8 @@
 
 @protocol BronteEditDelegate <NSObject>
 
-- (void)insertBefore;
-- (void)insertAfter;
+- (void)insertBeforeSelection:(NSArray *)selection;
+- (void)insertAfterSelection:(NSArray *)selection;
 
 @end
 
@@ -20,10 +20,11 @@
     float _selectionWidth;
     UIButton * _insertLeftButton;
     UIButton * _insertRightButton;
+    NSArray * _selection;
 }
 
 @property (readwrite, nonatomic) id<BronteEditDelegate> delegate;
 
-- (id)initWithSelectionAt:(CGPoint)p width:(float)w;
+- (id)initWithSelection:(NSArray *)selection;
 
 @end
