@@ -668,12 +668,14 @@
 }
 
 - (void)dismissEditMenu {
-    if (_touchInfo && _touchInfo[@"selection"]) {
-        [self unmarkSelection:_touchInfo[@"selection"]];
+    if (_editView) {
+        if (_touchInfo && _touchInfo[@"selection"]) {
+            [self unmarkSelection:_touchInfo[@"selection"]];
+        }
+        
+        [_editView removeFromSuperview];
+        _editView = nil;
     }
-    
-    [_editView removeFromSuperview];
-    _editView = nil;
 }
 
 - (void)insertBeforeSelection:(NSArray *)selection {
