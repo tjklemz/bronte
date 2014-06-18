@@ -123,7 +123,8 @@
 }
 
 - (CGPoint)lineOriginForLineNumber:(NSUInteger)n {
-    return CGPointMake(([self width] - [UIFont bronteLineWidth])/2.0 - [self lineHandleWidth] + 15, 50 + n*[self lineHeight]);
+    float offset = n < _lines.count && [[_lines[n] name] isEqualToString:@"P"] ? 63 : 0;
+    return CGPointMake(([self width] - [UIFont bronteLineWidth])/2.0 - [self lineHandleWidth] + 15 + offset, 50 + n*[self lineHeight]);
 }
 
 - (void)adjustScrollViewContentSize {
@@ -166,6 +167,8 @@
 - (CALayer *)makeParagraphSeparator {
     CALayer * l = [self makeBlankLine];
     
+    l.frame = CGRectMake(0, 0, [self lineWidth] - [self lineHandleWidth], l.bounds.size.height);
+    
     l.contents = (id)_paraIcon.CGImage;
     l.contentsGravity = kCAGravityCenter;
     l.name = @"P";
@@ -184,9 +187,9 @@
 
 - (CALayer *)newParagraphSeparator {
     CALayer * l = [self makeParagraphSeparator];
-    l.position = [self lineOriginForLineNumber:_lines.count];
-    [_docLayer addSublayer:l];
     [_lines addObject:l];
+    l.position = [self lineOriginForLineNumber:_lines.count-1];
+    [_docLayer addSublayer:l];
     return l;
 }
 
