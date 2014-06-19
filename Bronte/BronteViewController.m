@@ -14,6 +14,8 @@
 #import "MultiSelectGestureRecognizer.h"
 #import "UIImage+Bronte.h"
 
+#import <POP.h>
+
 @interface BronteViewController ()
 
 @end
@@ -127,7 +129,7 @@
 
 - (void)adjustScrollViewContentSize {
     float currentScale = _scrollView.bounds.size.width/[self width];
-    _scrollView.contentSize = CGSizeMake(_scrollView.frame.size.width, currentScale*[self lineOriginForLineNumber:_lines.count+3].y);
+    _scrollView.contentSize = CGSizeMake(_scrollView.frame.size.width, currentScale*[self lineOriginForLineNumber:_lines.count+1].y);
 }
 
 - (CATextLayer *)makeWord:(NSString *)word {
@@ -428,8 +430,8 @@
 - (void)configureSelection:(NSArray *)selection withAttributes:(NSDictionary *)attr {
     __unsafe_unretained Class cls = [CATextLayer class];
     
-    BOOL activateLineIcon = attr[@"BronteActivateLineIcon"];
-    BOOL deactivateLineIcon = attr[@"BronteDeactivateLineIcon"];
+    BOOL activateLineIcon = [attr[@"BronteActivateLineIcon"] boolValue];
+    BOOL deactivateLineIcon = [attr[@"BronteDeactivateLineIcon"] boolValue];
     
     for (CALayer * l in selection) {
         if ([l.name isEqualToString:@"L"]) {
@@ -1050,6 +1052,8 @@
     static CALayer * focusLine = nil;
     static CGFloat delta = 0;
     
+    static CGFloat origOffset = 0;
+    
     static BOOL isDraggingClipboardArea = NO;
     static BOOL isScrollingOnSides = NO;
     static BOOL stillDeciding = YES;
@@ -1061,6 +1065,9 @@
         if (isDraggingClipboardArea) {
             [self dismissEditMenu];
         }
+        [_scrollView pop_removeAnimationForKey:@"bounce"];
+        [_scrollView pop_removeAnimationForKey:@"decelerate"];
+        origOffset = _scrollView.contentOffset.y;
     }
     
     float maxOffset = _scrollView.contentSize.height - _scrollView.bounds.size.height;
@@ -1068,9 +1075,10 @@
     
     if (isDraggingClipboardArea) {
         CGPoint t = [gesture translationInView:_scrollView];
+        CGPoint v = [gesture velocityInView:_scrollView];
         
         if (stillDeciding) {
-            isScrollingOnSides = fabs(t.y) > fabs(t.x);
+            isScrollingOnSides = fabs(t.y) > fabs(t.x) || fabs(v.y) > fabs(v.x);
             
             if (!isScrollingOnSides) {
                 CGPoint focusPoint = CGPointMake(_scrollView.bounds.size.width / 2.0, 20);
@@ -1081,25 +1089,32 @@
                 }
                 delta = _scrollView.contentOffset.y - focusLine.frame.origin.y;
             }
+            
+            stillDeciding = NO;
         }
         
         float newOffset = _scrollView.contentOffset.y;
         
         if (isScrollingOnSides) {
-            newOffset = _scrollView.contentOffset.y - t.y;
+            newOffset = origOffset - t.y;
+            if (newOffset < minOffset || newOffset > maxOffset) {
+                newOffset = origOffset - t.y*0.33;
+            }
         } else {
             CGFloat currentScale = _scrollView.bounds.size.width / [self width];
             CGFloat scale = currentScale + t.x / [self width];
             [self zoomDocument:scale];
             newOffset = focusLine.frame.origin.y + delta;
+            
+            newOffset = newOffset <= maxOffset ? newOffset : maxOffset;
+            newOffset = newOffset >= minOffset ? newOffset : minOffset;
+            
+            [gesture setTranslation:CGPointZero inView:_scrollView];
         }
-        
-        newOffset = newOffset <= maxOffset ? newOffset : maxOffset;
-        newOffset = newOffset >= minOffset ? newOffset : minOffset;
         
         [_scrollView setContentOffset:CGPointMake(0, newOffset)];
         
-        [gesture setTranslation:CGPointZero inView:_scrollView];
+        //[gesture setTranslation:CGPointZero inView:_scrollView];
     } else {
         CGPoint p = [gesture locationInView:_scrollView];
         
@@ -1167,24 +1182,82 @@
     }
     
     if (gesture.state == UIGestureRecognizerStateEnded) {
-//        float v_i = [gesture velocityInView:_scrollView].y*0.5;
-//        float v_f = 0;
-//        float a = -1000;
-//        
-//        float t = v_i / (-a);
-//        
-//        float d = v_i*t + 0.5*a*t*t;
-//        
-//        float newOffset = _scrollView.contentOffset.y + (t > 0 ? -d : d);
-//        
-//        newOffset = newOffset <= maxOffset ? newOffset : maxOffset;
-//        newOffset = newOffset >= minOffset ? newOffset : minOffset;
-//        
-//        [UIView animateWithDuration:fabs(t) delay:0 options:UIViewAnimationOptionCurveEaseOut|UIViewAnimationOptionAllowUserInteraction animations:^{
-//            [_scrollView setContentOffset:CGPointMake(0, newOffset) animated:NO];
-//        } completion:^(BOOL finished) {
-//            
-//        }];
+        if (isScrollingOnSides) {
+            float velocity = -[gesture velocityInView:_scrollView].y;
+            
+            if (_scrollView.contentOffset.y <= minOffset || _scrollView.contentOffset.y >= maxOffset) {
+                velocity = 0;
+            }
+            
+            POPDecayAnimation *decayAnimation = [POPDecayAnimation animation];
+            
+            POPAnimatableProperty *prop = [POPAnimatableProperty propertyWithName:@"com.rounak.bounds.origin" initializer:^(POPMutableAnimatableProperty *prop) {
+                // read value
+                prop.readBlock = ^(id obj, CGFloat values[]) {
+                    values[0] = [obj bounds].origin.x;
+                    values[1] = [obj bounds].origin.y;
+                };
+                // write value
+                prop.writeBlock = ^(UIScrollView * obj, const CGFloat values[]) {
+                    CGRect tempBounds = [obj bounds];
+                    tempBounds.origin.x = values[0];
+                    tempBounds.origin.y = values[1];
+                    [obj setBounds:tempBounds];
+                    
+                    CGRect bounds = [obj bounds];
+                    
+                    BOOL outsideBoundsMinimum = obj.contentOffset.y < minOffset;
+                    BOOL outsideBoundsMaximum = obj.contentOffset.y > maxOffset;
+                    
+                    if (outsideBoundsMaximum || outsideBoundsMinimum) {
+                        POPDecayAnimation *decayAnimation = [obj pop_animationForKey:@"decelerate"];
+                        if (decayAnimation) {
+                            CGPoint target = bounds.origin;
+                            if (outsideBoundsMinimum) {
+                                target.x = fmax(target.x, 0.0);
+                                target.y = fmax(target.y, 0.0);
+                            } else if (outsideBoundsMaximum) {
+                                target.x = fmin(target.x, obj.contentSize.width - bounds.size.width);
+                                target.y = fmin(target.y, obj.contentSize.height - bounds.size.height);
+                            }
+                            
+                            //NSLog(@"bouncing with velocity: %@", decayAnimation.velocity);
+                            
+                            POPSpringAnimation *springAnimation = [POPSpringAnimation animation];
+                            POPAnimatableProperty *prop = [POPAnimatableProperty propertyWithName:@"com.rounak.bounds.origin" initializer:^(POPMutableAnimatableProperty *prop) {
+                                // read value
+                                prop.readBlock = ^(id obj, CGFloat values[]) {
+                                    values[0] = [obj bounds].origin.x;
+                                    values[1] = [obj bounds].origin.y;
+                                };
+                                // write value
+                                prop.writeBlock = ^(id obj, const CGFloat values[]) {
+                                    CGRect tempBounds = [obj bounds];
+                                    tempBounds.origin.x = values[0];
+                                    tempBounds.origin.y = values[1];
+                                    [obj setBounds:tempBounds];
+                                };
+                                // dynamics threshold
+                                prop.threshold = 0.01;
+                            }];
+                            springAnimation.property = prop;
+                            springAnimation.velocity = decayAnimation.velocity;
+                            springAnimation.toValue = [NSValue valueWithCGPoint:target];
+                            springAnimation.springBounciness = 0.0;
+                            springAnimation.springSpeed = 5.0;
+                            [obj pop_addAnimation:springAnimation forKey:@"bounce"];
+                            
+                            [obj pop_removeAnimationForKey:@"decelerate"];
+                        }
+                    }
+                };
+                // dynamics threshold
+                prop.threshold = 0.01;
+            }];
+            decayAnimation.property = prop;
+            decayAnimation.velocity = [NSValue valueWithCGPoint:CGPointMake(0, velocity)];
+            [_scrollView pop_addAnimation:decayAnimation forKey:@"decelerate"];
+        }
         
         focusLine = nil;
         isDraggingClipboardArea = NO;
