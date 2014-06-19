@@ -47,7 +47,6 @@
         _docLayer = scrollView.layer;
         _docLayer.masksToBounds = NO;
         [scrollView.panGestureRecognizer setMinimumNumberOfTouches:2];
-        [scrollView.panGestureRecognizer setMaximumNumberOfTouches:2];
         [scrollView setScrollIndicatorInsets:[self scrollViewInsets]];
         scrollView.indicatorStyle = UIScrollViewIndicatorStyleBlack;
         scrollView.bouncesZoom = NO;
@@ -654,7 +653,7 @@
 #pragma mark - Editing
 
 - (void)bringUpEditMenuForSelection:(NSArray *)selection {
-    [self dismissEditMenu];
+    [self dismissSelections];
     
     [self zoomDocument:1.0];
     
@@ -1051,40 +1050,56 @@
     static CALayer * focusLine = nil;
     static CGFloat delta = 0;
     
+    static BOOL isDraggingClipboardArea = NO;
+    static BOOL isScrollingOnSides = NO;
+    static BOOL stillDeciding = YES;
+    
     if (gesture.state == UIGestureRecognizerStateBegan) {
         CGPoint p = [gesture locationInView:self.view];
         CGRect clipboardHandle = [self clipboardHandle];
-        _isDraggingClipboard = CGRectContainsPoint(clipboardHandle, p);
-        if (_isDraggingClipboard) {
+        isDraggingClipboardArea = CGRectContainsPoint(clipboardHandle, p);
+        if (isDraggingClipboardArea) {
             [self dismissEditMenu];
-            
-            CGPoint focusPoint = CGPointMake(_scrollView.bounds.size.width / 2.0, 20);
-            focusPoint = [self.view convertPoint:focusPoint toView:_scrollView];
-            NSDictionary * hitInfo = [self hitForPoint:focusPoint];
-            if (hitInfo) {
-                focusLine = hitInfo[@"line"];
-            }
-            delta = _scrollView.contentOffset.y - focusLine.frame.origin.y;
         }
     }
     
-    if (_isDraggingClipboard) {
-        CGPoint t = [gesture translationInView:self.view];
-        CGFloat currentScale = _scrollView.bounds.size.width / [self width];
-        CGFloat scale = currentScale + t.x / [self width];
-        [self zoomDocument:scale];
+    float maxOffset = _scrollView.contentSize.height - _scrollView.bounds.size.height;
+    float minOffset = 0;
+    
+    if (isDraggingClipboardArea) {
+        CGPoint t = [gesture translationInView:_scrollView];
         
-        float newOffset = focusLine.frame.origin.y + delta;
+        if (stillDeciding) {
+            isScrollingOnSides = fabs(t.y) > fabs(t.x);
+            
+            if (!isScrollingOnSides) {
+                CGPoint focusPoint = CGPointMake(_scrollView.bounds.size.width / 2.0, 20);
+                focusPoint = [self.view convertPoint:focusPoint toView:_scrollView];
+                NSDictionary * hitInfo = [self hitForPoint:focusPoint];
+                if (hitInfo) {
+                    focusLine = hitInfo[@"line"];
+                }
+                delta = _scrollView.contentOffset.y - focusLine.frame.origin.y;
+            }
+        }
         
-        float maxOffset = _scrollView.contentSize.height - _scrollView.bounds.size.height;
-        float minOffset = 0;
+        float newOffset = _scrollView.contentOffset.y;
+        
+        if (isScrollingOnSides) {
+            newOffset = _scrollView.contentOffset.y - t.y;
+        } else {
+            CGFloat currentScale = _scrollView.bounds.size.width / [self width];
+            CGFloat scale = currentScale + t.x / [self width];
+            [self zoomDocument:scale];
+            newOffset = focusLine.frame.origin.y + delta;
+        }
         
         newOffset = newOffset <= maxOffset ? newOffset : maxOffset;
         newOffset = newOffset >= minOffset ? newOffset : minOffset;
         
         [_scrollView setContentOffset:CGPointMake(0, newOffset)];
         
-        [gesture setTranslation:CGPointZero inView:self.view];
+        [gesture setTranslation:CGPointZero inView:_scrollView];
     } else {
         CGPoint p = [gesture locationInView:_scrollView];
         
@@ -1152,8 +1167,29 @@
     }
     
     if (gesture.state == UIGestureRecognizerStateEnded) {
+//        float v_i = [gesture velocityInView:_scrollView].y*0.5;
+//        float v_f = 0;
+//        float a = -1000;
+//        
+//        float t = v_i / (-a);
+//        
+//        float d = v_i*t + 0.5*a*t*t;
+//        
+//        float newOffset = _scrollView.contentOffset.y + (t > 0 ? -d : d);
+//        
+//        newOffset = newOffset <= maxOffset ? newOffset : maxOffset;
+//        newOffset = newOffset >= minOffset ? newOffset : minOffset;
+//        
+//        [UIView animateWithDuration:fabs(t) delay:0 options:UIViewAnimationOptionCurveEaseOut|UIViewAnimationOptionAllowUserInteraction animations:^{
+//            [_scrollView setContentOffset:CGPointMake(0, newOffset) animated:NO];
+//        } completion:^(BOOL finished) {
+//            
+//        }];
+        
         focusLine = nil;
-        _isDraggingClipboard = NO;
+        isDraggingClipboardArea = NO;
+        isScrollingOnSides = NO;
+        stillDeciding = YES;
     }
 }
 
