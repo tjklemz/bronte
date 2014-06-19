@@ -52,6 +52,7 @@
         [scrollView setScrollIndicatorInsets:[self scrollViewInsets]];
         scrollView.indicatorStyle = UIScrollViewIndicatorStyleBlack;
         scrollView.bouncesZoom = NO;
+        [scrollView setScrollEnabled:NO];
         
         MultiSelectGestureRecognizer * multiSelectGesture = [[MultiSelectGestureRecognizer alloc] initWithTarget:self action:@selector(multiSelect:)];
         [scrollView addGestureRecognizer:multiSelectGesture];
@@ -1106,8 +1107,8 @@
             [self zoomDocument:scale];
             newOffset = focusLine.frame.origin.y + delta;
             
-            newOffset = newOffset <= maxOffset ? newOffset : maxOffset;
-            newOffset = newOffset >= minOffset ? newOffset : minOffset;
+//            newOffset = newOffset <= maxOffset ? newOffset : maxOffset;
+//            newOffset = newOffset >= minOffset ? newOffset : minOffset;
             
             [gesture setTranslation:CGPointZero inView:_scrollView];
         }
