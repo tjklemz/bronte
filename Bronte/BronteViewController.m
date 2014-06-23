@@ -13,6 +13,7 @@
 #import "DocumentScrollView.h"
 #import "MultiSelectGestureRecognizer.h"
 #import "UIImage+Bronte.h"
+#import "NSArray+Bronte.h"
 
 #import <POP.h>
 
@@ -124,13 +125,12 @@
 }
 
 - (CGPoint)lineOriginForLineNumber:(NSUInteger)n {
-    float offset = n < _lines.count && [[_lines[n] name] isEqualToString:@"P"] ? 63 : 0;
+    float offset = n < _lines.count && [_lines[n] isParagraphSeparator] ? 63 : 0;
     return CGPointMake(([self width] - [UIFont bronteLineWidth])/2.0 - [self lineHandleWidth] + 15 + offset, 50 + n*[self lineHeight]);
 }
 
 - (void)adjustScrollViewContentSize {
-    float currentScale = _scrollView.bounds.size.width/[self width];
-    _scrollView.contentSize = CGSizeMake(_scrollView.frame.size.width, currentScale*[self lineOriginForLineNumber:_lines.count+1].y);
+    _scrollView.contentSize = CGSizeMake(_scrollView.frame.size.width, [self currentScale]*[self lineOriginForLineNumber:_lines.count+1].y);
 }
 
 - (CATextLayer *)makeWord:(NSString *)word {
@@ -200,7 +200,7 @@
     [_docLayer addSublayer:newLine];
     [_lines insertObject:newLine atIndex:n+1];
     
-    CGFloat currentScale = _scrollView.bounds.size.width / [self width];
+    float currentScale = [self currentScale];
     
     for (NSUInteger i = n+1; i < _lines.count; ++i) {
         [self arrangeLineNumber:i basedOnScale:currentScale];
@@ -222,7 +222,7 @@
     
     CALayer * l = line;
     
-    if ([l.name isEqualToString:@"P"]) {
+    if ([l isParagraphSeparator]) {
         l = [self newLine];
         [self newParagraphSeparator];
     }
@@ -263,8 +263,6 @@
 #pragma mark - Moving stuff
 
 - (NSDictionary *)hitForPoint:(CGPoint)p {
-    __unsafe_unretained Class cls = [CATextLayer class];
-    
     for (int i = 0; i < _lines.count; ++i) {
         CALayer * line = _lines[i];
         CALayer * hit = [line hitTest:p];
@@ -274,10 +272,10 @@
             hitInfo[@"line"] = line;
             hitInfo[@"lineNo"] = [NSNumber numberWithInt:i];
             hitInfo[@"origPoint"] = [NSValue valueWithCGPoint:p];
-            if ([hit isKindOfClass:cls]) {
+            if ([hit isWord]) {
                 hitInfo[@"word"] = hit;
             } else {
-                CGFloat currentScale = _scrollView.bounds.size.width / [self width];
+                float currentScale = [self currentScale];
                 if (p.x < line.position.x + currentScale*[self lineHandleWidth]) {
                     hitInfo[@"hitLineHandle"] = @YES;
                 }
@@ -290,12 +288,12 @@
 
 - (BOOL)didHitParagraphHandle:(NSDictionary *)hitInfo {
     CALayer * line = hitInfo[@"line"];
-    return line && [line.name isEqualToString:@"P"];
+    return line && [line isParagraphSeparator];
 }
 
 - (BOOL)didHitLineHandle:(NSDictionary *)hitInfo {
     CALayer * line = hitInfo[@"line"];
-    return line && [line.name isEqualToString:@"L"] && hitInfo[@"hitLineHandle"];
+    return line && [line isLine] && hitInfo[@"hitLineHandle"];
 }
 
 - (BOOL)didHitMultiSelectHandle:(NSDictionary *)hitInfo {
@@ -316,7 +314,7 @@
     
     NSUInteger n = lineNo;
     
-    while (n < _lines.count && ![[_lines[n] name] isEqualToString:@"P"]) {
+    while (n < _lines.count && ![_lines[n] isParagraphSeparator]) {
         [lines addObject:_lines[n]];
         ++n;
     }
@@ -327,7 +325,7 @@
     
     for (int i = lineNo-1; i >= 0; --i) {
         CALayer * line = _lines[i];
-        if ([line.name isEqualToString:@"P"]) {
+        if ([line isParagraphSeparator]) {
             break;
         }
         [lines insertObject:line atIndex:0];
@@ -429,13 +427,11 @@
 }
 
 - (void)configureSelection:(NSArray *)selection withAttributes:(NSDictionary *)attr {
-    __unsafe_unretained Class cls = [CATextLayer class];
-    
     BOOL activateLineIcon = [attr[@"BronteActivateLineIcon"] boolValue];
     BOOL deactivateLineIcon = [attr[@"BronteDeactivateLineIcon"] boolValue];
     
     for (CALayer * l in selection) {
-        if ([l.name isEqualToString:@"L"]) {
+        if ([l isLine]) {
             NSArray * words = [self wordsForLine:l];
             for (CATextLayer * word in words) {
                 [self configureWord:word withAttributes:attr];
@@ -446,7 +442,7 @@
             } else if (deactivateLineIcon) {
                 l.contents = (id)_lineIcon.CGImage;
             }
-        } else if ([l isKindOfClass:cls]) {
+        } else if ([l isWord]) {
             CATextLayer * word = (CATextLayer *)l;
             [self configureWord:word withAttributes:attr];
         }
@@ -472,9 +468,9 @@
     
     CALayer * line = hitInfo[@"line"];
     
-    if ([line.name isEqualToString:@"P"]) {
+    if ([line isParagraphSeparator]) {
         selection = [self paragraphForLineNumber:[hitInfo[@"lineNo"] intValue]];
-    } else if ([line.name isEqualToString:@"L"]) {
+    } else if ([line isLine]) {
         if (hitInfo[@"hitLineHandle"]) {
             selection = @[line];
         } else {
@@ -539,15 +535,14 @@
     BOOL didDropOnDocument = dropPoint.x >= startX && dropPoint.x <= [self lineWidth] + startX;
     
     if (didDropOnDocument) {
-        CGFloat currentScale = _scrollView.bounds.size.width / [self width];
+        float currentScale = [self currentScale];
         
         NSDictionary * dropInfo = [self hitForPoint:dropPoint];
         
         if (selection) [self unmarkSelection:selection];
         if (_selectionInfo) [self unmarkMultiWordSelection];
         
-        __unsafe_unretained Class cls = [CATextLayer class];
-        BOOL dealingWithWords = [selection.firstObject isKindOfClass:cls];
+        BOOL dealingWithWords = [selection isDealingWithWords];
         
         CALayer * dropLine = dropInfo[@"line"];
         CALayer * origLine = hitInfo[@"line"];
@@ -606,7 +601,7 @@
                     before = NO;
                     validDrop = YES;
                 }
-            } else if ([[selection.lastObject name] isEqualToString:@"P"]) {
+            } else if ([selection.lastObject isParagraphSeparator]) {
                 NSArray * p = [self paragraphForLineNumber:dropLineNo];
                 CALayer * halfway = p[p.count/2];
                 
@@ -656,17 +651,30 @@
 #pragma mark - Editing
 
 - (void)bringUpEditMenuForSelection:(NSArray *)selection {
+    [self cancelScrolling];
     [self dismissSelections];
-    
-    [self zoomDocument:1.0];
-    
-    _editView = [[BronteEditView alloc] initWithSelection:selection];
-    _editView.delegate = self;
-    [_scrollView addSubview:_editView];
     
     [self markSelection:selection];
     _touchInfo = [NSMutableDictionary new];
     _touchInfo[@"selection"] = selection;
+    
+    [self zoomDocument:1.0 withAnimationDuration:0.2 completion:^(BOOL finished) {
+        CALayer * l = [selection lastLineOfSelection];
+        
+        float offset = (l.position.y - _scrollView.contentOffset.y) - 5*[self lineHeight];
+        
+        _editView = [[BronteEditView alloc] initWithSelection:selection];
+        _editView.delegate = self;
+        _editView.alpha = 0.0;
+        [_scrollView addSubview:_editView];
+        
+        [UIView animateWithDuration:0.3 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
+            [_scrollView setContentOffset:CGPointMake(0, _scrollView.contentOffset.y + offset)];
+            _editView.alpha = 1.0;
+        } completion:^(BOOL finished) {
+            
+        }];
+    }];
 }
 
 - (void)dismissEditMenu {
@@ -675,8 +683,15 @@
             [self unmarkSelection:_touchInfo[@"selection"]];
         }
         
-        [_editView removeFromSuperview];
-        _editView = nil;
+        [UIView animateWithDuration:0.3 delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
+            if (fabs(_scrollView.previousContentOffset.y - _scrollView.contentOffset.y) < [self width]) {
+                [_scrollView setContentOffset:_scrollView.previousContentOffset];
+            }
+            _editView.alpha = 0.0;
+        } completion:^(BOOL finished) {
+            [_editView removeFromSuperview];
+            _editView = nil;
+        }];
     }
 }
 
@@ -796,6 +811,10 @@
         [self dismissSelections];
     } else {
         [self bringUpEditMenuForSelection:@[word]];
+//        NSString * s = [[word.string string] copy];
+//        UITextChecker * checker = [[UITextChecker alloc] init];
+//        NSArray * guesses = [checker guessesForWordRange:NSMakeRange(0, s.length) inString:s language:@"en"];
+//        NSLog(@"%@", guesses);
     }
 }
 
@@ -952,7 +971,7 @@
     NSMutableArray * itemsToRemove = [NSMutableArray new];
     
     for (CALayer * line in _lines) {
-        if ([line.name isEqualToString:@"L"] && [self wordsForLine:line].count == 0) {
+        if ([line isLine] && [self wordsForLine:line].count == 0) {
             [itemsToRemove addObject:line];
             [line removeFromSuperlayer];
         }
@@ -977,39 +996,48 @@
 }
 
 - (CALayer *)addParagraphSeparatorIfNeeded {
-    if (!_lines.lastObject || ![((CALayer *)_lines.lastObject).name isEqualToString:@"P"]) {
+    if (!_lines.lastObject || ![_lines.lastObject isParagraphSeparator]) {
        return [self newParagraphSeparator];
     }
     return nil;
 }
 
-- (void)zoomDocument:(float)currentScale {
-    CGFloat minScale = [self minDocScale];
-    CGFloat maxScale = [self maxDocScale];
-    
-    float fullW = fmaxf(self.view.frame.size.width, self.view.frame.size.height);
-    
-    //check max
-    currentScale = currentScale > maxScale ? maxScale : currentScale;
-    //check min
-    currentScale = currentScale < minScale ? minScale : currentScale;
-    
-    _scrollView.frame = CGRectMake(0, 0, currentScale*fullW, _scrollView.frame.size.height);
-    UIEdgeInsets insets = [self scrollViewInsets];
-    _scrollView.scrollIndicatorInsets = UIEdgeInsetsMake(currentScale*insets.top, currentScale*insets.left, currentScale*insets.bottom, currentScale*insets.right);
-    
-    [CATransaction begin];
-    [CATransaction setAnimationDuration:0];
-    [self arrangeLinesBasedOnScale:currentScale];
-    [CATransaction commit];
-    
-    [self adjustScrollViewContentSize];
+- (void)zoomDocument:(float)scale withAnimationDuration:(float)duration completion:(void (^)(BOOL finished))completion {
+    [UIView animateWithDuration:duration animations:^{
+        CGFloat minScale = [self minDocScale];
+        CGFloat maxScale = [self maxDocScale];
+        
+        float fullW = fmaxf(self.view.frame.size.width, self.view.frame.size.height);
+        
+        float currentScale = scale;
+        //check max
+        currentScale = currentScale > maxScale ? maxScale : currentScale;
+        //check min
+        currentScale = currentScale < minScale ? minScale : currentScale;
+        
+        _scrollView.frame = CGRectMake(0, 0, currentScale*fullW, _scrollView.frame.size.height);
+        UIEdgeInsets insets = [self scrollViewInsets];
+        _scrollView.scrollIndicatorInsets = UIEdgeInsetsMake(currentScale*insets.top, currentScale*insets.left, currentScale*insets.bottom, currentScale*insets.right);
+        
+        [CATransaction begin];
+        [CATransaction setAnimationDuration:duration];
+        [self arrangeLinesBasedOnScale:currentScale];
+        [CATransaction commit];
+        
+        [self adjustScrollViewContentSize];
+    } completion:completion];
+}
+
+- (void)zoomDocument:(float)scale {
+    [self zoomDocument:scale withAnimationDuration:0 completion:nil];
+}
+
+- (float)currentScale {
+    return _scrollView.bounds.size.width/[self width];
 }
 
 - (void)translateSelection:(NSArray *)selection withTranslation:(CGPoint)t {
-    __unsafe_unretained Class cls = [CATextLayer class];
-    
-    float currentScale = [selection.firstObject isKindOfClass:cls] ? _scrollView.bounds.size.width/[self width] : 1.0f;
+    float currentScale = [selection isDealingWithWords] ? [self currentScale] : 1.0f;
     
     [CATransaction begin];
     [CATransaction setAnimationDuration:0];
@@ -1055,6 +1083,11 @@
     return CGRectContainsPoint(CGRectMake(0, _scrollView.contentOffset.y, _scrollView.bounds.size.width, 0.05*_scrollView.bounds.size.height), p);
 }
 
+- (void)cancelScrolling {
+    [_scrollView pop_removeAnimationForKey:@"bounce"];
+    [_scrollView pop_removeAnimationForKey:@"decelerate"];
+}
+
 - (void)panGesture:(UIPanGestureRecognizer *)gesture {
     static CALayer * focusLine = nil;
     static CGFloat delta = 0;
@@ -1066,208 +1099,213 @@
     static BOOL isScrollingOnSides = NO;
     static BOOL stillDeciding = YES;
     
+    BOOL failed = NO;
+    
     if (gesture.state == UIGestureRecognizerStateBegan) {
-        CGPoint p = [gesture locationInView:self.view];
-        CGRect clipboardHandle = [self clipboardHandle];
-        isDraggingClipboardArea = CGRectContainsPoint(clipboardHandle, p);
-        CGRect infoHandle = [self infoHandle];
-        isDraggingInfoArea = CGRectContainsPoint(infoHandle, p);
-        if (isDraggingClipboardArea || isDraggingInfoArea) {
-            [self dismissEditMenu];
+        if (_editView && [_editView superview]) {
+            gesture.state = UIGestureRecognizerStateFailed;
+            [gesture reset];
+            failed = YES;
+        } else {
+            CGPoint p = [gesture locationInView:self.view];
+            CGRect clipboardHandle = [self clipboardHandle];
+            isDraggingClipboardArea = CGRectContainsPoint(clipboardHandle, p);
+            CGRect infoHandle = [self infoHandle];
+            isDraggingInfoArea = CGRectContainsPoint(infoHandle, p);
+            [self cancelScrolling];
+            origOffset = _scrollView.contentOffset.y;
         }
-        [_scrollView pop_removeAnimationForKey:@"bounce"];
-        [_scrollView pop_removeAnimationForKey:@"decelerate"];
-        origOffset = _scrollView.contentOffset.y;
     }
     
-    float maxOffset = _scrollView.contentSize.height - _scrollView.bounds.size.height;
-    float minOffset = 0;
-    
-    if (isDraggingClipboardArea || isDraggingInfoArea) {
-        CGPoint t = [gesture translationInView:_scrollView];
-        CGPoint v = [gesture velocityInView:_scrollView];
+    if (!failed && gesture.state != UIGestureRecognizerStateFailed && gesture.state != UIGestureRecognizerStateCancelled && gesture.state != UIGestureRecognizerStatePossible) {
+        float maxOffset = _scrollView.contentSize.height - _scrollView.bounds.size.height;
+        float minOffset = 0;
         
-        if (stillDeciding) {
-            isScrollingOnSides = fabs(t.y) > fabs(t.x) || fabs(v.y) > fabs(v.x);
+        if (isDraggingClipboardArea || isDraggingInfoArea) {
+            CGPoint t = [gesture translationInView:_scrollView];
+            CGPoint v = [gesture velocityInView:_scrollView];
             
-            if (!isScrollingOnSides) {
-                CGPoint focusPoint = CGPointMake(_scrollView.bounds.size.width / 2.0, 20);
-                focusPoint = [self.view convertPoint:focusPoint toView:_scrollView];
-                NSDictionary * hitInfo = [self hitForPoint:focusPoint];
-                if (hitInfo) {
-                    focusLine = hitInfo[@"line"];
+            if (stillDeciding) {
+                isScrollingOnSides = fabs(t.y) > fabs(t.x) || fabs(v.y) > fabs(v.x);
+                
+                if (!isScrollingOnSides) {
+                    CGPoint focusPoint = CGPointMake(_scrollView.bounds.size.width / 2.0, 20);
+                    focusPoint = [self.view convertPoint:focusPoint toView:_scrollView];
+                    NSDictionary * hitInfo = [self hitForPoint:focusPoint];
+                    if (hitInfo) {
+                        focusLine = hitInfo[@"line"];
+                    }
+                    delta = _scrollView.contentOffset.y - focusLine.frame.origin.y;
                 }
-                delta = _scrollView.contentOffset.y - focusLine.frame.origin.y;
+                
+                stillDeciding = NO;
             }
             
-            stillDeciding = NO;
-        }
-        
-        float newOffset = _scrollView.contentOffset.y;
-        
-        if (isScrollingOnSides) {
-            newOffset = origOffset - t.y;
-            if (newOffset < minOffset || newOffset > maxOffset) {
-                newOffset = origOffset - t.y*0.33;
-            }
-        } else if (isDraggingClipboardArea) {
-            CGFloat currentScale = _scrollView.bounds.size.width / [self width];
-            CGFloat scale = currentScale + t.x / [self width];
-            [self zoomDocument:scale];
-            newOffset = focusLine.frame.origin.y + delta;
-            [gesture setTranslation:CGPointZero inView:_scrollView];
-        }
-        
-        [_scrollView setContentOffset:CGPointMake(0, newOffset)];
-    } else {
-        CGPoint p = [gesture locationInView:_scrollView];
-        
-        if (gesture.state == UIGestureRecognizerStateBegan) {
-            NSDictionary * hitInfo = [self hitForPoint:p];
-            NSArray * selection = [self selectionForHit:hitInfo];
+            float newOffset = _scrollView.contentOffset.y;
             
-            if (![selection count]) {
-                [self dismissSelections];
-            } else {
-                NSArray * currentSelection = _selectionInfo ? _selectionInfo[@"selection"] : (_touchInfo ? _touchInfo[@"selection"] : nil);
-                if (![currentSelection count]) {
-                    [self markSelection:selection];
-                    _touchInfo = [NSMutableDictionary new];
-                    _touchInfo[@"selection"] = selection;
-                    _touchInfo[@"hitInfo"] = hitInfo;
+            if (isScrollingOnSides) {
+                newOffset = origOffset - t.y;
+                if (newOffset < minOffset || newOffset > maxOffset) {
+                    newOffset = origOffset - t.y*0.33;
+                }
+            } else if (isDraggingClipboardArea) {
+                CGFloat scale = [self currentScale] + t.x / [self width];
+                [self zoomDocument:scale];
+                newOffset = focusLine.frame.origin.y + delta;
+                [gesture setTranslation:CGPointZero inView:_scrollView];
+            }
+            
+            [_scrollView setContentOffset:CGPointMake(0, newOffset)];
+        } else {
+            CGPoint p = [gesture locationInView:_scrollView];
+            
+            if (gesture.state == UIGestureRecognizerStateBegan) {
+                NSDictionary * hitInfo = [self hitForPoint:p];
+                NSArray * selection = [self selectionForHit:hitInfo];
+                
+                if (![selection count]) {
+                    [self dismissSelections];
                 } else {
-                    if ([currentSelection isEqualToArray:selection]) {
+                    NSArray * currentSelection = _selectionInfo ? _selectionInfo[@"selection"] : (_touchInfo ? _touchInfo[@"selection"] : nil);
+                    if (![currentSelection count]) {
+                        [self markSelection:selection];
                         _touchInfo = [NSMutableDictionary new];
                         _touchInfo[@"selection"] = selection;
                         _touchInfo[@"hitInfo"] = hitInfo;
                     } else {
-                        [self dismissSelections];
+                        if ([currentSelection isEqualToArray:selection]) {
+                            _touchInfo = [NSMutableDictionary new];
+                            _touchInfo[@"selection"] = selection;
+                            _touchInfo[@"hitInfo"] = hitInfo;
+                        } else {
+                            [self dismissSelections];
+                        }
                     }
                 }
-            }
-        } else {
-            NSArray * selection = _touchInfo[@"selection"];
-            
-            static BOOL isScrolling = NO;
-            
-            if (selection) {
-                if (gesture.state == UIGestureRecognizerStateEnded) {
-                    [NSObject cancelPreviousPerformRequestsWithTarget:self];
-                    isScrolling = NO;
-                    _touchInfo[@"dropPoint"] = [NSValue valueWithCGPoint:[gesture locationInView:_scrollView]];
-                    [self didDropSelection:_touchInfo];
-                    _touchInfo = nil;
-                } else {
-                    CGPoint t = [gesture translationInView:_scrollView];
-                    
-                    [self translateSelection:selection withTranslation:t];
-                    
-                    NSTimeInterval holdDelay = 0.2;
-                    
-                    if ([self pointIsInLowerScrollArea:p]) {
-                        if (!isScrolling) {
-                            [self performSelector:@selector(scrollDownBasedOnDrag:) withObject:nil afterDelay:holdDelay];
-                            isScrolling = YES;
-                        }
-                    } else if ([self pointIsInUpperScrollArea:p]) {
-                        if (!isScrolling) {
-                            [self performSelector:@selector(scrollUpBasedOnDrag:) withObject:nil afterDelay:holdDelay];
-                            isScrolling = YES;
-                        }
-                    } else {
+            } else {
+                NSArray * selection = _touchInfo[@"selection"];
+                
+                static BOOL isScrolling = NO;
+                
+                if (selection) {
+                    if (gesture.state == UIGestureRecognizerStateEnded) {
                         [NSObject cancelPreviousPerformRequestsWithTarget:self];
                         isScrolling = NO;
+                        _touchInfo[@"dropPoint"] = [NSValue valueWithCGPoint:[gesture locationInView:_scrollView]];
+                        [self didDropSelection:_touchInfo];
+                        _touchInfo = nil;
+                    } else {
+                        CGPoint t = [gesture translationInView:_scrollView];
+                        
+                        [self translateSelection:selection withTranslation:t];
+                        
+                        NSTimeInterval holdDelay = 0.2;
+                        
+                        if ([self pointIsInLowerScrollArea:p]) {
+                            if (!isScrolling) {
+                                [self performSelector:@selector(scrollDownBasedOnDrag:) withObject:nil afterDelay:holdDelay];
+                                isScrolling = YES;
+                            }
+                        } else if ([self pointIsInUpperScrollArea:p]) {
+                            if (!isScrolling) {
+                                [self performSelector:@selector(scrollUpBasedOnDrag:) withObject:nil afterDelay:holdDelay];
+                                isScrolling = YES;
+                            }
+                        } else {
+                            [NSObject cancelPreviousPerformRequestsWithTarget:self];
+                            isScrolling = NO;
+                        }
+                        
+                        [gesture setTranslation:CGPointZero inView:_scrollView];
                     }
-                    
-                    [gesture setTranslation:CGPointZero inView:_scrollView];
                 }
             }
         }
-    }
-    
-    if (gesture.state == UIGestureRecognizerStateEnded) {
-        if (isScrollingOnSides) {
-            float velocity = -[gesture velocityInView:_scrollView].y;
-            
-            if (_scrollView.contentOffset.y <= minOffset || _scrollView.contentOffset.y >= maxOffset) {
-                velocity = 0;
+        
+        if (gesture.state == UIGestureRecognizerStateEnded) {
+            if (isScrollingOnSides) {
+                float velocity = -[gesture velocityInView:_scrollView].y;
+                
+                if (_scrollView.contentOffset.y <= minOffset || _scrollView.contentOffset.y >= maxOffset) {
+                    velocity = 0;
+                }
+                
+                POPDecayAnimation *decayAnimation = [POPDecayAnimation animation];
+                
+                POPAnimatableProperty *prop = [POPAnimatableProperty propertyWithName:@"com.rounak.bounds.origin" initializer:^(POPMutableAnimatableProperty *prop) {
+                    // read value
+                    prop.readBlock = ^(id obj, CGFloat values[]) {
+                        values[0] = [obj bounds].origin.x;
+                        values[1] = [obj bounds].origin.y;
+                    };
+                    // write value
+                    prop.writeBlock = ^(UIScrollView * obj, const CGFloat values[]) {
+                        CGRect tempBounds = [obj bounds];
+                        tempBounds.origin.x = values[0];
+                        tempBounds.origin.y = values[1];
+                        [obj setBounds:tempBounds];
+                        
+                        CGRect bounds = [obj bounds];
+                        
+                        BOOL outsideBoundsMinimum = obj.contentOffset.y < minOffset;
+                        BOOL outsideBoundsMaximum = obj.contentOffset.y > maxOffset;
+                        
+                        if (outsideBoundsMaximum || outsideBoundsMinimum) {
+                            POPDecayAnimation *decayAnimation = [obj pop_animationForKey:@"decelerate"];
+                            if (decayAnimation) {
+                                CGPoint target = bounds.origin;
+                                if (outsideBoundsMinimum) {
+                                    target.x = fmax(target.x, 0.0);
+                                    target.y = fmax(target.y, 0.0);
+                                } else if (outsideBoundsMaximum) {
+                                    target.x = fmin(target.x, obj.contentSize.width - bounds.size.width);
+                                    target.y = fmin(target.y, obj.contentSize.height - bounds.size.height);
+                                }
+                                
+                                //NSLog(@"bouncing with velocity: %@", decayAnimation.velocity);
+                                
+                                POPSpringAnimation *springAnimation = [POPSpringAnimation animation];
+                                POPAnimatableProperty *prop = [POPAnimatableProperty propertyWithName:@"com.rounak.bounds.origin" initializer:^(POPMutableAnimatableProperty *prop) {
+                                    // read value
+                                    prop.readBlock = ^(id obj, CGFloat values[]) {
+                                        values[0] = [obj bounds].origin.x;
+                                        values[1] = [obj bounds].origin.y;
+                                    };
+                                    // write value
+                                    prop.writeBlock = ^(id obj, const CGFloat values[]) {
+                                        CGRect tempBounds = [obj bounds];
+                                        tempBounds.origin.x = values[0];
+                                        tempBounds.origin.y = values[1];
+                                        [obj setBounds:tempBounds];
+                                    };
+                                    // dynamics threshold
+                                    prop.threshold = 0.01;
+                                }];
+                                springAnimation.property = prop;
+                                springAnimation.velocity = decayAnimation.velocity;
+                                springAnimation.toValue = [NSValue valueWithCGPoint:target];
+                                springAnimation.springBounciness = 0.0;
+                                springAnimation.springSpeed = 5.0;
+                                [obj pop_addAnimation:springAnimation forKey:@"bounce"];
+                                
+                                [obj pop_removeAnimationForKey:@"decelerate"];
+                            }
+                        }
+                    };
+                    // dynamics threshold
+                    prop.threshold = 0.01;
+                }];
+                decayAnimation.property = prop;
+                decayAnimation.velocity = [NSValue valueWithCGPoint:CGPointMake(0, velocity)];
+                [_scrollView pop_addAnimation:decayAnimation forKey:@"decelerate"];
             }
             
-            POPDecayAnimation *decayAnimation = [POPDecayAnimation animation];
-            
-            POPAnimatableProperty *prop = [POPAnimatableProperty propertyWithName:@"com.rounak.bounds.origin" initializer:^(POPMutableAnimatableProperty *prop) {
-                // read value
-                prop.readBlock = ^(id obj, CGFloat values[]) {
-                    values[0] = [obj bounds].origin.x;
-                    values[1] = [obj bounds].origin.y;
-                };
-                // write value
-                prop.writeBlock = ^(UIScrollView * obj, const CGFloat values[]) {
-                    CGRect tempBounds = [obj bounds];
-                    tempBounds.origin.x = values[0];
-                    tempBounds.origin.y = values[1];
-                    [obj setBounds:tempBounds];
-                    
-                    CGRect bounds = [obj bounds];
-                    
-                    BOOL outsideBoundsMinimum = obj.contentOffset.y < minOffset;
-                    BOOL outsideBoundsMaximum = obj.contentOffset.y > maxOffset;
-                    
-                    if (outsideBoundsMaximum || outsideBoundsMinimum) {
-                        POPDecayAnimation *decayAnimation = [obj pop_animationForKey:@"decelerate"];
-                        if (decayAnimation) {
-                            CGPoint target = bounds.origin;
-                            if (outsideBoundsMinimum) {
-                                target.x = fmax(target.x, 0.0);
-                                target.y = fmax(target.y, 0.0);
-                            } else if (outsideBoundsMaximum) {
-                                target.x = fmin(target.x, obj.contentSize.width - bounds.size.width);
-                                target.y = fmin(target.y, obj.contentSize.height - bounds.size.height);
-                            }
-                            
-                            //NSLog(@"bouncing with velocity: %@", decayAnimation.velocity);
-                            
-                            POPSpringAnimation *springAnimation = [POPSpringAnimation animation];
-                            POPAnimatableProperty *prop = [POPAnimatableProperty propertyWithName:@"com.rounak.bounds.origin" initializer:^(POPMutableAnimatableProperty *prop) {
-                                // read value
-                                prop.readBlock = ^(id obj, CGFloat values[]) {
-                                    values[0] = [obj bounds].origin.x;
-                                    values[1] = [obj bounds].origin.y;
-                                };
-                                // write value
-                                prop.writeBlock = ^(id obj, const CGFloat values[]) {
-                                    CGRect tempBounds = [obj bounds];
-                                    tempBounds.origin.x = values[0];
-                                    tempBounds.origin.y = values[1];
-                                    [obj setBounds:tempBounds];
-                                };
-                                // dynamics threshold
-                                prop.threshold = 0.01;
-                            }];
-                            springAnimation.property = prop;
-                            springAnimation.velocity = decayAnimation.velocity;
-                            springAnimation.toValue = [NSValue valueWithCGPoint:target];
-                            springAnimation.springBounciness = 0.0;
-                            springAnimation.springSpeed = 5.0;
-                            [obj pop_addAnimation:springAnimation forKey:@"bounce"];
-                            
-                            [obj pop_removeAnimationForKey:@"decelerate"];
-                        }
-                    }
-                };
-                // dynamics threshold
-                prop.threshold = 0.01;
-            }];
-            decayAnimation.property = prop;
-            decayAnimation.velocity = [NSValue valueWithCGPoint:CGPointMake(0, velocity)];
-            [_scrollView pop_addAnimation:decayAnimation forKey:@"decelerate"];
+            focusLine = nil;
+            isDraggingClipboardArea = NO;
+            isDraggingInfoArea = NO;
+            isScrollingOnSides = NO;
+            stillDeciding = YES;
         }
-        
-        focusLine = nil;
-        isDraggingClipboardArea = NO;
-        isDraggingInfoArea = NO;
-        isScrollingOnSides = NO;
-        stillDeciding = YES;
     }
 }
 

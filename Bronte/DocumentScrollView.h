@@ -11,5 +11,6 @@
 @interface DocumentScrollView : UIScrollView
 
 @property (nonatomic, weak) id touchDelegate;
+@property (nonatomic) CGPoint previousContentOffset;
 
 @end

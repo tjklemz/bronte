@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "BronteEditView.h"
+#import "DocumentScrollView.h"
 
 @interface BronteViewController : UIViewController <BronteEditDelegate> {
     NSDictionary * _defaultAttr;
@@ -20,7 +21,7 @@
     UIImage * _paraIcon;
     
     CALayer * _docLayer;
-    UIScrollView * _scrollView;
+    DocumentScrollView * _scrollView;
     
     BOOL _isDraggingClipboard;
     

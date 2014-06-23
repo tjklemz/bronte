@@ -20,4 +20,17 @@
     return self.position.x - self.anchorPoint.x*self.bounds.size.width;
 }
 
+- (BOOL)isWord {
+    __unsafe_unretained Class cls = [CATextLayer class];
+    return [self isKindOfClass:cls];
+}
+
+- (BOOL)isLine {
+    return [self.name isEqualToString:@"L"];
+}
+
+- (BOOL)isParagraphSeparator {
+    return [self.name isEqualToString:@"P"];
+}
+
 @end

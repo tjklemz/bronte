@@ -14,5 +14,8 @@
 
 - (float)maxX;
 - (float)minX;
+- (BOOL)isWord;
+- (BOOL)isLine;
+- (BOOL)isParagraphSeparator;
 
 @end

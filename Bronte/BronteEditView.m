@@ -8,6 +8,7 @@
 
 #import "BronteEditView.h"
 #import "UIColor+Bronte.h"
+#import "NSArray+Bronte.h"
 
 @implementation BronteEditView
 
@@ -33,17 +34,14 @@
 
 - (id)initWithSelection:(NSArray *)selection
 {
-    __unsafe_unretained Class cls = [CATextLayer class];
-    BOOL dealingWithWords = [selection.firstObject isKindOfClass:cls];
-    
-    CALayer * l = dealingWithWords ? [selection.lastObject superlayer] : selection.lastObject;
+    CALayer * l = [selection lastLineOfSelection];
     
     _selectionPoint = l.position;
     _selectionPoint.y += l.bounds.size.height;
     
     float screenWidth = [UIScreen mainScreen].bounds.size.height;
     
-    self = [super initWithFrame:CGRectMake(0, _selectionPoint.y, screenWidth, 360)];
+    self = [super initWithFrame:CGRectMake(0, _selectionPoint.y, screenWidth, 460)];
     
     if (self) {
         [self setAutoresizingMask:UIViewAutoresizingFlexibleWidth];

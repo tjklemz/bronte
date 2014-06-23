@@ -10,6 +10,13 @@
 
 @implementation DocumentScrollView
 
+- (void)setContentOffset:(CGPoint)contentOffset {
+    self.previousContentOffset = self.contentOffset;
+    [super setContentOffset:contentOffset];
+}
+
+#pragma mark -
+
 -(void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
     if (touches.count == 1) {
         [self.touchDelegate touchesBegan:touches withEvent:event];

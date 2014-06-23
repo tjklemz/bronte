@@ -1,1497 +1,513 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0">
-<dict>
-	<key>archiveVersion</key>
-	<string>1</string>
-	<key>classes</key>
-	<dict/>
-	<key>objectVersion</key>
-	<string>46</string>
-	<key>objects</key>
-	<dict>
-		<key>0C1751BF6A4B453787FE59C6</key>
-		<dict>
-			<key>explicitFileType</key>
-			<string>archive.ar</string>
-			<key>includeInIndex</key>
-			<string>0</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>path</key>
-			<string>libPods.a</string>
-			<key>sourceTree</key>
-			<string>BUILT_PRODUCTS_DIR</string>
-		</dict>
-		<key>0C76DEBD2C69486EAB110CE9</key>
-		<dict>
-			<key>fileRef</key>
-			<string>0C1751BF6A4B453787FE59C6</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>27B7D5EEDF5E44FDB36DDD35</key>
-		<dict>
-			<key>buildActionMask</key>
-			<string>2147483647</string>
-			<key>files</key>
-			<array/>
-			<key>inputPaths</key>
-			<array/>
-			<key>isa</key>
-			<string>PBXShellScriptBuildPhase</string>
-			<key>name</key>
-			<string>Copy Pods Resources</string>
-			<key>outputPaths</key>
-			<array/>
-			<key>runOnlyForDeploymentPostprocessing</key>
-			<string>0</string>
-			<key>shellPath</key>
-			<string>/bin/sh</string>
-			<key>shellScript</key>
-			<string>"${SRCROOT}/Pods/Pods-resources.sh"
-</string>
-			<key>showEnvVarsInLog</key>
-			<string>0</string>
-		</dict>
-		<key>3EDD89CD9C204D14B191E903</key>
-		<dict>
-			<key>includeInIndex</key>
-			<string>1</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>text.xcconfig</string>
-			<key>name</key>
-			<string>Pods.xcconfig</string>
-			<key>path</key>
-			<string>Pods/Pods.xcconfig</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>813E42631946651700260C0E</key>
-		<dict>
-			<key>children</key>
-			<array>
-				<string>813E42751946651700260C0E</string>
-				<string>813E426E1946651700260C0E</string>
-				<string>813E426D1946651700260C0E</string>
-				<string>3EDD89CD9C204D14B191E903</string>
-			</array>
-			<key>isa</key>
-			<string>PBXGroup</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>813E42641946651700260C0E</key>
-		<dict>
-			<key>attributes</key>
-			<dict>
-				<key>LastUpgradeCheck</key>
-				<string>0510</string>
-				<key>ORGANIZATIONNAME</key>
-				<string>Lory &amp; Ludlow</string>
-			</dict>
-			<key>buildConfigurationList</key>
-			<string>813E42671946651700260C0E</string>
-			<key>compatibilityVersion</key>
-			<string>Xcode 3.2</string>
-			<key>developmentRegion</key>
-			<string>English</string>
-			<key>hasScannedForEncodings</key>
-			<string>0</string>
-			<key>isa</key>
-			<string>PBXProject</string>
-			<key>knownRegions</key>
-			<array>
-				<string>en</string>
-			</array>
-			<key>mainGroup</key>
-			<string>813E42631946651700260C0E</string>
-			<key>productRefGroup</key>
-			<string>813E426D1946651700260C0E</string>
-			<key>projectDirPath</key>
-			<string></string>
-			<key>projectReferences</key>
-			<array/>
-			<key>projectRoot</key>
-			<string></string>
-			<key>targets</key>
-			<array>
-				<string>813E426B1946651700260C0E</string>
-			</array>
-		</dict>
-		<key>813E42671946651700260C0E</key>
-		<dict>
-			<key>buildConfigurations</key>
-			<array>
-				<string>813E42961946651700260C0E</string>
-				<string>813E42971946651700260C0E</string>
-			</array>
-			<key>defaultConfigurationIsVisible</key>
-			<string>0</string>
-			<key>defaultConfigurationName</key>
-			<string>Release</string>
-			<key>isa</key>
-			<string>XCConfigurationList</string>
-		</dict>
-		<key>813E42681946651700260C0E</key>
-		<dict>
-			<key>buildActionMask</key>
-			<string>2147483647</string>
-			<key>files</key>
-			<array>
-				<string>81497EC3194F7A310018A1D8</string>
-				<string>813E42801946651700260C0E</string>
-				<string>813E42E01947D04800260C0E</string>
-				<string>813E42DD19479EC100260C0E</string>
-				<string>813E42A619466CC000260C0E</string>
-				<string>813E42D319466E3E00260C0E</string>
-				<string>813E42A019466C5800260C0E</string>
-				<string>813E42D919466EBC00260C0E</string>
-				<string>813E427C1946651700260C0E</string>
-				<string>813E42A319466CB200260C0E</string>
-				<string>813E42D619466EA800260C0E</string>
-			</array>
-			<key>isa</key>
-			<string>PBXSourcesBuildPhase</string>
-			<key>runOnlyForDeploymentPostprocessing</key>
-			<string>0</string>
-		</dict>
-		<key>813E42691946651700260C0E</key>
-		<dict>
-			<key>buildActionMask</key>
-			<string>2147483647</string>
-			<key>files</key>
-			<array>
-				<string>813E42721946651700260C0E</string>
-				<string>813E42741946651700260C0E</string>
-				<string>813E42701946651700260C0E</string>
-				<string>0C76DEBD2C69486EAB110CE9</string>
-			</array>
-			<key>isa</key>
-			<string>PBXFrameworksBuildPhase</string>
-			<key>runOnlyForDeploymentPostprocessing</key>
-			<string>0</string>
-		</dict>
-		<key>813E426A1946651700260C0E</key>
-		<dict>
-			<key>buildActionMask</key>
-			<string>2147483647</string>
-			<key>files</key>
-			<array>
-				<string>813E42B719466CE200260C0E</string>
-				<string>813E42D019466D6A00260C0E</string>
-				<string>813E42B819466CE200260C0E</string>
-				<string>813E42BC19466CE200260C0E</string>
-				<string>813E42BF19466CE200260C0E</string>
-				<string>813E42BA19466CE200260C0E</string>
-				<string>813E42CF19466D6A00260C0E</string>
-				<string>813E427A1946651700260C0E</string>
-				<string>813E42CE19466D6A00260C0E</string>
-				<string>813E42E31948030100260C0E</string>
-				<string>813E42B919466CE200260C0E</string>
-				<string>813E42CD19466D6A00260C0E</string>
-				<string>813E42B619466CE200260C0E</string>
-				<string>813E42BE19466CE200260C0E</string>
-				<string>813E42B519466CE200260C0E</string>
-				<string>813E42E2194802FE00260C0E</string>
-				<string>813E42BB19466CE200260C0E</string>
-				<string>813E42CC19466D6A00260C0E</string>
-				<string>813E42821946651700260C0E</string>
-				<string>813E42BD19466CE200260C0E</string>
-				<string>813E42C019466CE200260C0E</string>
-				<string>813E42C119466CE200260C0E</string>
-				<string>813E42CB19466D6A00260C0E</string>
-			</array>
-			<key>isa</key>
-			<string>PBXResourcesBuildPhase</string>
-			<key>runOnlyForDeploymentPostprocessing</key>
-			<string>0</string>
-		</dict>
-		<key>813E426B1946651700260C0E</key>
-		<dict>
-			<key>buildConfigurationList</key>
-			<string>813E42981946651700260C0E</string>
-			<key>buildPhases</key>
-			<array>
-				<string>E21BD88D984B458AB5081B49</string>
-				<string>813E42681946651700260C0E</string>
-				<string>813E42691946651700260C0E</string>
-				<string>813E426A1946651700260C0E</string>
-				<string>27B7D5EEDF5E44FDB36DDD35</string>
-			</array>
-			<key>buildRules</key>
-			<array/>
-			<key>dependencies</key>
-			<array/>
-			<key>isa</key>
-			<string>PBXNativeTarget</string>
-			<key>name</key>
-			<string>Bront&#235;</string>
-			<key>productName</key>
-			<string>Bronte</string>
-			<key>productReference</key>
-			<string>813E426C1946651700260C0E</string>
-			<key>productType</key>
-			<string>com.apple.product-type.application</string>
-		</dict>
-		<key>813E426C1946651700260C0E</key>
-		<dict>
-			<key>explicitFileType</key>
-			<string>wrapper.application</string>
-			<key>includeInIndex</key>
-			<string>0</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>path</key>
-			<string>Bronte&#776;.app</string>
-			<key>sourceTree</key>
-			<string>BUILT_PRODUCTS_DIR</string>
-		</dict>
-		<key>813E426D1946651700260C0E</key>
-		<dict>
-			<key>children</key>
-			<array>
-				<string>813E426C1946651700260C0E</string>
-			</array>
-			<key>isa</key>
-			<string>PBXGroup</string>
-			<key>name</key>
-			<string>Products</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>813E426E1946651700260C0E</key>
-		<dict>
-			<key>children</key>
-			<array>
-				<string>813E426F1946651700260C0E</string>
-				<string>813E42711946651700260C0E</string>
-				<string>813E42731946651700260C0E</string>
-				<string>813E42881946651700260C0E</string>
-				<string>0C1751BF6A4B453787FE59C6</string>
-			</array>
-			<key>isa</key>
-			<string>PBXGroup</string>
-			<key>name</key>
-			<string>Frameworks</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>813E426F1946651700260C0E</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>wrapper.framework</string>
-			<key>name</key>
-			<string>Foundation.framework</string>
-			<key>path</key>
-			<string>System/Library/Frameworks/Foundation.framework</string>
-			<key>sourceTree</key>
-			<string>SDKROOT</string>
-		</dict>
-		<key>813E42701946651700260C0E</key>
-		<dict>
-			<key>fileRef</key>
-			<string>813E426F1946651700260C0E</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>813E42711946651700260C0E</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>wrapper.framework</string>
-			<key>name</key>
-			<string>CoreGraphics.framework</string>
-			<key>path</key>
-			<string>System/Library/Frameworks/CoreGraphics.framework</string>
-			<key>sourceTree</key>
-			<string>SDKROOT</string>
-		</dict>
-		<key>813E42721946651700260C0E</key>
-		<dict>
-			<key>fileRef</key>
-			<string>813E42711946651700260C0E</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>813E42731946651700260C0E</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>wrapper.framework</string>
-			<key>name</key>
-			<string>UIKit.framework</string>
-			<key>path</key>
-			<string>System/Library/Frameworks/UIKit.framework</string>
-			<key>sourceTree</key>
-			<string>SDKROOT</string>
-		</dict>
-		<key>813E42741946651700260C0E</key>
-		<dict>
-			<key>fileRef</key>
-			<string>813E42731946651700260C0E</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>813E42751946651700260C0E</key>
-		<dict>
-			<key>children</key>
-			<array>
-				<string>813E42D719466EBC00260C0E</string>
-				<string>813E42D819466EBC00260C0E</string>
-				<string>813E42D419466EA800260C0E</string>
-				<string>813E42D519466EA800260C0E</string>
-				<string>813E42A419466CC000260C0E</string>
-				<string>813E42A519466CC000260C0E</string>
-				<string>813E42A119466CB200260C0E</string>
-				<string>813E42A219466CB200260C0E</string>
-				<string>813E429E19466C5800260C0E</string>
-				<string>813E429F19466C5800260C0E</string>
-				<string>813E427E1946651700260C0E</string>
-				<string>813E427F1946651700260C0E</string>
-				<string>813E42811946651700260C0E</string>
-				<string>813E42761946651700260C0E</string>
-				<string>813E42D119466E3E00260C0E</string>
-				<string>813E42D219466E3E00260C0E</string>
-				<string>813E42DB19479EC100260C0E</string>
-				<string>813E42DC19479EC100260C0E</string>
-				<string>813E42DE1947D04800260C0E</string>
-				<string>813E42DF1947D04800260C0E</string>
-				<string>81497EC1194F7A310018A1D8</string>
-				<string>81497EC2194F7A310018A1D8</string>
-			</array>
-			<key>isa</key>
-			<string>PBXGroup</string>
-			<key>path</key>
-			<string>Bronte</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>813E42761946651700260C0E</key>
-		<dict>
-			<key>children</key>
-			<array>
-				<string>813E42C319466CF300260C0E</string>
-				<string>813E42A719466CD400260C0E</string>
-				<string>813E42771946651700260C0E</string>
-				<string>813E42781946651700260C0E</string>
-				<string>813E427B1946651700260C0E</string>
-				<string>813E427D1946651700260C0E</string>
-			</array>
-			<key>isa</key>
-			<string>PBXGroup</string>
-			<key>name</key>
-			<string>Supporting Files</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>813E42771946651700260C0E</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>text.plist.xml</string>
-			<key>path</key>
-			<string>Bronte-Info.plist</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>813E42781946651700260C0E</key>
-		<dict>
-			<key>children</key>
-			<array>
-				<string>813E42791946651700260C0E</string>
-			</array>
-			<key>isa</key>
-			<string>PBXVariantGroup</string>
-			<key>name</key>
-			<string>InfoPlist.strings</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>813E42791946651700260C0E</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>text.plist.strings</string>
-			<key>name</key>
-			<string>en</string>
-			<key>path</key>
-			<string>en.lproj/InfoPlist.strings</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>813E427A1946651700260C0E</key>
-		<dict>
-			<key>fileRef</key>
-			<string>813E42781946651700260C0E</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>813E427B1946651700260C0E</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.objc</string>
-			<key>path</key>
-			<string>main.m</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>813E427C1946651700260C0E</key>
-		<dict>
-			<key>fileRef</key>
-			<string>813E427B1946651700260C0E</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>813E427D1946651700260C0E</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>path</key>
-			<string>Bronte-Prefix.pch</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>813E427E1946651700260C0E</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>path</key>
-			<string>AppDelegate.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>813E427F1946651700260C0E</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.objc</string>
-			<key>path</key>
-			<string>AppDelegate.m</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>813E42801946651700260C0E</key>
-		<dict>
-			<key>fileRef</key>
-			<string>813E427F1946651700260C0E</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>813E42811946651700260C0E</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>folder.assetcatalog</string>
-			<key>path</key>
-			<string>Images.xcassets</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>813E42821946651700260C0E</key>
-		<dict>
-			<key>fileRef</key>
-			<string>813E42811946651700260C0E</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>813E42881946651700260C0E</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>wrapper.framework</string>
-			<key>name</key>
-			<string>XCTest.framework</string>
-			<key>path</key>
-			<string>Library/Frameworks/XCTest.framework</string>
-			<key>sourceTree</key>
-			<string>DEVELOPER_DIR</string>
-		</dict>
-		<key>813E42961946651700260C0E</key>
-		<dict>
-			<key>buildSettings</key>
-			<dict>
-				<key>ALWAYS_SEARCH_USER_PATHS</key>
-				<string>NO</string>
-				<key>CLANG_CXX_LANGUAGE_STANDARD</key>
-				<string>gnu++0x</string>
-				<key>CLANG_CXX_LIBRARY</key>
-				<string>libc++</string>
-				<key>CLANG_ENABLE_MODULES</key>
-				<string>YES</string>
-				<key>CLANG_ENABLE_OBJC_ARC</key>
-				<string>YES</string>
-				<key>CLANG_WARN_BOOL_CONVERSION</key>
-				<string>YES</string>
-				<key>CLANG_WARN_CONSTANT_CONVERSION</key>
-				<string>YES</string>
-				<key>CLANG_WARN_DIRECT_OBJC_ISA_USAGE</key>
-				<string>YES_ERROR</string>
-				<key>CLANG_WARN_EMPTY_BODY</key>
-				<string>YES</string>
-				<key>CLANG_WARN_ENUM_CONVERSION</key>
-				<string>YES</string>
-				<key>CLANG_WARN_INT_CONVERSION</key>
-				<string>YES</string>
-				<key>CLANG_WARN_OBJC_ROOT_CLASS</key>
-				<string>YES_ERROR</string>
-				<key>CLANG_WARN__DUPLICATE_METHOD_MATCH</key>
-				<string>YES</string>
-				<key>CODE_SIGN_IDENTITY[sdk=iphoneos*]</key>
-				<string>iPhone Developer</string>
-				<key>COPY_PHASE_STRIP</key>
-				<string>NO</string>
-				<key>GCC_C_LANGUAGE_STANDARD</key>
-				<string>gnu99</string>
-				<key>GCC_DYNAMIC_NO_PIC</key>
-				<string>NO</string>
-				<key>GCC_OPTIMIZATION_LEVEL</key>
-				<string>0</string>
-				<key>GCC_PREPROCESSOR_DEFINITIONS</key>
-				<array>
-					<string>DEBUG=1</string>
-					<string>$(inherited)</string>
-				</array>
-				<key>GCC_SYMBOLS_PRIVATE_EXTERN</key>
-				<string>NO</string>
-				<key>GCC_WARN_64_TO_32_BIT_CONVERSION</key>
-				<string>YES</string>
-				<key>GCC_WARN_ABOUT_RETURN_TYPE</key>
-				<string>YES_ERROR</string>
-				<key>GCC_WARN_UNDECLARED_SELECTOR</key>
-				<string>YES</string>
-				<key>GCC_WARN_UNINITIALIZED_AUTOS</key>
-				<string>YES_AGGRESSIVE</string>
-				<key>GCC_WARN_UNUSED_FUNCTION</key>
-				<string>YES</string>
-				<key>GCC_WARN_UNUSED_VARIABLE</key>
-				<string>YES</string>
-				<key>IPHONEOS_DEPLOYMENT_TARGET</key>
-				<string>7.1</string>
-				<key>ONLY_ACTIVE_ARCH</key>
-				<string>YES</string>
-				<key>SDKROOT</key>
-				<string>iphoneos</string>
-				<key>TARGETED_DEVICE_FAMILY</key>
-				<string>2</string>
-			</dict>
-			<key>isa</key>
-			<string>XCBuildConfiguration</string>
-			<key>name</key>
-			<string>Debug</string>
-		</dict>
-		<key>813E42971946651700260C0E</key>
-		<dict>
-			<key>buildSettings</key>
-			<dict>
-				<key>ALWAYS_SEARCH_USER_PATHS</key>
-				<string>NO</string>
-				<key>CLANG_CXX_LANGUAGE_STANDARD</key>
-				<string>gnu++0x</string>
-				<key>CLANG_CXX_LIBRARY</key>
-				<string>libc++</string>
-				<key>CLANG_ENABLE_MODULES</key>
-				<string>YES</string>
-				<key>CLANG_ENABLE_OBJC_ARC</key>
-				<string>YES</string>
-				<key>CLANG_WARN_BOOL_CONVERSION</key>
-				<string>YES</string>
-				<key>CLANG_WARN_CONSTANT_CONVERSION</key>
-				<string>YES</string>
-				<key>CLANG_WARN_DIRECT_OBJC_ISA_USAGE</key>
-				<string>YES_ERROR</string>
-				<key>CLANG_WARN_EMPTY_BODY</key>
-				<string>YES</string>
-				<key>CLANG_WARN_ENUM_CONVERSION</key>
-				<string>YES</string>
-				<key>CLANG_WARN_INT_CONVERSION</key>
-				<string>YES</string>
-				<key>CLANG_WARN_OBJC_ROOT_CLASS</key>
-				<string>YES_ERROR</string>
-				<key>CLANG_WARN__DUPLICATE_METHOD_MATCH</key>
-				<string>YES</string>
-				<key>CODE_SIGN_IDENTITY[sdk=iphoneos*]</key>
-				<string>iPhone Developer</string>
-				<key>COPY_PHASE_STRIP</key>
-				<string>YES</string>
-				<key>ENABLE_NS_ASSERTIONS</key>
-				<string>NO</string>
-				<key>GCC_C_LANGUAGE_STANDARD</key>
-				<string>gnu99</string>
-				<key>GCC_WARN_64_TO_32_BIT_CONVERSION</key>
-				<string>YES</string>
-				<key>GCC_WARN_ABOUT_RETURN_TYPE</key>
-				<string>YES_ERROR</string>
-				<key>GCC_WARN_UNDECLARED_SELECTOR</key>
-				<string>YES</string>
-				<key>GCC_WARN_UNINITIALIZED_AUTOS</key>
-				<string>YES_AGGRESSIVE</string>
-				<key>GCC_WARN_UNUSED_FUNCTION</key>
-				<string>YES</string>
-				<key>GCC_WARN_UNUSED_VARIABLE</key>
-				<string>YES</string>
-				<key>IPHONEOS_DEPLOYMENT_TARGET</key>
-				<string>7.1</string>
-				<key>SDKROOT</key>
-				<string>iphoneos</string>
-				<key>TARGETED_DEVICE_FAMILY</key>
-				<string>2</string>
-				<key>VALIDATE_PRODUCT</key>
-				<string>YES</string>
-			</dict>
-			<key>isa</key>
-			<string>XCBuildConfiguration</string>
-			<key>name</key>
-			<string>Release</string>
-		</dict>
-		<key>813E42981946651700260C0E</key>
-		<dict>
-			<key>buildConfigurations</key>
-			<array>
-				<string>813E42991946651700260C0E</string>
-				<string>813E429A1946651700260C0E</string>
-			</array>
-			<key>defaultConfigurationIsVisible</key>
-			<string>0</string>
-			<key>defaultConfigurationName</key>
-			<string>Release</string>
-			<key>isa</key>
-			<string>XCConfigurationList</string>
-		</dict>
-		<key>813E42991946651700260C0E</key>
-		<dict>
-			<key>baseConfigurationReference</key>
-			<string>3EDD89CD9C204D14B191E903</string>
-			<key>buildSettings</key>
-			<dict>
-				<key>ASSETCATALOG_COMPILER_APPICON_NAME</key>
-				<string>AppIcon</string>
-				<key>ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME</key>
-				<string>LaunchImage</string>
-				<key>GCC_PRECOMPILE_PREFIX_HEADER</key>
-				<string>YES</string>
-				<key>GCC_PREFIX_HEADER</key>
-				<string>Bronte/Bronte-Prefix.pch</string>
-				<key>INFOPLIST_FILE</key>
-				<string>Bronte/Bronte-Info.plist</string>
-				<key>PRODUCT_NAME</key>
-				<string>$(TARGET_NAME)</string>
-				<key>WRAPPER_EXTENSION</key>
-				<string>app</string>
-			</dict>
-			<key>isa</key>
-			<string>XCBuildConfiguration</string>
-			<key>name</key>
-			<string>Debug</string>
-		</dict>
-		<key>813E429A1946651700260C0E</key>
-		<dict>
-			<key>baseConfigurationReference</key>
-			<string>3EDD89CD9C204D14B191E903</string>
-			<key>buildSettings</key>
-			<dict>
-				<key>ASSETCATALOG_COMPILER_APPICON_NAME</key>
-				<string>AppIcon</string>
-				<key>ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME</key>
-				<string>LaunchImage</string>
-				<key>GCC_PRECOMPILE_PREFIX_HEADER</key>
-				<string>YES</string>
-				<key>GCC_PREFIX_HEADER</key>
-				<string>Bronte/Bronte-Prefix.pch</string>
-				<key>INFOPLIST_FILE</key>
-				<string>Bronte/Bronte-Info.plist</string>
-				<key>PRODUCT_NAME</key>
-				<string>$(TARGET_NAME)</string>
-				<key>WRAPPER_EXTENSION</key>
-				<string>app</string>
-			</dict>
-			<key>isa</key>
-			<string>XCBuildConfiguration</string>
-			<key>name</key>
-			<string>Release</string>
-		</dict>
-		<key>813E429E19466C5800260C0E</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>path</key>
-			<string>CALayer+Bronte.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>813E429F19466C5800260C0E</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.objc</string>
-			<key>path</key>
-			<string>CALayer+Bronte.m</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>813E42A019466C5800260C0E</key>
-		<dict>
-			<key>fileRef</key>
-			<string>813E429F19466C5800260C0E</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>813E42A119466CB200260C0E</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>path</key>
-			<string>BronteTextInput.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>813E42A219466CB200260C0E</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.objc</string>
-			<key>path</key>
-			<string>BronteTextInput.m</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>813E42A319466CB200260C0E</key>
-		<dict>
-			<key>fileRef</key>
-			<string>813E42A219466CB200260C0E</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>813E42A419466CC000260C0E</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>path</key>
-			<string>BronteEditView.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>813E42A519466CC000260C0E</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.objc</string>
-			<key>path</key>
-			<string>BronteEditView.m</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>813E42A619466CC000260C0E</key>
-		<dict>
-			<key>fileRef</key>
-			<string>813E42A519466CC000260C0E</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>813E42A719466CD400260C0E</key>
-		<dict>
-			<key>children</key>
-			<array>
-				<string>813E42C519466D6A00260C0E</string>
-				<string>813E42C619466D6A00260C0E</string>
-				<string>813E42C719466D6A00260C0E</string>
-				<string>813E42C819466D6A00260C0E</string>
-				<string>813E42C919466D6A00260C0E</string>
-				<string>813E42CA19466D6A00260C0E</string>
-				<string>813E42C419466D4600260C0E</string>
-			</array>
-			<key>isa</key>
-			<string>PBXGroup</string>
-			<key>name</key>
-			<string>images</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>813E42A819466CE200260C0E</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>image.png</string>
-			<key>path</key>
-			<string>edit_icons_backspace_l.png</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>813E42A919466CE200260C0E</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>image.png</string>
-			<key>path</key>
-			<string>edit_icons_brackets.png</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>813E42AA19466CE200260C0E</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>image.png</string>
-			<key>path</key>
-			<string>edit_icons_cap.png</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>813E42AB19466CE200260C0E</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>image.png</string>
-			<key>path</key>
-			<string>edit_icons_delete.png</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>813E42AC19466CE200260C0E</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>image.png</string>
-			<key>path</key>
-			<string>edit_icons_insert-left_gray.png</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>813E42AD19466CE200260C0E</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>image.png</string>
-			<key>path</key>
-			<string>edit_icons_insert-left.png</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>813E42AE19466CE200260C0E</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>image.png</string>
-			<key>path</key>
-			<string>edit_icons_insert-right_gray.png</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>813E42AF19466CE200260C0E</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>image.png</string>
-			<key>path</key>
-			<string>edit_icons_insert-right.png</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>813E42B019466CE200260C0E</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>image.png</string>
-			<key>path</key>
-			<string>edit_icons_insert.png</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>813E42B119466CE200260C0E</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>image.png</string>
-			<key>path</key>
-			<string>edit_icons_lc.png</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>813E42B219466CE200260C0E</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>image.png</string>
-			<key>path</key>
-			<string>edit_icons_parentheses.png</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>813E42B319466CE200260C0E</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>image.png</string>
-			<key>path</key>
-			<string>edit_icons_quote1.png</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>813E42B419466CE200260C0E</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>image.png</string>
-			<key>path</key>
-			<string>edit_icons_quote2.png</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>813E42B519466CE200260C0E</key>
-		<dict>
-			<key>fileRef</key>
-			<string>813E42A819466CE200260C0E</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>813E42B619466CE200260C0E</key>
-		<dict>
-			<key>fileRef</key>
-			<string>813E42A919466CE200260C0E</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>813E42B719466CE200260C0E</key>
-		<dict>
-			<key>fileRef</key>
-			<string>813E42AA19466CE200260C0E</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>813E42B819466CE200260C0E</key>
-		<dict>
-			<key>fileRef</key>
-			<string>813E42AB19466CE200260C0E</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>813E42B919466CE200260C0E</key>
-		<dict>
-			<key>fileRef</key>
-			<string>813E42AC19466CE200260C0E</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>813E42BA19466CE200260C0E</key>
-		<dict>
-			<key>fileRef</key>
-			<string>813E42AD19466CE200260C0E</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>813E42BB19466CE200260C0E</key>
-		<dict>
-			<key>fileRef</key>
-			<string>813E42AE19466CE200260C0E</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>813E42BC19466CE200260C0E</key>
-		<dict>
-			<key>fileRef</key>
-			<string>813E42AF19466CE200260C0E</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>813E42BD19466CE200260C0E</key>
-		<dict>
-			<key>fileRef</key>
-			<string>813E42B019466CE200260C0E</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>813E42BE19466CE200260C0E</key>
-		<dict>
-			<key>fileRef</key>
-			<string>813E42B119466CE200260C0E</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>813E42BF19466CE200260C0E</key>
-		<dict>
-			<key>fileRef</key>
-			<string>813E42B219466CE200260C0E</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>813E42C019466CE200260C0E</key>
-		<dict>
-			<key>fileRef</key>
-			<string>813E42B319466CE200260C0E</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>813E42C119466CE200260C0E</key>
-		<dict>
-			<key>fileRef</key>
-			<string>813E42B419466CE200260C0E</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>813E42C219466CF000260C0E</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>file</string>
-			<key>path</key>
-			<string>Lekton-Regular.ttf</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>813E42C319466CF300260C0E</key>
-		<dict>
-			<key>children</key>
-			<array>
-				<string>813E42E11948013200260C0E</string>
-				<string>813E42C219466CF000260C0E</string>
-			</array>
-			<key>isa</key>
-			<string>PBXGroup</string>
-			<key>name</key>
-			<string>fonts</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>813E42C419466D4600260C0E</key>
-		<dict>
-			<key>children</key>
-			<array>
-				<string>813E42A819466CE200260C0E</string>
-				<string>813E42A919466CE200260C0E</string>
-				<string>813E42AA19466CE200260C0E</string>
-				<string>813E42AB19466CE200260C0E</string>
-				<string>813E42AC19466CE200260C0E</string>
-				<string>813E42AD19466CE200260C0E</string>
-				<string>813E42AE19466CE200260C0E</string>
-				<string>813E42AF19466CE200260C0E</string>
-				<string>813E42B019466CE200260C0E</string>
-				<string>813E42B119466CE200260C0E</string>
-				<string>813E42B219466CE200260C0E</string>
-				<string>813E42B319466CE200260C0E</string>
-				<string>813E42B419466CE200260C0E</string>
-			</array>
-			<key>isa</key>
-			<string>PBXGroup</string>
-			<key>name</key>
-			<string>editing</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>813E42C519466D6A00260C0E</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>image.png</string>
-			<key>path</key>
-			<string>milk_gray.png</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>813E42C619466D6A00260C0E</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>image.png</string>
-			<key>path</key>
-			<string>milk.png</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>813E42C719466D6A00260C0E</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>image.png</string>
-			<key>path</key>
-			<string>mix_gray.png</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>813E42C819466D6A00260C0E</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>image.png</string>
-			<key>path</key>
-			<string>mix.png</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>813E42C919466D6A00260C0E</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>image.png</string>
-			<key>path</key>
-			<string>sugar_gray.png</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>813E42CA19466D6A00260C0E</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>image.png</string>
-			<key>path</key>
-			<string>sugar.png</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>813E42CB19466D6A00260C0E</key>
-		<dict>
-			<key>fileRef</key>
-			<string>813E42C519466D6A00260C0E</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>813E42CC19466D6A00260C0E</key>
-		<dict>
-			<key>fileRef</key>
-			<string>813E42C619466D6A00260C0E</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>813E42CD19466D6A00260C0E</key>
-		<dict>
-			<key>fileRef</key>
-			<string>813E42C719466D6A00260C0E</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>813E42CE19466D6A00260C0E</key>
-		<dict>
-			<key>fileRef</key>
-			<string>813E42C819466D6A00260C0E</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>813E42CF19466D6A00260C0E</key>
-		<dict>
-			<key>fileRef</key>
-			<string>813E42C919466D6A00260C0E</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>813E42D019466D6A00260C0E</key>
-		<dict>
-			<key>fileRef</key>
-			<string>813E42CA19466D6A00260C0E</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>813E42D119466E3E00260C0E</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>path</key>
-			<string>BronteViewController.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>813E42D219466E3E00260C0E</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.objc</string>
-			<key>path</key>
-			<string>BronteViewController.m</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>813E42D319466E3E00260C0E</key>
-		<dict>
-			<key>fileRef</key>
-			<string>813E42D219466E3E00260C0E</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>813E42D419466EA800260C0E</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>path</key>
-			<string>UIColor+Bronte.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>813E42D519466EA800260C0E</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.objc</string>
-			<key>path</key>
-			<string>UIColor+Bronte.m</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>813E42D619466EA800260C0E</key>
-		<dict>
-			<key>fileRef</key>
-			<string>813E42D519466EA800260C0E</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>813E42D719466EBC00260C0E</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>path</key>
-			<string>UIFont+Bronte.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>813E42D819466EBC00260C0E</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.objc</string>
-			<key>path</key>
-			<string>UIFont+Bronte.m</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>813E42D919466EBC00260C0E</key>
-		<dict>
-			<key>fileRef</key>
-			<string>813E42D819466EBC00260C0E</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>813E42DB19479EC100260C0E</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>path</key>
-			<string>DocumentScrollView.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>813E42DC19479EC100260C0E</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.objc</string>
-			<key>path</key>
-			<string>DocumentScrollView.m</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>813E42DD19479EC100260C0E</key>
-		<dict>
-			<key>fileRef</key>
-			<string>813E42DC19479EC100260C0E</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>813E42DE1947D04800260C0E</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>path</key>
-			<string>MultiSelectGestureRecognizer.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>813E42DF1947D04800260C0E</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.objc</string>
-			<key>path</key>
-			<string>MultiSelectGestureRecognizer.m</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>813E42E01947D04800260C0E</key>
-		<dict>
-			<key>fileRef</key>
-			<string>813E42DF1947D04800260C0E</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>813E42E11948013200260C0E</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>file</string>
-			<key>path</key>
-			<string>Lekton-Bold.ttf</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>813E42E2194802FE00260C0E</key>
-		<dict>
-			<key>fileRef</key>
-			<string>813E42E11948013200260C0E</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>813E42E31948030100260C0E</key>
-		<dict>
-			<key>fileRef</key>
-			<string>813E42C219466CF000260C0E</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>81497EC1194F7A310018A1D8</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>path</key>
-			<string>UIImage+Bronte.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>81497EC2194F7A310018A1D8</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.objc</string>
-			<key>path</key>
-			<string>UIImage+Bronte.m</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>81497EC3194F7A310018A1D8</key>
-		<dict>
-			<key>fileRef</key>
-			<string>81497EC2194F7A310018A1D8</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>E21BD88D984B458AB5081B49</key>
-		<dict>
-			<key>buildActionMask</key>
-			<string>2147483647</string>
-			<key>files</key>
-			<array/>
-			<key>inputPaths</key>
-			<array/>
-			<key>isa</key>
-			<string>PBXShellScriptBuildPhase</string>
-			<key>name</key>
-			<string>Check Pods Manifest.lock</string>
-			<key>outputPaths</key>
-			<array/>
-			<key>runOnlyForDeploymentPostprocessing</key>
-			<string>0</string>
-			<key>shellPath</key>
-			<string>/bin/sh</string>
-			<key>shellScript</key>
-			<string>diff "${PODS_ROOT}/../Podfile.lock" "${PODS_ROOT}/Manifest.lock" &gt; /dev/null
-if [[ $? != 0 ]] ; then
-    cat &lt;&lt; EOM
-error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.
-EOM
-    exit 1
-fi
-</string>
-			<key>showEnvVarsInLog</key>
-			<string>0</string>
-		</dict>
-	</dict>
-	<key>rootObject</key>
-	<string>813E42641946651700260C0E</string>
-</dict>
-</plist>
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		0C76DEBD2C69486EAB110CE9 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0C1751BF6A4B453787FE59C6 /* libPods.a */; };
+		813E42701946651700260C0E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 813E426F1946651700260C0E /* Foundation.framework */; };
+		813E42721946651700260C0E /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 813E42711946651700260C0E /* CoreGraphics.framework */; };
+		813E42741946651700260C0E /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 813E42731946651700260C0E /* UIKit.framework */; };
+		813E427A1946651700260C0E /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 813E42781946651700260C0E /* InfoPlist.strings */; };
+		813E427C1946651700260C0E /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 813E427B1946651700260C0E /* main.m */; };
+		813E42801946651700260C0E /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 813E427F1946651700260C0E /* AppDelegate.m */; };
+		813E42821946651700260C0E /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 813E42811946651700260C0E /* Images.xcassets */; };
+		813E42A019466C5800260C0E /* CALayer+Bronte.m in Sources */ = {isa = PBXBuildFile; fileRef = 813E429F19466C5800260C0E /* CALayer+Bronte.m */; };
+		813E42A319466CB200260C0E /* BronteTextInput.m in Sources */ = {isa = PBXBuildFile; fileRef = 813E42A219466CB200260C0E /* BronteTextInput.m */; };
+		813E42A619466CC000260C0E /* BronteEditView.m in Sources */ = {isa = PBXBuildFile; fileRef = 813E42A519466CC000260C0E /* BronteEditView.m */; };
+		813E42B519466CE200260C0E /* edit_icons_backspace_l.png in Resources */ = {isa = PBXBuildFile; fileRef = 813E42A819466CE200260C0E /* edit_icons_backspace_l.png */; };
+		813E42B619466CE200260C0E /* edit_icons_brackets.png in Resources */ = {isa = PBXBuildFile; fileRef = 813E42A919466CE200260C0E /* edit_icons_brackets.png */; };
+		813E42B719466CE200260C0E /* edit_icons_cap.png in Resources */ = {isa = PBXBuildFile; fileRef = 813E42AA19466CE200260C0E /* edit_icons_cap.png */; };
+		813E42B819466CE200260C0E /* edit_icons_delete.png in Resources */ = {isa = PBXBuildFile; fileRef = 813E42AB19466CE200260C0E /* edit_icons_delete.png */; };
+		813E42B919466CE200260C0E /* edit_icons_insert-left_gray.png in Resources */ = {isa = PBXBuildFile; fileRef = 813E42AC19466CE200260C0E /* edit_icons_insert-left_gray.png */; };
+		813E42BA19466CE200260C0E /* edit_icons_insert-left.png in Resources */ = {isa = PBXBuildFile; fileRef = 813E42AD19466CE200260C0E /* edit_icons_insert-left.png */; };
+		813E42BB19466CE200260C0E /* edit_icons_insert-right_gray.png in Resources */ = {isa = PBXBuildFile; fileRef = 813E42AE19466CE200260C0E /* edit_icons_insert-right_gray.png */; };
+		813E42BC19466CE200260C0E /* edit_icons_insert-right.png in Resources */ = {isa = PBXBuildFile; fileRef = 813E42AF19466CE200260C0E /* edit_icons_insert-right.png */; };
+		813E42BD19466CE200260C0E /* edit_icons_insert.png in Resources */ = {isa = PBXBuildFile; fileRef = 813E42B019466CE200260C0E /* edit_icons_insert.png */; };
+		813E42BE19466CE200260C0E /* edit_icons_lc.png in Resources */ = {isa = PBXBuildFile; fileRef = 813E42B119466CE200260C0E /* edit_icons_lc.png */; };
+		813E42BF19466CE200260C0E /* edit_icons_parentheses.png in Resources */ = {isa = PBXBuildFile; fileRef = 813E42B219466CE200260C0E /* edit_icons_parentheses.png */; };
+		813E42C019466CE200260C0E /* edit_icons_quote1.png in Resources */ = {isa = PBXBuildFile; fileRef = 813E42B319466CE200260C0E /* edit_icons_quote1.png */; };
+		813E42C119466CE200260C0E /* edit_icons_quote2.png in Resources */ = {isa = PBXBuildFile; fileRef = 813E42B419466CE200260C0E /* edit_icons_quote2.png */; };
+		813E42CB19466D6A00260C0E /* milk_gray.png in Resources */ = {isa = PBXBuildFile; fileRef = 813E42C519466D6A00260C0E /* milk_gray.png */; };
+		813E42CC19466D6A00260C0E /* milk.png in Resources */ = {isa = PBXBuildFile; fileRef = 813E42C619466D6A00260C0E /* milk.png */; };
+		813E42CD19466D6A00260C0E /* mix_gray.png in Resources */ = {isa = PBXBuildFile; fileRef = 813E42C719466D6A00260C0E /* mix_gray.png */; };
+		813E42CE19466D6A00260C0E /* mix.png in Resources */ = {isa = PBXBuildFile; fileRef = 813E42C819466D6A00260C0E /* mix.png */; };
+		813E42CF19466D6A00260C0E /* sugar_gray.png in Resources */ = {isa = PBXBuildFile; fileRef = 813E42C919466D6A00260C0E /* sugar_gray.png */; };
+		813E42D019466D6A00260C0E /* sugar.png in Resources */ = {isa = PBXBuildFile; fileRef = 813E42CA19466D6A00260C0E /* sugar.png */; };
+		813E42D319466E3E00260C0E /* BronteViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 813E42D219466E3E00260C0E /* BronteViewController.m */; };
+		813E42D619466EA800260C0E /* UIColor+Bronte.m in Sources */ = {isa = PBXBuildFile; fileRef = 813E42D519466EA800260C0E /* UIColor+Bronte.m */; };
+		813E42D919466EBC00260C0E /* UIFont+Bronte.m in Sources */ = {isa = PBXBuildFile; fileRef = 813E42D819466EBC00260C0E /* UIFont+Bronte.m */; };
+		813E42DD19479EC100260C0E /* DocumentScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 813E42DC19479EC100260C0E /* DocumentScrollView.m */; };
+		813E42E01947D04800260C0E /* MultiSelectGestureRecognizer.m in Sources */ = {isa = PBXBuildFile; fileRef = 813E42DF1947D04800260C0E /* MultiSelectGestureRecognizer.m */; };
+		813E42E2194802FE00260C0E /* Lekton-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 813E42E11948013200260C0E /* Lekton-Bold.ttf */; };
+		813E42E31948030100260C0E /* Lekton-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 813E42C219466CF000260C0E /* Lekton-Regular.ttf */; };
+		81497EC3194F7A310018A1D8 /* UIImage+Bronte.m in Sources */ = {isa = PBXBuildFile; fileRef = 81497EC2194F7A310018A1D8 /* UIImage+Bronte.m */; };
+		81FAE6641958BFBE00F6B4AC /* NSArray+Bronte.m in Sources */ = {isa = PBXBuildFile; fileRef = 81FAE6631958BFBE00F6B4AC /* NSArray+Bronte.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		0C1751BF6A4B453787FE59C6 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		3EDD89CD9C204D14B191E903 /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = "<group>"; };
+		813E426C1946651700260C0E /* Brontë.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Brontë.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		813E426F1946651700260C0E /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		813E42711946651700260C0E /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		813E42731946651700260C0E /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		813E42771946651700260C0E /* Bronte-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Bronte-Info.plist"; sourceTree = "<group>"; };
+		813E42791946651700260C0E /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		813E427B1946651700260C0E /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		813E427D1946651700260C0E /* Bronte-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Bronte-Prefix.pch"; sourceTree = "<group>"; };
+		813E427E1946651700260C0E /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		813E427F1946651700260C0E /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		813E42811946651700260C0E /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		813E42881946651700260C0E /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
+		813E429E19466C5800260C0E /* CALayer+Bronte.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "CALayer+Bronte.h"; sourceTree = "<group>"; };
+		813E429F19466C5800260C0E /* CALayer+Bronte.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "CALayer+Bronte.m"; sourceTree = "<group>"; };
+		813E42A119466CB200260C0E /* BronteTextInput.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BronteTextInput.h; sourceTree = "<group>"; };
+		813E42A219466CB200260C0E /* BronteTextInput.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BronteTextInput.m; sourceTree = "<group>"; };
+		813E42A419466CC000260C0E /* BronteEditView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BronteEditView.h; sourceTree = "<group>"; };
+		813E42A519466CC000260C0E /* BronteEditView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BronteEditView.m; sourceTree = "<group>"; };
+		813E42A819466CE200260C0E /* edit_icons_backspace_l.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = edit_icons_backspace_l.png; sourceTree = "<group>"; };
+		813E42A919466CE200260C0E /* edit_icons_brackets.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = edit_icons_brackets.png; sourceTree = "<group>"; };
+		813E42AA19466CE200260C0E /* edit_icons_cap.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = edit_icons_cap.png; sourceTree = "<group>"; };
+		813E42AB19466CE200260C0E /* edit_icons_delete.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = edit_icons_delete.png; sourceTree = "<group>"; };
+		813E42AC19466CE200260C0E /* edit_icons_insert-left_gray.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "edit_icons_insert-left_gray.png"; sourceTree = "<group>"; };
+		813E42AD19466CE200260C0E /* edit_icons_insert-left.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "edit_icons_insert-left.png"; sourceTree = "<group>"; };
+		813E42AE19466CE200260C0E /* edit_icons_insert-right_gray.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "edit_icons_insert-right_gray.png"; sourceTree = "<group>"; };
+		813E42AF19466CE200260C0E /* edit_icons_insert-right.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "edit_icons_insert-right.png"; sourceTree = "<group>"; };
+		813E42B019466CE200260C0E /* edit_icons_insert.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = edit_icons_insert.png; sourceTree = "<group>"; };
+		813E42B119466CE200260C0E /* edit_icons_lc.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = edit_icons_lc.png; sourceTree = "<group>"; };
+		813E42B219466CE200260C0E /* edit_icons_parentheses.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = edit_icons_parentheses.png; sourceTree = "<group>"; };
+		813E42B319466CE200260C0E /* edit_icons_quote1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = edit_icons_quote1.png; sourceTree = "<group>"; };
+		813E42B419466CE200260C0E /* edit_icons_quote2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = edit_icons_quote2.png; sourceTree = "<group>"; };
+		813E42C219466CF000260C0E /* Lekton-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Lekton-Regular.ttf"; sourceTree = "<group>"; };
+		813E42C519466D6A00260C0E /* milk_gray.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = milk_gray.png; sourceTree = "<group>"; };
+		813E42C619466D6A00260C0E /* milk.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = milk.png; sourceTree = "<group>"; };
+		813E42C719466D6A00260C0E /* mix_gray.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = mix_gray.png; sourceTree = "<group>"; };
+		813E42C819466D6A00260C0E /* mix.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = mix.png; sourceTree = "<group>"; };
+		813E42C919466D6A00260C0E /* sugar_gray.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sugar_gray.png; sourceTree = "<group>"; };
+		813E42CA19466D6A00260C0E /* sugar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sugar.png; sourceTree = "<group>"; };
+		813E42D119466E3E00260C0E /* BronteViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BronteViewController.h; sourceTree = "<group>"; };
+		813E42D219466E3E00260C0E /* BronteViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BronteViewController.m; sourceTree = "<group>"; };
+		813E42D419466EA800260C0E /* UIColor+Bronte.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+Bronte.h"; sourceTree = "<group>"; };
+		813E42D519466EA800260C0E /* UIColor+Bronte.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+Bronte.m"; sourceTree = "<group>"; };
+		813E42D719466EBC00260C0E /* UIFont+Bronte.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIFont+Bronte.h"; sourceTree = "<group>"; };
+		813E42D819466EBC00260C0E /* UIFont+Bronte.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIFont+Bronte.m"; sourceTree = "<group>"; };
+		813E42DB19479EC100260C0E /* DocumentScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DocumentScrollView.h; sourceTree = "<group>"; };
+		813E42DC19479EC100260C0E /* DocumentScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DocumentScrollView.m; sourceTree = "<group>"; };
+		813E42DE1947D04800260C0E /* MultiSelectGestureRecognizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MultiSelectGestureRecognizer.h; sourceTree = "<group>"; };
+		813E42DF1947D04800260C0E /* MultiSelectGestureRecognizer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MultiSelectGestureRecognizer.m; sourceTree = "<group>"; };
+		813E42E11948013200260C0E /* Lekton-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Lekton-Bold.ttf"; sourceTree = "<group>"; };
+		81497EC1194F7A310018A1D8 /* UIImage+Bronte.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+Bronte.h"; sourceTree = "<group>"; };
+		81497EC2194F7A310018A1D8 /* UIImage+Bronte.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+Bronte.m"; sourceTree = "<group>"; };
+		81FAE6621958BFBE00F6B4AC /* NSArray+Bronte.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSArray+Bronte.h"; sourceTree = "<group>"; };
+		81FAE6631958BFBE00F6B4AC /* NSArray+Bronte.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSArray+Bronte.m"; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		813E42691946651700260C0E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				813E42721946651700260C0E /* CoreGraphics.framework in Frameworks */,
+				813E42741946651700260C0E /* UIKit.framework in Frameworks */,
+				813E42701946651700260C0E /* Foundation.framework in Frameworks */,
+				0C76DEBD2C69486EAB110CE9 /* libPods.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		813E42631946651700260C0E = {
+			isa = PBXGroup;
+			children = (
+				813E42751946651700260C0E /* Bronte */,
+				813E426E1946651700260C0E /* Frameworks */,
+				813E426D1946651700260C0E /* Products */,
+				3EDD89CD9C204D14B191E903 /* Pods.xcconfig */,
+			);
+			sourceTree = "<group>";
+		};
+		813E426D1946651700260C0E /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				813E426C1946651700260C0E /* Brontë.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		813E426E1946651700260C0E /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				813E426F1946651700260C0E /* Foundation.framework */,
+				813E42711946651700260C0E /* CoreGraphics.framework */,
+				813E42731946651700260C0E /* UIKit.framework */,
+				813E42881946651700260C0E /* XCTest.framework */,
+				0C1751BF6A4B453787FE59C6 /* libPods.a */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		813E42751946651700260C0E /* Bronte */ = {
+			isa = PBXGroup;
+			children = (
+				813E42D719466EBC00260C0E /* UIFont+Bronte.h */,
+				813E42D819466EBC00260C0E /* UIFont+Bronte.m */,
+				813E42D419466EA800260C0E /* UIColor+Bronte.h */,
+				813E42D519466EA800260C0E /* UIColor+Bronte.m */,
+				813E42A419466CC000260C0E /* BronteEditView.h */,
+				813E42A519466CC000260C0E /* BronteEditView.m */,
+				813E42A119466CB200260C0E /* BronteTextInput.h */,
+				813E42A219466CB200260C0E /* BronteTextInput.m */,
+				813E429E19466C5800260C0E /* CALayer+Bronte.h */,
+				813E429F19466C5800260C0E /* CALayer+Bronte.m */,
+				813E427E1946651700260C0E /* AppDelegate.h */,
+				813E427F1946651700260C0E /* AppDelegate.m */,
+				813E42811946651700260C0E /* Images.xcassets */,
+				813E42761946651700260C0E /* Supporting Files */,
+				813E42D119466E3E00260C0E /* BronteViewController.h */,
+				813E42D219466E3E00260C0E /* BronteViewController.m */,
+				813E42DB19479EC100260C0E /* DocumentScrollView.h */,
+				813E42DC19479EC100260C0E /* DocumentScrollView.m */,
+				813E42DE1947D04800260C0E /* MultiSelectGestureRecognizer.h */,
+				813E42DF1947D04800260C0E /* MultiSelectGestureRecognizer.m */,
+				81497EC1194F7A310018A1D8 /* UIImage+Bronte.h */,
+				81497EC2194F7A310018A1D8 /* UIImage+Bronte.m */,
+				81FAE6621958BFBE00F6B4AC /* NSArray+Bronte.h */,
+				81FAE6631958BFBE00F6B4AC /* NSArray+Bronte.m */,
+			);
+			path = Bronte;
+			sourceTree = "<group>";
+		};
+		813E42761946651700260C0E /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				813E42C319466CF300260C0E /* fonts */,
+				813E42A719466CD400260C0E /* images */,
+				813E42771946651700260C0E /* Bronte-Info.plist */,
+				813E42781946651700260C0E /* InfoPlist.strings */,
+				813E427B1946651700260C0E /* main.m */,
+				813E427D1946651700260C0E /* Bronte-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		813E42A719466CD400260C0E /* images */ = {
+			isa = PBXGroup;
+			children = (
+				813E42C519466D6A00260C0E /* milk_gray.png */,
+				813E42C619466D6A00260C0E /* milk.png */,
+				813E42C719466D6A00260C0E /* mix_gray.png */,
+				813E42C819466D6A00260C0E /* mix.png */,
+				813E42C919466D6A00260C0E /* sugar_gray.png */,
+				813E42CA19466D6A00260C0E /* sugar.png */,
+				813E42C419466D4600260C0E /* editing */,
+			);
+			name = images;
+			sourceTree = "<group>";
+		};
+		813E42C319466CF300260C0E /* fonts */ = {
+			isa = PBXGroup;
+			children = (
+				813E42E11948013200260C0E /* Lekton-Bold.ttf */,
+				813E42C219466CF000260C0E /* Lekton-Regular.ttf */,
+			);
+			name = fonts;
+			sourceTree = "<group>";
+		};
+		813E42C419466D4600260C0E /* editing */ = {
+			isa = PBXGroup;
+			children = (
+				813E42A819466CE200260C0E /* edit_icons_backspace_l.png */,
+				813E42A919466CE200260C0E /* edit_icons_brackets.png */,
+				813E42AA19466CE200260C0E /* edit_icons_cap.png */,
+				813E42AB19466CE200260C0E /* edit_icons_delete.png */,
+				813E42AC19466CE200260C0E /* edit_icons_insert-left_gray.png */,
+				813E42AD19466CE200260C0E /* edit_icons_insert-left.png */,
+				813E42AE19466CE200260C0E /* edit_icons_insert-right_gray.png */,
+				813E42AF19466CE200260C0E /* edit_icons_insert-right.png */,
+				813E42B019466CE200260C0E /* edit_icons_insert.png */,
+				813E42B119466CE200260C0E /* edit_icons_lc.png */,
+				813E42B219466CE200260C0E /* edit_icons_parentheses.png */,
+				813E42B319466CE200260C0E /* edit_icons_quote1.png */,
+				813E42B419466CE200260C0E /* edit_icons_quote2.png */,
+			);
+			name = editing;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		813E426B1946651700260C0E /* Brontë */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 813E42981946651700260C0E /* Build configuration list for PBXNativeTarget "Brontë" */;
+			buildPhases = (
+				E21BD88D984B458AB5081B49 /* Check Pods Manifest.lock */,
+				813E42681946651700260C0E /* Sources */,
+				813E42691946651700260C0E /* Frameworks */,
+				813E426A1946651700260C0E /* Resources */,
+				27B7D5EEDF5E44FDB36DDD35 /* Copy Pods Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Brontë";
+			productName = Bronte;
+			productReference = 813E426C1946651700260C0E /* Brontë.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		813E42641946651700260C0E /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0510;
+				ORGANIZATIONNAME = "Lory & Ludlow";
+			};
+			buildConfigurationList = 813E42671946651700260C0E /* Build configuration list for PBXProject "Bronte" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 813E42631946651700260C0E;
+			productRefGroup = 813E426D1946651700260C0E /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				813E426B1946651700260C0E /* Brontë */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		813E426A1946651700260C0E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				813E42B719466CE200260C0E /* edit_icons_cap.png in Resources */,
+				813E42D019466D6A00260C0E /* sugar.png in Resources */,
+				813E42B819466CE200260C0E /* edit_icons_delete.png in Resources */,
+				813E42BC19466CE200260C0E /* edit_icons_insert-right.png in Resources */,
+				813E42BF19466CE200260C0E /* edit_icons_parentheses.png in Resources */,
+				813E42BA19466CE200260C0E /* edit_icons_insert-left.png in Resources */,
+				813E42CF19466D6A00260C0E /* sugar_gray.png in Resources */,
+				813E427A1946651700260C0E /* InfoPlist.strings in Resources */,
+				813E42CE19466D6A00260C0E /* mix.png in Resources */,
+				813E42E31948030100260C0E /* Lekton-Regular.ttf in Resources */,
+				813E42B919466CE200260C0E /* edit_icons_insert-left_gray.png in Resources */,
+				813E42CD19466D6A00260C0E /* mix_gray.png in Resources */,
+				813E42B619466CE200260C0E /* edit_icons_brackets.png in Resources */,
+				813E42BE19466CE200260C0E /* edit_icons_lc.png in Resources */,
+				813E42B519466CE200260C0E /* edit_icons_backspace_l.png in Resources */,
+				813E42E2194802FE00260C0E /* Lekton-Bold.ttf in Resources */,
+				813E42BB19466CE200260C0E /* edit_icons_insert-right_gray.png in Resources */,
+				813E42CC19466D6A00260C0E /* milk.png in Resources */,
+				813E42821946651700260C0E /* Images.xcassets in Resources */,
+				813E42BD19466CE200260C0E /* edit_icons_insert.png in Resources */,
+				813E42C019466CE200260C0E /* edit_icons_quote1.png in Resources */,
+				813E42C119466CE200260C0E /* edit_icons_quote2.png in Resources */,
+				813E42CB19466D6A00260C0E /* milk_gray.png in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		27B7D5EEDF5E44FDB36DDD35 /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Pods-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		E21BD88D984B458AB5081B49 /* Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		813E42681946651700260C0E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				81FAE6641958BFBE00F6B4AC /* NSArray+Bronte.m in Sources */,
+				81497EC3194F7A310018A1D8 /* UIImage+Bronte.m in Sources */,
+				813E42801946651700260C0E /* AppDelegate.m in Sources */,
+				813E42E01947D04800260C0E /* MultiSelectGestureRecognizer.m in Sources */,
+				813E42DD19479EC100260C0E /* DocumentScrollView.m in Sources */,
+				813E42A619466CC000260C0E /* BronteEditView.m in Sources */,
+				813E42D319466E3E00260C0E /* BronteViewController.m in Sources */,
+				813E42A019466C5800260C0E /* CALayer+Bronte.m in Sources */,
+				813E42D919466EBC00260C0E /* UIFont+Bronte.m in Sources */,
+				813E427C1946651700260C0E /* main.m in Sources */,
+				813E42A319466CB200260C0E /* BronteTextInput.m in Sources */,
+				813E42D619466EA800260C0E /* UIColor+Bronte.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		813E42781946651700260C0E /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				813E42791946651700260C0E /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		813E42961946651700260C0E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = 2;
+			};
+			name = Debug;
+		};
+		813E42971946651700260C0E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = 2;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		813E42991946651700260C0E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 3EDD89CD9C204D14B191E903 /* Pods.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Bronte/Bronte-Prefix.pch";
+				INFOPLIST_FILE = "Bronte/Bronte-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		813E429A1946651700260C0E /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 3EDD89CD9C204D14B191E903 /* Pods.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Bronte/Bronte-Prefix.pch";
+				INFOPLIST_FILE = "Bronte/Bronte-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		813E42671946651700260C0E /* Build configuration list for PBXProject "Bronte" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				813E42961946651700260C0E /* Debug */,
+				813E42971946651700260C0E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		813E42981946651700260C0E /* Build configuration list for PBXNativeTarget "Brontë" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				813E42991946651700260C0E /* Debug */,
+				813E429A1946651700260C0E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 813E42641946651700260C0E /* Project object */;
+}
