@@ -179,7 +179,7 @@
     selectionLine.lineWidth = 1.5;
     [selectionLine stroke];
     
-    BOOL isInsertingLeft = [self isInsertingLeft];
+//    BOOL isInsertingLeft = [self isInsertingLeft];
     
 //    UIBezierPath * selectionSide = [UIBezierPath bezierPath];
 //    float selectionSideX = isInsertingLeft ? _selectionPoint.x : _selectionPoint.x + _selectionWidth + selectionLine.lineWidth;

@@ -212,7 +212,15 @@
 - (NSArray *)wordsForLine:(CALayer *)line {
     NSArray * words = [line.sublayers filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"self isKindOfClass:%@", [CATextLayer class]]];
     return [words sortedArrayUsingComparator:^NSComparisonResult(CALayer * obj1, CALayer * obj2) {
-        return obj1.position.x - obj2.position.x;
+        float x1 = [obj1 minX];
+        float w1 = obj1.bounds.size.width;
+        float x2 = [obj2 minX];
+        float w2 = obj2.bounds.size.width;
+        
+        // NOTE: Nothing should ever return NSOrderedSame
+        return (x1 + 0.5*w1 < x2) ? NSOrderedAscending : NSOrderedDescending;
+        
+        //return obj1.position.x - obj2.position.x;
     }];
 }
 
@@ -552,36 +560,40 @@
         
         CGPoint origHitPoint = [hitInfo[@"origPoint"] CGPointValue];
         
-        CATextLayer * dropWord = dropInfo[@"word"];
-        
-        if (dropWord && dealingWithWords) {
-            __block NSMutableSet * affectedLines = [NSMutableSet new];
+        if (dealingWithWords && dropLine && ![dropLine isParagraphSeparator]) {
+            CALayer * dropWord = dropInfo[@"word"];
             
-            [CATransaction begin];
-            [CATransaction setAnimationDuration:0];
-            for (CATextLayer * w in selection) {
-                [affectedLines addObject:w.superlayer];
-                [w removeFromSuperlayer];
-                w.position = CGPointMake(dropPoint.x/currentScale - startX, dropPoint.y/currentScale - dropLineOrigin.y - (origHitPoint.y/currentScale - (w.originalPosition.y + origLineOrigin.y)));
-                w.hidden = NO;
-                [dropLine addSublayer:w];
-            }
-            [CATransaction commit];
-            
-            [affectedLines addObject:dropLine];
-            
-            if (origLine != dropLine) {
-                __weak __block BronteViewController * me = self;
-                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.001 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                    [me arrangeWordsInLines:affectedLines];
-                    [me removeBlankLines];
-                    [me arrangeLinesBasedOnScale:currentScale];
-                    affectedLines = nil;
-                });
+            if (selection.count > 1 && !dropWord) {
+                [self putBackSelection:selection];
             } else {
-                [self arrangeWordsInLines:affectedLines];
-                [self removeBlankLines];
-                [self arrangeLinesBasedOnScale:currentScale];
+                __block NSMutableSet * affectedLines = [NSMutableSet new];
+                
+                [CATransaction begin];
+                [CATransaction setAnimationDuration:0];
+                for (CATextLayer * w in selection) {
+                    [affectedLines addObject:w.superlayer];
+                    [w removeFromSuperlayer];
+                    w.position = CGPointMake(dropPoint.x/currentScale - startX, dropPoint.y/currentScale - dropLineOrigin.y - (origHitPoint.y/currentScale - (w.originalPosition.y + origLineOrigin.y)));
+                    w.hidden = NO;
+                    [dropLine addSublayer:w];
+                }
+                [CATransaction commit];
+                
+                [affectedLines addObject:dropLine];
+                
+                if (origLine != dropLine) {
+                    __weak __block BronteViewController * me = self;
+                    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.001 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                        [me arrangeWordsInLines:affectedLines];
+                        [me removeBlankLines];
+                        [me arrangeLinesBasedOnScale:currentScale];
+                        affectedLines = nil;
+                    });
+                } else {
+                    [self arrangeWordsInLines:affectedLines];
+                    [self removeBlankLines];
+                    [self arrangeLinesBasedOnScale:currentScale];
+                }
             }
         } else if (!dealingWithWords) {
             BOOL before = NO;
