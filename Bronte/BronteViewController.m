@@ -570,7 +570,10 @@
                 
                 [CATransaction begin];
                 [CATransaction setAnimationDuration:0];
-                for (CATextLayer * w in selection) {
+                // needs to be in reverse due to the z ordering. see the method -wordsForLine
+                NSEnumerator * reverse = [selection reverseObjectEnumerator];
+                CATextLayer * w = nil;
+                while ((w = [reverse nextObject])) {
                     [affectedLines addObject:w.superlayer];
                     [w removeFromSuperlayer];
                     w.position = CGPointMake(dropPoint.x/currentScale - startX, dropPoint.y/currentScale - dropLineOrigin.y - (origHitPoint.y/currentScale - (w.originalPosition.y + origLineOrigin.y)));
