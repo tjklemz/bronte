@@ -696,6 +696,12 @@
     return CGRectMake(_scrollView.bounds.size.width - s, 0, s*2, _scrollView.bounds.size.height);
 }
 
+- (CGRect)infoHandle {
+    float p = 0.09;
+    float s = p*_scrollView.bounds.size.width;
+    return CGRectMake(0, 0, s, _scrollView.bounds.size.height);
+}
+
 - (void)dismissSelections {
     [self dismissEditMenu];
     
@@ -1056,6 +1062,7 @@
     static CGFloat origOffset = 0;
     
     static BOOL isDraggingClipboardArea = NO;
+    static BOOL isDraggingInfoArea = NO;
     static BOOL isScrollingOnSides = NO;
     static BOOL stillDeciding = YES;
     
@@ -1063,7 +1070,9 @@
         CGPoint p = [gesture locationInView:self.view];
         CGRect clipboardHandle = [self clipboardHandle];
         isDraggingClipboardArea = CGRectContainsPoint(clipboardHandle, p);
-        if (isDraggingClipboardArea) {
+        CGRect infoHandle = [self infoHandle];
+        isDraggingInfoArea = CGRectContainsPoint(infoHandle, p);
+        if (isDraggingClipboardArea || isDraggingInfoArea) {
             [self dismissEditMenu];
         }
         [_scrollView pop_removeAnimationForKey:@"bounce"];
@@ -1074,7 +1083,7 @@
     float maxOffset = _scrollView.contentSize.height - _scrollView.bounds.size.height;
     float minOffset = 0;
     
-    if (isDraggingClipboardArea) {
+    if (isDraggingClipboardArea || isDraggingInfoArea) {
         CGPoint t = [gesture translationInView:_scrollView];
         CGPoint v = [gesture velocityInView:_scrollView];
         
@@ -1101,21 +1110,15 @@
             if (newOffset < minOffset || newOffset > maxOffset) {
                 newOffset = origOffset - t.y*0.33;
             }
-        } else {
+        } else if (isDraggingClipboardArea) {
             CGFloat currentScale = _scrollView.bounds.size.width / [self width];
             CGFloat scale = currentScale + t.x / [self width];
             [self zoomDocument:scale];
             newOffset = focusLine.frame.origin.y + delta;
-            
-//            newOffset = newOffset <= maxOffset ? newOffset : maxOffset;
-//            newOffset = newOffset >= minOffset ? newOffset : minOffset;
-            
             [gesture setTranslation:CGPointZero inView:_scrollView];
         }
         
         [_scrollView setContentOffset:CGPointMake(0, newOffset)];
-        
-        //[gesture setTranslation:CGPointZero inView:_scrollView];
     } else {
         CGPoint p = [gesture locationInView:_scrollView];
         
@@ -1262,6 +1265,7 @@
         
         focusLine = nil;
         isDraggingClipboardArea = NO;
+        isDraggingInfoArea = NO;
         isScrollingOnSides = NO;
         stillDeciding = YES;
     }
