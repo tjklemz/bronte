@@ -665,14 +665,23 @@
         
         _editView = [[BronteEditView alloc] initWithSelection:selection];
         _editView.delegate = self;
-        _editView.alpha = 0.0;
+        _editView.hidden = YES;
+        CGRect origFrame = _editView.frame;
+        CGRect newFrame = origFrame;
+        newFrame.origin.y += newFrame.size.height;
+        _editView.frame = newFrame;
         [_scrollView addSubview:_editView];
         
         [UIView animateWithDuration:0.3 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
             [_scrollView setContentOffset:CGPointMake(0, _scrollView.contentOffset.y + offset)];
-            _editView.alpha = 1.0;
         } completion:^(BOOL finished) {
+            _editView.hidden = NO;
             
+            [UIView animateWithDuration:0.175 delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
+                _editView.frame = origFrame;
+            } completion:^(BOOL finished) {
+                
+            }];
         }];
     }];
 }
@@ -683,11 +692,19 @@
             [self unmarkSelection:_touchInfo[@"selection"]];
         }
         
-        [UIView animateWithDuration:0.3 delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
-            if (fabs(_scrollView.previousContentOffset.y - _scrollView.contentOffset.y) < [self width]) {
+        if (fabs(_scrollView.previousContentOffset.y - _scrollView.contentOffset.y) < [self width]) {
+            [UIView animateWithDuration:0.3 delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
                 [_scrollView setContentOffset:_scrollView.previousContentOffset];
-            }
-            _editView.alpha = 0.0;
+            } completion:^(BOOL finished) {
+                
+            }];
+        }
+        
+        CGRect newFrame = _editView.frame;
+        newFrame.origin.y += newFrame.size.height;
+        
+        [UIView animateWithDuration:0.175 delay:0 options:UIViewAnimationOptionCurveLinear animations:^{
+            _editView.frame = newFrame;
         } completion:^(BOOL finished) {
             [_editView removeFromSuperview];
             _editView = nil;
