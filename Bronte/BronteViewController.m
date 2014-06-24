@@ -88,6 +88,10 @@
         // end of testing code
         
         [self adjustScrollViewContentSize];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(keyboardDidHide:)
+                                                     name:UIKeyboardDidHideNotification object:nil];
     }
     return self;
 }
@@ -106,6 +110,10 @@
 
 - (float)width {
     return fmaxf(self.view.bounds.size.width, self.view.bounds.size.height);
+}
+
+- (float)height {
+    return fminf(self.view.bounds.size.width, self.view.bounds.size.height);
 }
 
 - (float)lineHeight {
@@ -209,21 +217,6 @@
     return newLine;
 }
 
-- (NSArray *)wordsForLine:(CALayer *)line {
-    NSArray * words = [line.sublayers filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"self isKindOfClass:%@", [CATextLayer class]]];
-    return [words sortedArrayUsingComparator:^NSComparisonResult(CALayer * obj1, CALayer * obj2) {
-        float x1 = [obj1 minX];
-        float w1 = obj1.bounds.size.width;
-        float x2 = [obj2 minX];
-        float w2 = obj2.bounds.size.width;
-        
-        // NOTE: Nothing should ever return NSOrderedSame
-        return (x1 + 0.5*w1 < x2) ? NSOrderedAscending : NSOrderedDescending;
-        
-        //return obj1.position.x - obj2.position.x;
-    }];
-}
-
 - (CALayer *)addWord:(NSString *)word toLine:(CALayer *)line {
     CALayer * w = [self makeWord:word];
     w.position = [self originForFirstWord];
@@ -235,7 +228,7 @@
         [self newParagraphSeparator];
     }
     
-    CALayer * lastWord = [self wordsForLine:line].lastObject;
+    CALayer * lastWord = [line wordsForLine].lastObject;
     float newX = lastWord ? [lastWord maxX] : w.position.x;
     
     if (newX + w.bounds.size.width > [self lineWidth]) {
@@ -354,7 +347,7 @@
     int beginLine = [hitInfo1[@"lineNo"] intValue], endLine = [hitInfo2[@"lineNo"] intValue];
     
     for (int i = beginLine; i <= endLine; ++i) {
-        NSArray * words = [self wordsForLine:_lines[i]];
+        NSArray * words = [_lines[i] wordsForLine];
         if (words.count) {
             NSUInteger beginWord = i == beginLine ? [words indexOfObject:w1] : 0;
             NSUInteger endWord = i == endLine ? [words indexOfObject:w2] : words.count-1;
@@ -440,7 +433,7 @@
     
     for (CALayer * l in selection) {
         if ([l isLine]) {
-            NSArray * words = [self wordsForLine:l];
+            NSArray * words = [l wordsForLine];
             for (CATextLayer * word in words) {
                 [self configureWord:word withAttributes:attr];
             }
@@ -727,12 +720,31 @@
     }
 }
 
+#pragma mark - Keyboard
+
+- (void)dismissInputView {
+    [_inputView removeFromSuperview];
+    _inputView = nil;
+}
+
+- (void)keyboardDidHide:(NSNotification *)notification {
+    [self dismissInputView];
+}
+
 - (void)insertBeforeSelection:(NSArray *)selection {
     
 }
 
 - (void)insertAfterSelection:(NSArray *)selection {
+    _inputView = [[BronteTextInput alloc] initWithFrame:CGRectMake(0, 0, [self width], [self height])];
+    CATextLayer * w = [selection lastWordOfSelection];
     
+    if (w) {
+        _inputView.pre = [[w string] string];
+    }
+    
+    [self.view addSubview:_inputView];
+    [_inputView becomeFirstResponder];
 }
 
 #pragma mark - Gestures
@@ -977,7 +989,7 @@
 - (void)arrangeWordsInLines:(NSSet *)lines {
     for (CALayer * line in lines) {
         CALayer * l = line;
-        NSArray * words = [self wordsForLine:l];
+        NSArray * words = [l wordsForLine];
         CGPoint o = [self originForFirstWord];
         
         for (CATextLayer * word in words) {
@@ -1003,7 +1015,7 @@
     NSMutableArray * itemsToRemove = [NSMutableArray new];
     
     for (CALayer * line in _lines) {
-        if ([line isLine] && [self wordsForLine:line].count == 0) {
+        if ([line isLine] && [line wordsForLine].count == 0) {
             [itemsToRemove addObject:line];
             [line removeFromSuperlayer];
         }

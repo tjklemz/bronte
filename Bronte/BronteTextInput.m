@@ -32,6 +32,22 @@
     return self;
 }
 
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
+    
+}
+
+- (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event {
+    
+}
+
+- (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
+    
+}
+
+- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
+    
+}
+
 - (void)newLine {
     [_lines addObject:[NSMutableString new]];
 }
@@ -44,30 +60,29 @@
     return YES;
 }
 
-- (BOOL)resignFirstResponder {
-    [super resignFirstResponder];
-    
-    NSArray * lines = [_lines copy];
-    if (self.pre) {
-        if (self.insertBefore) {
-            [[lines lastObject] addObject:self.pre];
-        } else {
-            [[lines firstObject] insertObject:self.pre atIndex:0];
-        }
-    }
-    
-    [self.delegate didEnterText:lines];
-    
-    return YES;
-}
+//- (BOOL)resignFirstResponder {
+//    [super resignFirstResponder];
+//    
+//    NSArray * lines = [_lines copy];
+//    if (self.pre) {
+//        if (self.insertBefore) {
+//            [[lines lastObject] addObject:self.pre];
+//        } else {
+//            [[lines firstObject] insertObject:self.pre atIndex:0];
+//        }
+//    }
+//    
+//    [self.delegate didEnterText:lines];
+//    
+//    return YES;
+//}
 
 - (BOOL)hasText {
     return [[_lines firstObject] length] > 0;
 }
 
 - (float)maxTextWidth {
-    float a = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone ? 0.99 : 0.96;
-    return a*[UIFont bronteLineWidth];
+    return [UIFont bronteLineWidth];
 }
 
 - (void)insertText:(NSString *)theText {
@@ -146,12 +161,16 @@
         x = renderPreBefore ? x + preSize.width : startX;
         
         CGSize s = [line sizeWithAttributes:_defaultAttr];
-        CGRect rectForLine = CGRectMake(x, (self.frame.size.height / 2) - (0.4*s.height) - i*[UIFont bronteLineHeight], s.width, s.height);
+        CGRect rectForLine = CGRectMake(x, (self.frame.size.height / 2) - (0.4*s.height) - (i+1)*[UIFont bronteLineHeight], s.width, s.height);
         [line drawInRect:rectForLine withAttributes:_defaultAttr];
         
-        // draw cursor
         if (i == 0) {
-            [[UIBezierPath bezierPathWithRect:CGRectMake(rectForLine.origin.x + rectForLine.size.width, rectForLine.origin.y + rectForLine.size.height - 5, 15, 1)] fill];
+            // draw cursor
+            [[UIColor colorWithWhite:0.66 alpha:1.0] set];
+            [[UIBezierPath bezierPathWithRect:CGRectMake(rectForLine.origin.x + rectForLine.size.width - 1, rectForLine.origin.y + rectForLine.size.height - 4.5, 20, 2.5)] fill];
+            [[UIColor bronteCursorColor] set];
+            [[UIBezierPath bezierPathWithRect:CGRectMake(rectForLine.origin.x + rectForLine.size.width - 1, rectForLine.origin.y + rectForLine.size.height - 4.5, 20, 2)] fill];
+            [[UIColor bronteFontColor] set];
         } else if (renderPreBefore) {
             [self.pre drawInRect:CGRectMake(startX, rectForLine.origin.y, preSize.width, preSize.height) withAttributes:_preAttr];
         }

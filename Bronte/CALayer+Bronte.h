@@ -17,5 +17,6 @@
 - (BOOL)isWord;
 - (BOOL)isLine;
 - (BOOL)isParagraphSeparator;
+- (NSArray *)wordsForLine;
 
 @end

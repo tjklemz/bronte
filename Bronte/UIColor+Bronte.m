@@ -37,6 +37,14 @@
     //return [UIColor colorWithHue:64/360.0 saturation:0.55 brightness:0.53 alpha:1.0];
 }
 
++ (UIColor *)bronteCursorColor {
+    static UIColor * color = nil;
+    if (!color) {
+        color = [UIColor colorWithHue:64/360.0 saturation:0.55 brightness:0.53+0.22 alpha:1.0];
+    }
+    return color;
+}
+
 + (UIColor *)brontePreFontColor {
     static UIColor * color = nil;
     if (!color) {

@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "BronteEditView.h"
 #import "DocumentScrollView.h"
+#import "BronteTextInput.h"
 
 @interface BronteViewController : UIViewController <BronteEditDelegate> {
     NSDictionary * _defaultAttr;
@@ -31,6 +32,7 @@
     NSMutableDictionary * _touchInfo;
     
     BronteEditView * _editView;
+    BronteTextInput * _inputView;
 }
 
 @end

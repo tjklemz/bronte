@@ -15,8 +15,29 @@
     return [self.firstObject isWord];
 }
 
+- (BOOL)isParagraph {
+    return [self.lastObject isParagraphSeparator];
+}
+
 - (CALayer *)lastLineOfSelection {
     return [self isDealingWithWords] ? [self.lastObject superlayer] : self.lastObject;
+}
+
+- (CATextLayer *)lastWordOfSelection {
+    CATextLayer * lastWord = nil;
+    
+    if ([self isDealingWithWords]) {
+        lastWord = self.lastObject;
+    } else if ([self isParagraph]) {
+        long n = self.count - 1;
+        if (n > 0) {
+            lastWord = [self objectAtIndex:n];
+        }
+    } else if ([self.lastObject isLine]) {
+        lastWord = [[self.lastObject wordsForLine] lastObject];
+    }
+    
+    return lastWord;
 }
 
 @end
