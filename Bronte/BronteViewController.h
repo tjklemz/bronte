@@ -33,6 +33,8 @@
     
     BronteEditView * _editView;
     BronteTextInput * _inputView;
+    
+    BOOL _isRotating;
 }
 
 @end

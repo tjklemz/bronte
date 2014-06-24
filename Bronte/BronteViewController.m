@@ -96,6 +96,14 @@
     return self;
 }
 
+- (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
+    _isRotating = YES;
+}
+
+- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
+    _isRotating = NO;
+}
+
 - (BOOL)prefersStatusBarHidden {
     return YES;
 }
@@ -728,7 +736,9 @@
 }
 
 - (void)keyboardDidHide:(NSNotification *)notification {
-    [self dismissInputView];
+    if (!_isRotating) {
+        [self dismissInputView];
+    }
 }
 
 - (void)insertBeforeSelection:(NSArray *)selection {
