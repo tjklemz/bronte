@@ -14,6 +14,8 @@
 #import "MultiSelectGestureRecognizer.h"
 #import "UIImage+Bronte.h"
 #import "NSArray+Bronte.h"
+#import "CATextLayer+Bronte.h"
+#import "NSMutableArray+Bronte.h"
 
 #import <POP.h>
 
@@ -149,20 +151,6 @@
     _scrollView.contentSize = CGSizeMake(_scrollView.frame.size.width, [self currentScale]*[self lineOriginForLineNumber:_lines.count+1].y);
 }
 
-- (CATextLayer *)makeWord:(NSString *)word {
-    NSMutableAttributedString * str = [[NSMutableAttributedString alloc] initWithString:word attributes:_defaultAttr];
-    
-    CGSize s = [str size];
-    
-    CATextLayer * textLayer = [CATextLayer layer];
-    textLayer.contentsScale = [[UIScreen mainScreen] scale];
-    textLayer.anchorPoint = CGPointZero;
-    textLayer.string = str;
-    textLayer.frame = CGRectMake(0, 0, s.width + 2 + [UIFont bronteWordSpacing], [self lineHeight]);
-    
-    return textLayer;
-}
-
 - (CALayer *)makeBlankLine {
     CALayer * l = [CALayer layer];
     l.contentsScale = [[UIScreen mainScreen] scale];
@@ -226,7 +214,7 @@
 }
 
 - (CALayer *)addWord:(NSString *)word toLine:(CALayer *)line {
-    CALayer * w = [self makeWord:word];
+    CALayer * w = [CATextLayer makeWord:word];
     w.position = [self originForFirstWord];
     
     CALayer * l = line;
@@ -721,6 +709,45 @@
     }
 }
 
+- (void)didDeleteCharacterFromLine:(CALayer *)line {
+    NSArray * words = [line wordsForLine];
+    
+    for (CATextLayer * w in words) {
+        if ([[w word] length] == 0) {
+            [w removeFromSuperlayer];
+            [_editView.selection removeWord:w];
+        }
+    }
+    
+    words = [line wordsForLine];
+    
+    if (words.count == 0) {
+        [_editView.selection removeObject:line];
+        [self removeBlankLines];
+    } else {
+        NSSet * lines = [NSSet setWithObject:line];
+        [self arrangeWordsInLines:lines];
+    }
+    
+    if (_editView.selection.count) {
+        CGPoint newPoint = [_editView findSelectionPoint];
+        
+        float delta = newPoint.y - _editView.selectionPoint.y;
+        
+        if (fabsf(delta) > 1) {
+            [UIView animateWithDuration:0.2 delay:0.25 options:UIViewAnimationOptionCurveEaseOut animations:^{
+                [_editView adjustPosition];
+                [_scrollView setContentOffset:CGPointMake(0, _scrollView.contentOffset.y + delta)];
+            } completion:^(BOOL finished) {
+                [self arrangeLinesBasedOnScale:[self currentScale]];
+            }];
+        }
+    } else {
+        [self dismissEditMenu];
+        [self arrangeLinesBasedOnScale:[self currentScale]];
+    }
+}
+
 #pragma mark - Keyboard
 
 - (void)dismissInputView {
@@ -1056,6 +1083,11 @@
     }
     
     [_lines removeObjectsInArray:itemsToRemove];
+}
+
+- (void)removeLine:(CALayer *)line {
+    [line removeFromSuperlayer];
+    [_lines removeObject:line];
 }
 
 - (void)arrangeLineNumber:(NSUInteger)lineNo basedOnScale:(float)scale {

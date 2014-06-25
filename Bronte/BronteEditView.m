@@ -34,14 +34,23 @@
     return 30;
 }
 
+- (CGPoint)findSelectionPoint {
+    CALayer * l = [_selection lastLineOfSelection];
+    CGPoint selectionPoint = l.position;
+    selectionPoint.y += l.bounds.size.height;
+    return selectionPoint;
+}
+
+- (void)adjustPosition {
+    _selectionPoint = [self findSelectionPoint];
+    self.frame = CGRectMake(0, _selectionPoint.y, self.bounds.size.width, self.bounds.size.height);
+}
+
 - (id)initWithSelection:(NSArray *)selection
 {
-    _selection = selection;
+    _selection = [selection mutableCopy];
     
-    CALayer * l = [_selection lastLineOfSelection];
-    
-    _selectionPoint = l.position;
-    _selectionPoint.y += l.bounds.size.height;
+    _selectionPoint = [self findSelectionPoint];
     
     float screenWidth = [UIScreen mainScreen].bounds.size.height;
     
@@ -92,7 +101,7 @@
         UIButton * capButton = [UIButton buttonWithType:UIButtonTypeCustom];
         [capButton setImage:[UIImage imageNamed:@"edit_icons_cap.png"] forState:UIControlStateNormal];
         [capButton setFrame:CGRectMake(x, y, w, w)];
-        [capButton addTarget:self action:@selector(capitalizeSelection:) forControlEvents:UIControlEventTouchUpInside|UIControlEventTouchDownRepeat];
+        [capButton addTarget:self action:@selector(capitalizeSelection:) forControlEvents:UIControlEventTouchDown];
         [self addSubview:capButton];
         
         x += w + p;
@@ -100,7 +109,7 @@
         UIButton * uncapButton = [UIButton buttonWithType:UIButtonTypeCustom];
         [uncapButton setImage:[UIImage imageNamed:@"edit_icons_lc.png"] forState:UIControlStateNormal];
         [uncapButton setFrame:CGRectMake(x, y, w, w)];
-        [uncapButton addTarget:self action:@selector(uncapitalizeSelection:) forControlEvents:UIControlEventTouchUpInside];
+        [uncapButton addTarget:self action:@selector(uncapitalizeSelection:) forControlEvents:UIControlEventTouchDown];
         [self addSubview:uncapButton];
         
         x += w + p;
@@ -108,6 +117,7 @@
         UIButton * backspaceButton = [UIButton buttonWithType:UIButtonTypeCustom];
         [backspaceButton setImage:[UIImage imageNamed:@"edit_icons_backspace_l.png"] forState:UIControlStateNormal];
         [backspaceButton setFrame:CGRectMake(x, y, w, w)];
+        [backspaceButton addTarget:self action:@selector(deleteCharacter:) forControlEvents:UIControlEventTouchDown];
         [self addSubview:backspaceButton];
         
         y += w + p - 5;
@@ -221,6 +231,32 @@
     for (CATextLayer * w in words) {
         NSString * uncapped = [[w word] uncappedString];
         [w setWord:uncapped];
+    }
+}
+
+- (void)deleteCharacter:(id)sender {
+    NSArray * words = [_selection wordsForSelection];
+    
+    CALayer * line = nil;
+    
+    if ([self isInsertingLeft]) {
+        NSMutableString * s = [[words.firstObject word] mutableCopy];
+        if (s.length) {
+            [s replaceCharactersInRange:NSMakeRange(0, 1) withString:@""];
+            [words.firstObject setWord:s];
+            line = [words.firstObject superlayer];
+        }
+    } else {
+        NSMutableString * s = [[words.lastObject word] mutableCopy];
+        if (s.length) {
+            [s replaceCharactersInRange:NSMakeRange(s.length-1, 1) withString:@""];
+            [words.lastObject setWord:s];
+            line = [words.lastObject superlayer];
+        }
+    }
+    
+    if (line) {
+        [self.delegate didDeleteCharacterFromLine:line];
     }
 }
 

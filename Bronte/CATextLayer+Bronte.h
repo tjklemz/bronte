@@ -10,6 +10,7 @@
 
 @interface CATextLayer (Bronte)
 
++ (CATextLayer *)makeWord:(NSString *)word;
 - (NSString *)word;
 - (void)setWord:(NSString *)newWord;
 

@@ -48,6 +48,7 @@
 		81FAE6641958BFBE00F6B4AC /* NSArray+Bronte.m in Sources */ = {isa = PBXBuildFile; fileRef = 81FAE6631958BFBE00F6B4AC /* NSArray+Bronte.m */; };
 		81FAE667195A583B00F6B4AC /* CATextLayer+Bronte.m in Sources */ = {isa = PBXBuildFile; fileRef = 81FAE666195A583B00F6B4AC /* CATextLayer+Bronte.m */; };
 		81FAE66A195A58C200F6B4AC /* NSString+Bronte.m in Sources */ = {isa = PBXBuildFile; fileRef = 81FAE669195A58C200F6B4AC /* NSString+Bronte.m */; };
+		81FAE66D195B3AE600F6B4AC /* NSMutableArray+Bronte.m in Sources */ = {isa = PBXBuildFile; fileRef = 81FAE66C195B3AE600F6B4AC /* NSMutableArray+Bronte.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -110,6 +111,8 @@
 		81FAE666195A583B00F6B4AC /* CATextLayer+Bronte.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "CATextLayer+Bronte.m"; sourceTree = "<group>"; };
 		81FAE668195A58C200F6B4AC /* NSString+Bronte.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Bronte.h"; sourceTree = "<group>"; };
 		81FAE669195A58C200F6B4AC /* NSString+Bronte.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Bronte.m"; sourceTree = "<group>"; };
+		81FAE66B195B3AE600F6B4AC /* NSMutableArray+Bronte.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSMutableArray+Bronte.h"; sourceTree = "<group>"; };
+		81FAE66C195B3AE600F6B4AC /* NSMutableArray+Bronte.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSMutableArray+Bronte.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -188,6 +191,8 @@
 				81FAE6631958BFBE00F6B4AC /* NSArray+Bronte.m */,
 				81FAE668195A58C200F6B4AC /* NSString+Bronte.h */,
 				81FAE669195A58C200F6B4AC /* NSString+Bronte.m */,
+				81FAE66B195B3AE600F6B4AC /* NSMutableArray+Bronte.h */,
+				81FAE66C195B3AE600F6B4AC /* NSMutableArray+Bronte.m */,
 			);
 			path = Bronte;
 			sourceTree = "<group>";
@@ -373,6 +378,7 @@
 				813E42E01947D04800260C0E /* MultiSelectGestureRecognizer.m in Sources */,
 				813E42DD19479EC100260C0E /* DocumentScrollView.m in Sources */,
 				813E42A619466CC000260C0E /* BronteEditView.m in Sources */,
+				81FAE66D195B3AE600F6B4AC /* NSMutableArray+Bronte.m in Sources */,
 				813E42D319466E3E00260C0E /* BronteViewController.m in Sources */,
 				81FAE667195A583B00F6B4AC /* CATextLayer+Bronte.m in Sources */,
 				813E42A019466C5800260C0E /* CALayer+Bronte.m in Sources */,

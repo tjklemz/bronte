@@ -12,19 +12,22 @@
 
 - (void)insertBeforeSelection:(NSArray *)selection;
 - (void)insertAfterSelection:(NSArray *)selection;
+- (void)didDeleteCharacterFromLine:(CALayer *)line;
 
 @end
 
 @interface BronteEditView : UIView {
-    CGPoint _selectionPoint;
     float _selectionWidth;
     UIButton * _insertLeftButton;
     UIButton * _insertRightButton;
-    NSArray * _selection;
 }
 
-@property (readwrite, nonatomic) id<BronteEditDelegate> delegate;
+@property (nonatomic) CGPoint selectionPoint;
+@property (readwrite, nonatomic, weak) id<BronteEditDelegate> delegate;
+@property (readwrite, nonatomic) NSMutableArray * selection;
 
 - (id)initWithSelection:(NSArray *)selection;
+- (CGPoint)findSelectionPoint;
+- (void)adjustPosition;
 
 @end
