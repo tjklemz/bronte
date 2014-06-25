@@ -13,5 +13,6 @@
 - (BOOL)isDealingWithWords;
 - (CALayer *)lastLineOfSelection;
 - (CATextLayer *)lastWordOfSelection;
+- (BOOL)selectionContainsWord:(CATextLayer *)word;
 
 @end

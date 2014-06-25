@@ -40,4 +40,21 @@
     return lastWord;
 }
 
+- (BOOL)selectionContainsWord:(CATextLayer *)word {
+    BOOL doesContainWord = NO;
+    
+    if ([self isDealingWithWords] && [self containsObject:word]) {
+        doesContainWord = YES;
+    } else {
+        for (CALayer * s in self) {
+            if ([s.sublayers containsObject:word]) {
+                doesContainWord = YES;
+                break;
+            }
+        }
+    }
+    
+    return doesContainWord;
+}
+
 @end

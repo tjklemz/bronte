@@ -470,6 +470,10 @@
     [self configureSelection:selection withAttributes:attr];
 }
 
+- (NSArray *)currentSelection {
+    return _selectionInfo ? _selectionInfo[@"selection"] : (_touchInfo ? _touchInfo[@"selection"] : nil);
+}
+
 - (NSArray *)selectionForHit:(NSDictionary *)hitInfo {
     if (!hitInfo) return nil;
     
@@ -483,23 +487,12 @@
         if (hitInfo[@"hitLineHandle"]) {
             selection = @[line];
         } else {
-            CALayer * word = hitInfo[@"word"];
+            CATextLayer * word = hitInfo[@"word"];
             if (word) {
-                if (_selectionInfo) {
-                    // see if just grabbed the multi selection
-                    NSArray * multiSelection = _selectionInfo[@"selection"];
-                    if ([multiSelection containsObject:word]) {
-                        selection = multiSelection;
-                    }
-                } else if (_touchInfo && _touchInfo[@"selection"]) {
-                    // see if just grabbed the current selection
-                    NSArray * currentSelection = _touchInfo[@"selection"];
-                    for (CALayer * s in currentSelection) {
-                        if ([s.sublayers containsObject:word]) {
-                            selection = currentSelection;
-                            break;
-                        }
-                    }
+                NSArray * currentSelection = [self currentSelection];
+                
+                if (currentSelection && [currentSelection selectionContainsWord:word]) {
+                    selection = currentSelection;
                 } else {
                     selection = @[word];
                 }
@@ -860,16 +853,37 @@
     }
 }
 
+- (void)editWord:(CATextLayer *)word {
+    [self bringUpEditMenuForSelection:@[word]];
+//    NSString * s = [[word.string string] copy];
+//    UITextChecker * checker = [[UITextChecker alloc] init];
+//    NSArray * guesses = [checker guessesForWordRange:NSMakeRange(0, s.length) inString:s language:@"en"];
+//    NSLog(@"%@", guesses);
+}
+
 - (void)handleDoubleTapOnWord:(CATextLayer *)word {
     if (_selectionInfo || _touchInfo[@"selection"]) {
         [self dismissSelections];
     } else {
-        [self bringUpEditMenuForSelection:@[word]];
-//        NSString * s = [[word.string string] copy];
-//        UITextChecker * checker = [[UITextChecker alloc] init];
-//        NSArray * guesses = [checker guessesForWordRange:NSMakeRange(0, s.length) inString:s language:@"en"];
-//        NSLog(@"%@", guesses);
+        [self editWord:word];
     }
+}
+
+- (void)handleSingleTapOnWord:(CATextLayer *)word {
+//    NSArray * selection = _touchInfo[@"selection"];
+//    
+//    if (selection.count == 1 && [selection isDealingWithWords] && selection.firstObject == word) {
+//        [self editWord:word];
+//    } else if (!_selectionInfo && !selection) {
+//        selection = @[word];
+//        [self markSelection:selection];
+//        _touchInfo = [NSMutableDictionary new];
+//        _touchInfo[@"selection"] = selection;
+//        _touchInfo[@"hitInfo"] = @{};
+//    } else {
+//        [self dismissSelections];
+//    }
+    [self dismissSelections];
 }
 
 - (void)handleDoubleTap:(NSDictionary *)hitInfo {
@@ -919,9 +933,12 @@
                 } else {
                     [self dismissSelections];
                 }
-            } else if (tapCount == 2 && hitInfo[@"word"]) {
-                // double tap on single word
-                [self handleDoubleTapOnWord:hitInfo[@"word"]];
+            } else if (hitInfo[@"word"]) {
+                if (tapCount == 1) {
+                    [self handleSingleTapOnWord:hitInfo[@"word"]];
+                } else if (tapCount == 2) {
+                    [self handleDoubleTapOnWord:hitInfo[@"word"]];
+                }
             } else {
                 [self dismissSelections];
             }
@@ -1216,32 +1233,21 @@
             if (gesture.state == UIGestureRecognizerStateBegan) {
                 NSDictionary * hitInfo = [self hitForPoint:p];
                 NSArray * selection = [self selectionForHit:hitInfo];
+                NSArray * currentSelection = [self currentSelection];
                 
-                if (![selection count]) {
-                    [self dismissSelections];
+                if (selection.count && (!currentSelection.count || [currentSelection isEqualToArray:selection])) {
+                    _touchInfo = [NSMutableDictionary new];
+                    _touchInfo[@"selection"] = selection;
+                    _touchInfo[@"hitInfo"] = hitInfo;
                 } else {
-                    NSArray * currentSelection = _selectionInfo ? _selectionInfo[@"selection"] : (_touchInfo ? _touchInfo[@"selection"] : nil);
-                    if (![currentSelection count]) {
-                        [self markSelection:selection];
-                        _touchInfo = [NSMutableDictionary new];
-                        _touchInfo[@"selection"] = selection;
-                        _touchInfo[@"hitInfo"] = hitInfo;
-                    } else {
-                        if ([currentSelection isEqualToArray:selection]) {
-                            _touchInfo = [NSMutableDictionary new];
-                            _touchInfo[@"selection"] = selection;
-                            _touchInfo[@"hitInfo"] = hitInfo;
-                        } else {
-                            [self dismissSelections];
-                        }
-                    }
+                    [self dismissSelections];
                 }
             } else {
                 NSArray * selection = _touchInfo[@"selection"];
                 
-                static BOOL isScrolling = NO;
-                
                 if (selection) {
+                    static BOOL isScrolling = NO;
+                    
                     if (gesture.state == UIGestureRecognizerStateEnded) {
                         [NSObject cancelPreviousPerformRequestsWithTarget:self];
                         isScrolling = NO;

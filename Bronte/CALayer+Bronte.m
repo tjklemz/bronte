@@ -43,7 +43,7 @@
             //float w2 = obj2.bounds.size.width;
             
             // NOTE: Nothing should ever return NSOrderedSame
-            return (x1 + 0.5*w1 < x2) ? NSOrderedAscending : NSOrderedDescending;
+            return (x1 + 0.4*w1 < x2) ? NSOrderedAscending : NSOrderedDescending;
             
             //return obj1.position.x - obj2.position.x;
         }];
