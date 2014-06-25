@@ -89,8 +89,6 @@
         
         // end of testing code
         
-        [self adjustScrollViewContentSize];
-        
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(keyboardDidHide:)
                                                      name:UIKeyboardDidHideNotification object:nil];
@@ -149,7 +147,7 @@
 
 - (void)adjustScrollViewContentSize {
     CGPoint offset = _scrollView.contentOffset;
-    _scrollView.contentSize = CGSizeMake(_scrollView.frame.size.width, [self currentScale]*[self lineOriginForLineNumber:_lines.count+1].y);
+    _scrollView.contentSize = CGSizeMake(_scrollView.frame.size.width, [self currentScale]*[self lineOriginForLineNumber:_lines.count+2].y);
     [_scrollView setContentOffset:offset animated:NO];
 }
 
@@ -189,6 +187,9 @@
     //l.backgroundColor = [UIColor colorWithWhite:1.0 alpha:0.5].CGColor;
     [_docLayer addSublayer:l];
     [_lines addObject:l];
+    
+    [self adjustScrollViewContentSize];
+    
     return l;
 }
 
@@ -197,6 +198,9 @@
     [_lines addObject:l];
     l.position = [self lineOriginForLineNumber:_lines.count-1];
     [_docLayer addSublayer:l];
+    
+    [self adjustScrollViewContentSize];
+    
     return l;
 }
 
@@ -211,6 +215,8 @@
     for (NSUInteger i = n+1; i < _lines.count; ++i) {
         [self arrangeLineNumber:i basedOnScale:currentScale];
     }
+    
+    [self adjustScrollViewContentSize];
     
     return newLine;
 }
@@ -632,6 +638,7 @@
                 }
                 
                 [self arrangeLinesBasedOnScale:currentScale];
+                [self adjustScrollViewContentSize];
             } else {
                 [self putBackSelection:selection];
             }
