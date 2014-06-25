@@ -23,21 +23,12 @@
     return [self isDealingWithWords] ? [self.lastObject superlayer] : self.lastObject;
 }
 
+- (CATextLayer *)firstWordOfSelection {
+    return [self wordsForSelection].firstObject;
+}
+
 - (CATextLayer *)lastWordOfSelection {
-    CATextLayer * lastWord = nil;
-    
-    if ([self isDealingWithWords]) {
-        lastWord = self.lastObject;
-    } else if ([self isParagraph]) {
-        long n = self.count - 1;
-        if (n > 0) {
-            lastWord = [self objectAtIndex:n];
-        }
-    } else if ([self.lastObject isLine]) {
-        lastWord = [[self.lastObject wordsForLine] lastObject];
-    }
-    
-    return lastWord;
+    return [self wordsForSelection].lastObject;
 }
 
 - (BOOL)selectionContainsWord:(CATextLayer *)word {
@@ -55,6 +46,22 @@
     }
     
     return doesContainWord;
+}
+
+- (NSArray *)wordsForSelection {
+    NSMutableArray * words = [NSMutableArray new];
+    
+    if ([self isDealingWithWords]) {
+        for (CATextLayer * word in self) {
+            [words addObject:word];
+        }
+    } else {
+        for (CALayer * l in self) {
+            [words addObjectsFromArray:[l wordsForLine]];
+        }
+    }
+    
+    return words;
 }
 
 @end

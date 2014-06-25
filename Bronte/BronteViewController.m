@@ -977,6 +977,13 @@
 - (void)multiSelect:(MultiSelectGestureRecognizer *)gesture {
     static NSMutableDictionary * selectionInfo = nil;
     
+    if (_editView && _editView.superview) {
+        if (gesture.state == UIGestureRecognizerStateBegan) {
+            gesture.state = UIGestureRecognizerStateFailed;
+        }
+        return;
+    }
+    
     [self unmarkMultiWordSelection];
     
     if (gesture.state == UIGestureRecognizerStateBegan) {

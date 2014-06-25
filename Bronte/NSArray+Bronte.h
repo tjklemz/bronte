@@ -12,7 +12,9 @@
 
 - (BOOL)isDealingWithWords;
 - (CALayer *)lastLineOfSelection;
+- (CATextLayer *)firstWordOfSelection;
 - (CATextLayer *)lastWordOfSelection;
 - (BOOL)selectionContainsWord:(CATextLayer *)word;
+- (NSArray *)wordsForSelection;
 
 @end

@@ -9,6 +9,8 @@
 #import "BronteEditView.h"
 #import "UIColor+Bronte.h"
 #import "NSArray+Bronte.h"
+#import "CATextLayer+Bronte.h"
+#import "NSString+Bronte.h"
 
 @implementation BronteEditView
 
@@ -34,7 +36,9 @@
 
 - (id)initWithSelection:(NSArray *)selection
 {
-    CALayer * l = [selection lastLineOfSelection];
+    _selection = selection;
+    
+    CALayer * l = [_selection lastLineOfSelection];
     
     _selectionPoint = l.position;
     _selectionPoint.y += l.bounds.size.height;
@@ -88,6 +92,7 @@
         UIButton * capButton = [UIButton buttonWithType:UIButtonTypeCustom];
         [capButton setImage:[UIImage imageNamed:@"edit_icons_cap.png"] forState:UIControlStateNormal];
         [capButton setFrame:CGRectMake(x, y, w, w)];
+        [capButton addTarget:self action:@selector(capitalizeSelection:) forControlEvents:UIControlEventTouchUpInside|UIControlEventTouchDownRepeat];
         [self addSubview:capButton];
         
         x += w + p;
@@ -95,6 +100,7 @@
         UIButton * uncapButton = [UIButton buttonWithType:UIButtonTypeCustom];
         [uncapButton setImage:[UIImage imageNamed:@"edit_icons_lc.png"] forState:UIControlStateNormal];
         [uncapButton setFrame:CGRectMake(x, y, w, w)];
+        [uncapButton addTarget:self action:@selector(uncapitalizeSelection:) forControlEvents:UIControlEventTouchUpInside];
         [self addSubview:uncapButton];
         
         x += w + p;
@@ -160,6 +166,8 @@
     
 }
 
+#pragma mark - Actions
+
 - (void)insert:(id)sender {
     if ([self isInsertingLeft]) {
         [self.delegate insertBeforeSelection:_selection];
@@ -182,6 +190,41 @@
     other.selected = !sender.selected;
     [self setNeedsDisplay];
 }
+
+- (void)capitalizeSelection:(UIButton *)sender {
+    NSArray * words = [_selection wordsForSelection];
+    
+    BOOL allWordsCapped = YES;
+    BOOL allWordsUncapped = YES;
+    
+    for (CATextLayer * w in words) {
+        if ([[w word] isUncapped]) {
+            allWordsCapped = NO;
+        } else {
+            allWordsUncapped = NO;
+        }
+    }
+    
+    if (allWordsUncapped) {
+        [words.firstObject setWord:[[words.firstObject word] cappedString]];
+    } else {
+        for (CATextLayer * w in words) {
+            NSString * capped = !allWordsCapped ? [[w word] cappedString] : [[w word] allCappedString];
+            [w setWord:capped];
+        }
+    }
+}
+
+- (void)uncapitalizeSelection:(UIButton *)sender {
+    NSArray * words = [_selection wordsForSelection];
+    
+    for (CATextLayer * w in words) {
+        NSString * uncapped = [[w word] uncappedString];
+        [w setWord:uncapped];
+    }
+}
+
+#pragma mark - Drawing
 
 - (void)drawRect:(CGRect)rect
 {
