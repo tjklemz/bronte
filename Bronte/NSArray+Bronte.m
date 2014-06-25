@@ -19,6 +19,10 @@
     return [self.lastObject isParagraphSeparator];
 }
 
+- (CALayer *)firstLineOfSelection {
+    return [self isDealingWithWords] ? [self.firstObject superlayer] : self.firstObject;
+}
+
 - (CALayer *)lastLineOfSelection {
     return [self isDealingWithWords] ? [self.lastObject superlayer] : self.lastObject;
 }

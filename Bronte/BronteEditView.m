@@ -35,7 +35,7 @@
 }
 
 - (CGPoint)findSelectionPoint {
-    CALayer * l = [_selection lastLineOfSelection];
+    CALayer * l = [self isInsertingLeft] ? [_selection firstLineOfSelection] : [_selection lastLineOfSelection];
     CGPoint selectionPoint = l.position;
     selectionPoint.y += l.bounds.size.height;
     return selectionPoint;
@@ -201,6 +201,8 @@
     other.selected = !sender.selected;
     
     [_deleteCharacterButton setImage:[UIImage imageNamed:([self isInsertingLeft] ? @"edit_icons_delete.png" : @"edit_icons_backspace.png")] forState:UIControlStateNormal];
+    
+    [self.delegate editMenuNeedsAdjusting];
     
     [self setNeedsDisplay];
 }

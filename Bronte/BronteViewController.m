@@ -669,6 +669,8 @@
         _editView.frame = newFrame;
         [_scrollView addSubview:_editView];
         
+        _scrollView.previousContentOffset = _scrollView.contentOffset;
+        
         [UIView animateWithDuration:0.25 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
             [_scrollView setContentOffset:CGPointMake(0, _scrollView.contentOffset.y + offset)];
         } completion:^(BOOL finished) {
@@ -730,21 +732,25 @@
     }
     
     if (_editView.selection.count) {
-        CGPoint newPoint = [_editView findSelectionPoint];
-        
-        float delta = newPoint.y - _editView.selectionPoint.y;
-        
-        if (fabsf(delta) > 1) {
-            [UIView animateWithDuration:0.2 delay:0.25 options:UIViewAnimationOptionCurveEaseOut animations:^{
-                [_editView adjustPosition];
-                [_scrollView setContentOffset:CGPointMake(0, _scrollView.contentOffset.y + delta)];
-            } completion:^(BOOL finished) {
-                [self arrangeLinesBasedOnScale:[self currentScale]];
-            }];
-        }
+        [self editMenuNeedsAdjusting];
     } else {
         [self dismissEditMenu];
         [self arrangeLinesBasedOnScale:[self currentScale]];
+    }
+}
+
+- (void)editMenuNeedsAdjusting {
+    CGPoint newPoint = [_editView findSelectionPoint];
+    
+    float delta = newPoint.y - _editView.selectionPoint.y;
+    
+    if (fabsf(delta) > 1) {
+        [UIView animateWithDuration:0.2 delay:0.25 options:UIViewAnimationOptionCurveEaseOut animations:^{
+            [_editView adjustPosition];
+            [_scrollView setContentOffset:CGPointMake(0, _scrollView.contentOffset.y + delta)];
+        } completion:^(BOOL finished) {
+            [self arrangeLinesBasedOnScale:[self currentScale]];
+        }];
     }
 }
 

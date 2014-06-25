@@ -11,6 +11,7 @@
 @interface NSArray (Bronte)
 
 - (BOOL)isDealingWithWords;
+- (CALayer *)firstLineOfSelection;
 - (CALayer *)lastLineOfSelection;
 - (CATextLayer *)firstWordOfSelection;
 - (CATextLayer *)lastWordOfSelection;

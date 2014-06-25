@@ -13,6 +13,7 @@
 - (void)insertBeforeSelection:(NSArray *)selection;
 - (void)insertAfterSelection:(NSArray *)selection;
 - (void)didDeleteCharacterFromLine:(CALayer *)line;
+- (void)editMenuNeedsAdjusting;
 
 @end
 
