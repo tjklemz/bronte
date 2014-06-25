@@ -648,6 +648,10 @@
 #pragma mark - Editing
 
 - (void)bringUpEditMenuForSelection:(NSArray *)selection {
+    if (_editView && [_editView superview]) {
+        return;
+    }
+    
     [self cancelScrolling];
     [self dismissSelections];
     
@@ -734,8 +738,11 @@
     if (_editView.selection.count) {
         [self editMenuNeedsAdjusting];
     } else {
-        [self dismissEditMenu];
-        [self arrangeLinesBasedOnScale:[self currentScale]];
+        __weak BronteViewController * me = self;
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [me dismissEditMenu];
+            [me arrangeLinesBasedOnScale:[me currentScale]];
+        });
     }
 }
 
@@ -745,11 +752,15 @@
     float delta = newPoint.y - _editView.selectionPoint.y;
     
     if (fabsf(delta) > 1) {
-        [UIView animateWithDuration:0.2 delay:0.25 options:UIViewAnimationOptionCurveEaseOut animations:^{
+        [self arrangeLinesBasedOnScale:[self currentScale]];
+        
+        [UIView animateWithDuration:0.2 delay:0.3 options:UIViewAnimationOptionCurveEaseOut animations:^{
+            if (delta < 0) {
+                [_scrollView setContentOffset:CGPointMake(0, _scrollView.contentOffset.y + delta)];
+            }
             [_editView adjustPosition];
-            [_scrollView setContentOffset:CGPointMake(0, _scrollView.contentOffset.y + delta)];
         } completion:^(BOOL finished) {
-            [self arrangeLinesBasedOnScale:[self currentScale]];
+            
         }];
     }
 }
