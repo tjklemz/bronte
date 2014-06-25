@@ -148,7 +148,9 @@
 }
 
 - (void)adjustScrollViewContentSize {
+    CGPoint offset = _scrollView.contentOffset;
     _scrollView.contentSize = CGSizeMake(_scrollView.frame.size.width, [self currentScale]*[self lineOriginForLineNumber:_lines.count+1].y);
+    [_scrollView setContentOffset:offset animated:NO];
 }
 
 - (CALayer *)makeBlankLine {
@@ -695,9 +697,16 @@
             [self unmarkSelection:_touchInfo[@"selection"]];
         }
         
-        if (fabs(_scrollView.previousContentOffset.y - _scrollView.contentOffset.y) < [self width]) {
+        float maxOffset = _scrollView.contentSize.height - _scrollView.bounds.size.height;
+        float minOffset = 0;
+        
+        float prevOffset = _scrollView.previousContentOffset.y;
+        prevOffset = prevOffset < minOffset ? minOffset : prevOffset;
+        prevOffset = prevOffset > maxOffset ? maxOffset : prevOffset;
+        
+        if (fabs(prevOffset - _scrollView.contentOffset.y) < [self height]) {
             [UIView animateWithDuration:0.3 delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
-                [_scrollView setContentOffset:_scrollView.previousContentOffset];
+                [_scrollView setContentOffset:CGPointMake(0, prevOffset)];
             } completion:^(BOOL finished) {
                 
             }];
@@ -736,7 +745,11 @@
     }
     
     if (_editView.selection.count) {
-        [self editMenuNeedsAdjusting];
+        if (![_editView isInsertingLeft]) {
+            [self editMenuNeedsAdjusting];
+        } else {
+            [self arrangeLinesBasedOnScale:[self currentScale]];
+        }
     } else {
         __weak BronteViewController * me = self;
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
@@ -754,10 +767,8 @@
     if (fabsf(delta) > 1) {
         [self arrangeLinesBasedOnScale:[self currentScale]];
         
-        [UIView animateWithDuration:0.2 delay:0.3 options:UIViewAnimationOptionCurveEaseOut animations:^{
-            if (delta < 0) {
-                [_scrollView setContentOffset:CGPointMake(0, _scrollView.contentOffset.y + delta)];
-            }
+        [UIView animateWithDuration:0.2 delay:0.25 options:UIViewAnimationOptionCurveEaseOut animations:^{
+            [_scrollView setContentOffset:CGPointMake(0, _scrollView.contentOffset.y + delta)];
             [_editView adjustPosition];
         } completion:^(BOOL finished) {
             
@@ -1100,11 +1111,13 @@
     }
     
     [_lines removeObjectsInArray:itemsToRemove];
+    [self adjustScrollViewContentSize];
 }
 
 - (void)removeLine:(CALayer *)line {
     [line removeFromSuperlayer];
     [_lines removeObject:line];
+    [self adjustScrollViewContentSize];
 }
 
 - (void)arrangeLineNumber:(NSUInteger)lineNo basedOnScale:(float)scale {
@@ -1278,7 +1291,7 @@
             } else if (isDraggingClipboardArea) {
                 CGFloat scale = [self currentScale] + t.x / [self width];
                 [self zoomDocument:scale];
-                newOffset = focusLine.frame.origin.y + delta;
+                newOffset = focusLine.frame.origin.y + [self currentScale]*delta;
                 [gesture setTranslation:CGPointZero inView:_scrollView];
             }
             

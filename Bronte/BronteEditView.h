@@ -31,5 +31,6 @@
 - (id)initWithSelection:(NSArray *)selection;
 - (CGPoint)findSelectionPoint;
 - (void)adjustPosition;
+- (BOOL)isInsertingLeft;
 
 @end
