@@ -20,6 +20,7 @@
     float _selectionWidth;
     UIButton * _insertLeftButton;
     UIButton * _insertRightButton;
+    UIButton * _deleteCharacterButton;
 }
 
 @property (nonatomic) CGPoint selectionPoint;

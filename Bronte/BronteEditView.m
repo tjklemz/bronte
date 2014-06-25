@@ -115,10 +115,11 @@
         x += w + p;
         
         UIButton * backspaceButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        [backspaceButton setImage:[UIImage imageNamed:@"edit_icons_backspace_l.png"] forState:UIControlStateNormal];
+        [backspaceButton setImage:[UIImage imageNamed:@"edit_icons_backspace.png"] forState:UIControlStateNormal];
         [backspaceButton setFrame:CGRectMake(x, y, w, w)];
         [backspaceButton addTarget:self action:@selector(deleteCharacter:) forControlEvents:UIControlEventTouchDown];
         [self addSubview:backspaceButton];
+        _deleteCharacterButton = backspaceButton;
         
         y += w + p - 5;
         x = startX;
@@ -138,7 +139,7 @@
         x += w + p;
         
         UIButton * deleteWordButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        [deleteWordButton setImage:[UIImage imageNamed:@"edit_icons_delete.png"] forState:UIControlStateNormal];
+        [deleteWordButton setImage:[UIImage imageNamed:@"edit_icons_cut.png"] forState:UIControlStateNormal];
         [deleteWordButton setFrame:CGRectMake(x, y + 2, w, w*2 + p)];
         [self addSubview:deleteWordButton];
         
@@ -198,6 +199,9 @@
     UIButton * other = sender == _insertLeftButton ? _insertRightButton : _insertLeftButton;
     sender.selected = !sender.selected;
     other.selected = !sender.selected;
+    
+    [_deleteCharacterButton setImage:[UIImage imageNamed:([self isInsertingLeft] ? @"edit_icons_delete.png" : @"edit_icons_backspace.png")] forState:UIControlStateNormal];
+    
     [self setNeedsDisplay];
 }
 
