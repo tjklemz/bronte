@@ -1292,8 +1292,11 @@
             
             if (isScrollingOnSides) {
                 newOffset = origOffset - t.y;
-                if (newOffset < minOffset || newOffset > maxOffset) {
-                    newOffset = origOffset - t.y*0.33;
+                
+                if (newOffset < minOffset) {
+                    newOffset -= (origOffset - t.y - minOffset)*(1-0.33);
+                } else if (newOffset > maxOffset) {
+                    newOffset -= (origOffset - t.y - maxOffset)*(1-0.33);
                 }
             } else if (isDraggingClipboardArea) {
                 CGFloat scale = [self currentScale] + t.x / [self width];
