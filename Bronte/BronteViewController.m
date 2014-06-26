@@ -136,6 +136,14 @@
     return [UIFont bronteLineWidth] + [self lineHandleWidth];
 }
 
+- (float)maxScrollOffset {
+    return fmaxf(0, _scrollView.contentSize.height - _scrollView.bounds.size.height);
+}
+
+- (float)minScrollOffset {
+    return 0;
+}
+
 - (CGPoint)originForFirstWord {
     return CGPointMake([self lineHandleWidth] + [UIFont bronteWordSpacing], ([UIFont bronteWordHeight]/2.0) - 0.5 - 4);
 }
@@ -706,8 +714,8 @@
         
         [self arrangeWordsInLines:[_editView.selection linesForSelection]];
         
-        float maxOffset = _scrollView.contentSize.height - _scrollView.bounds.size.height;
-        float minOffset = 0;
+        float maxOffset = [self maxScrollOffset];
+        float minOffset = [self minScrollOffset];
         
         float prevOffset = _scrollView.previousContentOffset.y;
         prevOffset = prevOffset < minOffset ? minOffset : prevOffset;
@@ -771,6 +779,21 @@
     }
 }
 
+- (void)deleteSelection:(NSArray *)selection {
+    NSSet * lines = [selection linesForSelection];
+    NSArray * words = [selection wordsForSelection];
+    
+    for (CATextLayer * word in words) {
+        [word removeFromSuperlayer];
+    }
+    
+    [self arrangeWordsInLines:lines];
+    [self removeBlankLines];
+    [self arrangeLinesBasedOnScale:[self currentScale]];
+    
+    [self dismissEditMenu];
+}
+
 - (void)editMenuNeedsAdjusting {
     CGPoint newPoint = [_editView findSelectionPoint];
     
@@ -822,12 +845,6 @@
 
 - (void)insertAfterSelection:(NSArray *)selection {
     _inputView = [[BronteTextInput alloc] initWithFrame:CGRectMake(0, 0, [self width], [self height])];
-    CATextLayer * w = [selection lastWordOfSelection];
-    
-    if (w) {
-        _inputView.pre = [[w string] string];
-    }
-    
     [self.view addSubview:_inputView];
     [_inputView becomeFirstResponder];
 }
@@ -1266,6 +1283,8 @@
     static BOOL isScrollingOnSides = NO;
     static BOOL stillDeciding = YES;
     
+    BOOL canScroll = _scrollView.contentSize.height > _scrollView.bounds.size.height;
+    
     BOOL failed = NO;
     
     if (gesture.state == UIGestureRecognizerStateBegan) {
@@ -1285,8 +1304,8 @@
     }
     
     if (!failed && gesture.state != UIGestureRecognizerStateFailed && gesture.state != UIGestureRecognizerStateCancelled && gesture.state != UIGestureRecognizerStatePossible) {
-        float maxOffset = _scrollView.contentSize.height - _scrollView.bounds.size.height;
-        float minOffset = 0;
+        float maxOffset = [self maxScrollOffset];
+        float minOffset = [self minScrollOffset];
         
         if (isDraggingClipboardArea || isDraggingInfoArea) {
             CGPoint t = [gesture translationInView:_scrollView];
@@ -1310,7 +1329,7 @@
             
             float newOffset = _scrollView.contentOffset.y;
             
-            if (isScrollingOnSides) {
+            if (isScrollingOnSides && canScroll) {
                 newOffset = origOffset - t.y;
                 
                 if (newOffset < minOffset) {
@@ -1382,7 +1401,7 @@
         }
         
         if (gesture.state == UIGestureRecognizerStateEnded) {
-            if (isScrollingOnSides) {
+            if (isScrollingOnSides && canScroll) {
                 float velocity = -[gesture velocityInView:_scrollView].y;
                 
                 if (_scrollView.contentOffset.y <= minOffset || _scrollView.contentOffset.y >= maxOffset) {

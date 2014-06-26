@@ -45,14 +45,6 @@
     return color;
 }
 
-+ (UIColor *)brontePreFontColor {
-    static UIColor * color = nil;
-    if (!color) {
-        color = [UIColor colorWithRed:25/255.0 green:28/255.0 blue:32/255.0 alpha:0.5];
-    }
-    return color;
-}
-
 + (UIColor *)bronteSecondaryBackgroundColor {
     static UIColor * color = nil;
     if (!color) {

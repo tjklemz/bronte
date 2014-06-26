@@ -153,8 +153,9 @@
         x += w + p;
         
         UIButton * deleteWordButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        [deleteWordButton setImage:[UIImage imageNamed:@"edit_icons_cut.png"] forState:UIControlStateNormal];
+        [deleteWordButton setImage:[UIImage imageNamed:@"edit_icons_delete-word.png"] forState:UIControlStateNormal];
         [deleteWordButton setFrame:CGRectMake(x, y + 2, w, w*2 + p)];
+        [deleteWordButton addTarget:self action:@selector(deleteSelection:) forControlEvents:UIControlEventTouchUpInside];
         [self addSubview:deleteWordButton];
         
         y += w + p;
@@ -280,6 +281,10 @@
     if (line) {
         [self.delegate didDeleteCharacterFromLine:line];
     }
+}
+
+- (void)deleteSelection:(id)sender {
+    [self.delegate deleteSelection:_selection];
 }
 
 - (void)wrapSelectionWithLeftString:(NSString *)left rightString:(NSString *)right {

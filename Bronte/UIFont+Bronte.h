@@ -18,5 +18,6 @@
 + (UIFont *)bronteFontRegular;
 + (NSDictionary *)bronteDefaultFontAttributes;
 + (NSDictionary *)bronteSelectedFontAttributes;
++ (NSDictionary *)bronteInputFontAttributes;
 
 @end

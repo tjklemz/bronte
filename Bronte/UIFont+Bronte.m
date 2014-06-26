@@ -50,6 +50,14 @@
     return font;
 }
 
++ (UIFont *)bronteInputFont {
+    static UIFont * font = nil;
+    if (!font) {
+        font = [UIFont fontWithName:@"Lekton-Regular" size:24];
+    }
+    return font;
+}
+
 + (NSDictionary *)bronteDefaultFontAttributes {
     static NSDictionary * attr = nil;
     if (!attr) {
@@ -64,6 +72,15 @@
     if (!attr) {
         attr = @{ NSFontAttributeName : [UIFont bronteFontBold],
                   NSForegroundColorAttributeName: (id)[UIColor bronteSelectedFontColor].CGColor };
+    }
+    return attr;
+}
+
++ (NSDictionary *)bronteInputFontAttributes {
+    static NSDictionary * attr = nil;
+    if (!attr) {
+        attr = @{ NSFontAttributeName : [UIFont bronteInputFont],
+                  NSForegroundColorAttributeName: [UIColor bronteFontColor] };
     }
     return attr;
 }

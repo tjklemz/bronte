@@ -8,21 +8,13 @@
 
 @implementation BronteTextInput
 
-- (void)createAttributes {
-    _defaultAttr = @{ NSFontAttributeName : [UIFont bronteFontRegular],
-                      NSForegroundColorAttributeName: [UIColor bronteFontColor] };
-    
-    _preAttr = @{ NSFontAttributeName : [UIFont bronteFontRegular],
-                  NSForegroundColorAttributeName : [UIColor brontePreFontColor] };
-}
-
 - (id)initWithFrame:(CGRect)frame
 {
     self = [super initWithFrame:frame];
     if (self) {
         [self setAutoresizingMask:UIViewAutoresizingFlexibleWidth];
         
-        [self createAttributes];
+        _defaultAttr = [UIFont bronteInputFontAttributes];
         
         self.backgroundColor = [UIColor clearColor];
         
@@ -82,7 +74,7 @@
 }
 
 - (float)maxTextWidth {
-    return self.bounds.size.width - 20*2;
+    return self.bounds.size.width - 100*2;
 }
 
 - (void)insertText:(NSString *)theText {
@@ -95,7 +87,7 @@
         
         float maxW = [self maxTextWidth];
         
-        float extra = [self hasText] ? [_pre sizeWithAttributes:_preAttr].width : 0;
+        float extra = 0;
         
         float newWidth = extra + [[self currentLine] sizeWithAttributes:_defaultAttr].width + [theText sizeWithAttributes:_defaultAttr].width;
             
@@ -129,11 +121,6 @@
     [self setNeedsDisplay];
 }
 
-- (void)orientationChanged {
-    [self createAttributes];
-    [self setNeedsDisplay];
-}
-
 - (void)drawRect:(CGRect)rect {
     [[UIColor bronteSecondaryBackgroundColor] set];
     UIRectFill(rect);
@@ -153,12 +140,10 @@
     float startX = (self.bounds.size.width - [self maxTextWidth]) / 2;
     float x = startX;
     
-    CGSize preSize = self.pre ? [self.pre sizeWithAttributes:_preAttr] : CGSizeZero;
-    
     while ((line = [enumerator nextObject])) {
-        BOOL renderPreBefore = self.pre && !self.insertBefore && i == [_lines count] - 1;
+        BOOL renderPreBefore = !self.insertBefore && i == [_lines count] - 1;
         
-        x = renderPreBefore ? x + preSize.width : startX;
+        x = renderPreBefore ? x : startX;
         
         CGSize s = [line sizeWithAttributes:_defaultAttr];
         CGRect rectForLine = CGRectMake(x, (self.frame.size.height / 2) - s.height - (i+1)*[UIFont bronteLineHeight]*0.8, s.width, s.height);
@@ -172,7 +157,7 @@
             [[UIBezierPath bezierPathWithRect:CGRectMake(rectForLine.origin.x + rectForLine.size.width - 1, rectForLine.origin.y + rectForLine.size.height - 4.5, 20, 2)] fill];
             [[UIColor bronteFontColor] set];
         } else if (renderPreBefore) {
-            [self.pre drawInRect:CGRectMake(startX, rectForLine.origin.y, preSize.width, preSize.height) withAttributes:_preAttr];
+            
         }
         
         ++i;

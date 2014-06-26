@@ -15,6 +15,7 @@
 - (void)didDeleteCharacterFromLine:(CALayer *)line;
 - (void)editMenuNeedsAdjusting;
 - (void)linesNeedArranging:(NSSet *)lines;
+- (void)deleteSelection:(NSArray *)selection;
 
 @end
 
