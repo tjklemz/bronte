@@ -777,7 +777,7 @@
     if (fabsf(delta) > 1) {
         [self arrangeLinesBasedOnScale:[self currentScale]];
         
-        [UIView animateWithDuration:0.2 delay:0.25 options:UIViewAnimationOptionCurveEaseOut animations:^{
+        [UIView animateWithDuration:0.2 delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
             [_scrollView setContentOffset:CGPointMake(0, _scrollView.contentOffset.y + delta)];
             [_editView adjustPosition];
         } completion:^(BOOL finished) {
