@@ -82,7 +82,7 @@
 }
 
 - (float)maxTextWidth {
-    return 1.2*[UIFont bronteLineWidth];
+    return self.bounds.size.width - 20*2;
 }
 
 - (void)insertText:(NSString *)theText {
