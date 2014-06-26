@@ -18,7 +18,6 @@
 @end
 
 @interface BronteEditView : UIView {
-    float _selectionWidth;
     UIButton * _insertLeftButton;
     UIButton * _insertRightButton;
     UIButton * _deleteCharacterButton;

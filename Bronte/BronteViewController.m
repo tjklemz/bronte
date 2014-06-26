@@ -756,8 +756,11 @@
             [self editMenuNeedsAdjusting];
         } else {
             [self arrangeLinesBasedOnScale:[self currentScale]];
+            [_editView adjustPosition];
         }
     } else {
+        [_editView setNeedsDisplay];
+        
         __weak BronteViewController * me = self;
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             [me dismissEditMenu];
@@ -780,6 +783,8 @@
         } completion:^(BOOL finished) {
             
         }];
+    } else {
+        [_editView adjustPosition];
     }
 }
 

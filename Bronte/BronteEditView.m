@@ -11,6 +11,8 @@
 #import "NSArray+Bronte.h"
 #import "CATextLayer+Bronte.h"
 #import "NSString+Bronte.h"
+#import "UIFont+Bronte.h"
+#import "CALayer+Bronte.h"
 
 @implementation BronteEditView
 
@@ -30,20 +32,29 @@
     return self.frame.size.width / 2 - 1.5*[self buttonWidth] - [self buttonPadding];
 }
 
+- (float)offset {
+    return [UIFont bronteLineHeight];
+}
+
+- (float)selectionLineLength {
+    return 14;
+}
+
 - (float)startY {
-    return 30;
+    return 30 + [self offset];
 }
 
 - (CGPoint)findSelectionPoint {
-    CALayer * l = [self isInsertingLeft] ? [_selection firstLineOfSelection] : [_selection lastLineOfSelection];
-    CGPoint selectionPoint = l.position;
-    selectionPoint.y += l.bounds.size.height;
-    return selectionPoint;
+    BOOL isInsertingLeft = [self isInsertingLeft];
+    CALayer * l = isInsertingLeft ? [_selection firstLineOfSelection] : [_selection lastLineOfSelection];
+    float x = isInsertingLeft ? [_selection firstWordOfSelection].position.x - 4: ([[_selection lastWordOfSelection] maxX] - [UIFont bronteWordSpacing] - [self selectionLineLength]);
+    return CGPointMake(l.position.x + x, l.position.y);
 }
 
 - (void)adjustPosition {
     _selectionPoint = [self findSelectionPoint];
     self.frame = CGRectMake(0, _selectionPoint.y, self.bounds.size.width, self.bounds.size.height);
+    [self setNeedsDisplay];
 }
 
 - (id)initWithSelection:(NSArray *)selection
@@ -54,11 +65,12 @@
     
     float screenWidth = [UIScreen mainScreen].bounds.size.height;
     
-    self = [super initWithFrame:CGRectMake(0, _selectionPoint.y, screenWidth, 460)];
+    self = [super initWithFrame:CGRectMake(0, _selectionPoint.y, screenWidth, 460 + [self offset])];
     
     if (self) {
+        [self setClipsToBounds:NO];
         [self setAutoresizingMask:UIViewAutoresizingFlexibleWidth];
-        [self setBackgroundColor:[UIColor bronteSecondaryBackgroundColor]];
+        [self setBackgroundColor:[UIColor clearColor]];
         
         float w = [self buttonWidth];
         float p = [self buttonPadding];
@@ -270,31 +282,36 @@
 
 - (void)drawRect:(CGRect)rect
 {
-    float offset = 8;
+    
+    float selectionLineLength = [self selectionLineLength];
     
     [[UIColor colorWithRed:166/255.0 green:96/255.0 blue:54/255.0 alpha:1.0] setStroke];
     
-    UIBezierPath * selectionLine = [UIBezierPath bezierPath];
-    [selectionLine moveToPoint:_selectionPoint];
-    [selectionLine addLineToPoint:CGPointMake(_selectionPoint.x + _selectionWidth, _selectionPoint.y)];
-    selectionLine.lineWidth = 1.5;
-    [selectionLine stroke];
+    float y = [UIFont bronteLineHeight] - 11;
     
-//    BOOL isInsertingLeft = [self isInsertingLeft];
-    
-//    UIBezierPath * selectionSide = [UIBezierPath bezierPath];
-//    float selectionSideX = isInsertingLeft ? _selectionPoint.x : _selectionPoint.x + _selectionWidth + selectionLine.lineWidth;
-//    [selectionSide moveToPoint:CGPointMake(selectionSideX, _selectionPoint.y + selectionLine.lineWidth / 2.0)];
-//    [selectionSide addLineToPoint:CGPointMake(selectionSideX, 0)];
-//    selectionSide.lineWidth = 4.5;
-//    [selectionSide stroke];
+    if (_selection.count) {
+        UIBezierPath * selectionLine = [UIBezierPath bezierPath];
+        [selectionLine moveToPoint:CGPointMake(_selectionPoint.x, y)];
+        [selectionLine addLineToPoint:CGPointMake(_selectionPoint.x + selectionLineLength, y)];
+        selectionLine.lineWidth = 1;
+        [selectionLine stroke];
+        
+        BOOL isInsertingLeft = [self isInsertingLeft];
+        
+        UIBezierPath * selectionSide = [UIBezierPath bezierPath];
+        float selectionSideX = isInsertingLeft ? _selectionPoint.x : _selectionPoint.x + selectionLineLength + selectionLine.lineWidth;
+        [selectionSide moveToPoint:CGPointMake(selectionSideX, y + selectionLine.lineWidth / 2.0)];
+        [selectionSide addLineToPoint:CGPointMake(selectionSideX, y - 8)];
+        selectionSide.lineWidth = 4;
+        [selectionSide stroke];
+    }
     
     [[UIColor bronteFontColor] setStroke];
     
-    offset += _selectionPoint.y - 1.0;
+    float offset = [self offset];
     
     [[UIColor bronteSecondaryBackgroundColor] setFill];
-    UIRectFill(CGRectMake(rect.origin.x, rect.origin.y + offset, rect.size.width + rect.origin.x, rect.size.height + rect.origin.y));
+    UIRectFill(CGRectMake(rect.origin.x, rect.origin.y + offset, rect.size.width + rect.origin.x, rect.size.height - offset));
     
     [[UIColor bronteBackgroundColor] setStroke];
     
@@ -302,7 +319,7 @@
     float b = [self buttonsPerRow];
     float p = [self buttonPadding];
     
-    float y = [self startY] + [self buttonWidth] + [self buttonPadding];
+    y = [self startY] + [self buttonWidth] + [self buttonPadding];
     
     UIBezierPath * line = [UIBezierPath bezierPath];
     [line moveToPoint:CGPointMake([self startX], y)];
