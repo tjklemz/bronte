@@ -71,9 +71,16 @@
 - (NSSet *)linesForSelection {
     NSMutableSet * lines = [NSMutableSet new];
     
-    NSArray * words = [self wordsForSelection];
-    for (CATextLayer * word in words) {
-        [lines addObject:word.superlayer];
+    if ([self isDealingWithWords]) {
+        for (CATextLayer * word in self) {
+            if (word.superlayer) {
+                [lines addObject:word.superlayer];
+            }
+        }
+    } else {
+        for (CALayer * l in self) {
+            [lines addObject:l];
+        }
     }
     
     return lines;

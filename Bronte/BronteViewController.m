@@ -704,6 +704,8 @@
             [self unmarkSelection:_touchInfo[@"selection"]];
         }
         
+        [self arrangeWordsInLines:[_editView.selection linesForSelection]];
+        
         float maxOffset = _scrollView.contentSize.height - _scrollView.bounds.size.height;
         float minOffset = 0;
         
@@ -748,7 +750,7 @@
         [self removeBlankLines];
     } else {
         NSSet * lines = [NSSet setWithObject:line];
-        [self arrangeWordsInLines:lines];
+        [self linesNeedArranging:lines];
     }
     
     if (_editView.selection.count) {
