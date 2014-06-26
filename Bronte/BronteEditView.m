@@ -288,10 +288,14 @@
     NSString * firstWord = [words.firstObject word];
     NSString * lastWord = [words.lastObject word];
     
-    if ([firstWord hasPrefix:left] && firstWord.length >= left.length && [lastWord hasSuffix:right] && lastWord.length >= right.length) {
+    if ([firstWord hasPrefix:left] && firstWord.length >= left.length && ![firstWord isEqualToString:left] &&
+        [lastWord hasSuffix:right] && lastWord.length >= right.length && ![lastWord isEqualToString:right]) {
         [words.firstObject setWord:[firstWord stringByReplacingCharactersInRange:NSMakeRange(0, left.length) withString:@""]];
         lastWord = [words.lastObject word];
-        [words.lastObject setWord:[lastWord stringByReplacingCharactersInRange:NSMakeRange(lastWord.length - right.length, right.length) withString:@""]];
+        // because I'm paranoid
+        if ([lastWord hasSuffix:right] && lastWord.length >= right.length && ![lastWord isEqualToString:right]) {
+            [words.lastObject setWord:[lastWord stringByReplacingCharactersInRange:NSMakeRange(lastWord.length - right.length, right.length) withString:@""]];
+        }
     } else {
         [words.firstObject setWord:[left stringByAppendingString:firstWord]];
         lastWord = [words.lastObject word];
