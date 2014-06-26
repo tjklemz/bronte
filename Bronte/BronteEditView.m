@@ -285,8 +285,18 @@
 - (void)wrapSelectionWithLeftString:(NSString *)left rightString:(NSString *)right {
     NSArray * words = [_selection wordsForSelection];
     
-    [words.firstObject setWord:[left stringByAppendingString:[words.firstObject word]]];
-    [words.lastObject setWord:[[words.lastObject word] stringByAppendingString:right]];
+    NSString * firstWord = [words.firstObject word];
+    NSString * lastWord = [words.lastObject word];
+    
+    if ([firstWord hasPrefix:left] && firstWord.length >= left.length && [lastWord hasSuffix:right] && lastWord.length >= right.length) {
+        [words.firstObject setWord:[firstWord stringByReplacingCharactersInRange:NSMakeRange(0, left.length) withString:@""]];
+        lastWord = [words.lastObject word];
+        [words.lastObject setWord:[lastWord stringByReplacingCharactersInRange:NSMakeRange(lastWord.length - right.length, right.length) withString:@""]];
+    } else {
+        [words.firstObject setWord:[left stringByAppendingString:firstWord]];
+        lastWord = [words.lastObject word];
+        [words.lastObject setWord:[lastWord stringByAppendingString:right]];
+    }
     
     [self.delegate linesNeedArranging:[NSSet setWithObjects:[words.firstObject superlayer], [words.lastObject superlayer], nil]];
     
