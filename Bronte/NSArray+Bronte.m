@@ -68,4 +68,15 @@
     return words;
 }
 
+- (NSSet *)linesForSelection {
+    NSMutableSet * lines = [NSMutableSet new];
+    
+    NSArray * words = [self wordsForSelection];
+    for (CATextLayer * word in words) {
+        [lines addObject:word.superlayer];
+    }
+    
+    return lines;
+}
+
 @end

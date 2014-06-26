@@ -17,5 +17,6 @@
 - (CATextLayer *)lastWordOfSelection;
 - (BOOL)selectionContainsWord:(CATextLayer *)word;
 - (NSArray *)wordsForSelection;
+- (NSSet *)linesForSelection;
 
 @end

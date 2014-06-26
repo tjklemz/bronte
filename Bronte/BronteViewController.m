@@ -788,6 +788,19 @@
     }
 }
 
+- (void)linesNeedArranging:(NSSet *)lines {
+    for (CALayer * line in lines) {
+        CALayer * l = line;
+        NSArray * words = [l wordsForLine];
+        CGPoint o = [self originForFirstWord];
+        
+        for (CATextLayer * word in words) {
+            word.position = o;
+            o.x += word.bounds.size.width;
+        }
+    }
+}
+
 #pragma mark - Keyboard
 
 - (void)dismissInputView {

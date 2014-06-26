@@ -15,5 +15,11 @@
 - (NSString *)cappedString;
 - (NSString *)allCappedString;
 - (NSString *)uncappedString;
++ (NSString *)leftDoubleQuote;
++ (NSString *)rightDoubleQuote;
++ (NSString *)leftSingleQuote;
++ (NSString *)rightSingleQuote;
+- (NSString *)doubleQuotedString;
+- (NSString *)singleQuotedString;
 
 @end

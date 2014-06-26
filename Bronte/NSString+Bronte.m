@@ -30,4 +30,28 @@
     return [self lowercaseStringWithLocale:[NSLocale currentLocale]];
 }
 
++ (NSString *)leftDoubleQuote {
+    return @"\u201C";
+}
+
++ (NSString *)rightDoubleQuote {
+    return @"\u201D";
+}
+
++ (NSString *)leftSingleQuote {
+    return @"\u2018";
+}
+
++ (NSString *)rightSingleQuote {
+    return @"\u2019";
+}
+
+- (NSString *)doubleQuotedString {
+    return [NSString stringWithFormat:@"%@%@%@", [NSString leftDoubleQuote], self, [NSString rightDoubleQuote]];
+}
+
+- (NSString *)singleQuotedString {
+    return [NSString stringWithFormat:@"%@%@%@", [NSString leftSingleQuote], self, [NSString rightSingleQuote]];
+}
+
 @end

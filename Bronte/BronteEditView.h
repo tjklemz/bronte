@@ -14,6 +14,7 @@
 - (void)insertAfterSelection:(NSArray *)selection;
 - (void)didDeleteCharacterFromLine:(CALayer *)line;
 - (void)editMenuNeedsAdjusting;
+- (void)linesNeedArranging:(NSSet *)lines;
 
 @end
 

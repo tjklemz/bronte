@@ -139,6 +139,7 @@
         UIButton * quote2 = [UIButton buttonWithType:UIButtonTypeCustom];
         [quote2 setImage:[UIImage imageNamed:@"edit_icons_quote2.png"] forState:UIControlStateNormal];
         [quote2 setFrame:CGRectMake(x, y, w, w)];
+        [quote2 addTarget:self action:@selector(doubleQuoteSelection:) forControlEvents:UIControlEventTouchDown];
         [self addSubview:quote2];
         
         x += w + p;
@@ -146,6 +147,7 @@
         UIButton * quote1 = [UIButton buttonWithType:UIButtonTypeCustom];
         [quote1 setImage:[UIImage imageNamed:@"edit_icons_quote1.png"] forState:UIControlStateNormal];
         [quote1 setFrame:CGRectMake(x, y, w, w)];
+        [quote1 addTarget:self action:@selector(singleQuoteSelection:) forControlEvents:UIControlEventTouchDown];
         [self addSubview:quote1];
         
         x += w + p;
@@ -161,6 +163,7 @@
         UIButton * parenButton = [UIButton buttonWithType:UIButtonTypeCustom];
         [parenButton setImage:[UIImage imageNamed:@"edit_icons_parentheses.png"] forState:UIControlStateNormal];
         [parenButton setFrame:CGRectMake(x, y, w, w)];
+        [parenButton addTarget:self action:@selector(parenSelection:) forControlEvents:UIControlEventTouchDown];
         [self addSubview:parenButton];
         
         x += w + p;
@@ -168,6 +171,7 @@
         UIButton * bracketButton = [UIButton buttonWithType:UIButtonTypeCustom];
         [bracketButton setImage:[UIImage imageNamed:@"edit_icons_brackets.png"] forState:UIControlStateNormal];
         [bracketButton setFrame:CGRectMake(x, y, w, w)];
+        [bracketButton addTarget:self action:@selector(bracketSelection:) forControlEvents:UIControlEventTouchDown];
         [self addSubview:bracketButton];
     }
     return self;
@@ -276,6 +280,33 @@
     if (line) {
         [self.delegate didDeleteCharacterFromLine:line];
     }
+}
+
+- (void)wrapSelectionWithLeftString:(NSString *)left rightString:(NSString *)right {
+    NSArray * words = [_selection wordsForSelection];
+    
+    [words.firstObject setWord:[left stringByAppendingString:[words.firstObject word]]];
+    [words.lastObject setWord:[[words.lastObject word] stringByAppendingString:right]];
+    
+    [self.delegate linesNeedArranging:[NSSet setWithObjects:[words.firstObject superlayer], [words.lastObject superlayer], nil]];
+    
+    [self adjustPosition];
+}
+
+- (void)doubleQuoteSelection:(id)sender {
+    [self wrapSelectionWithLeftString:[NSString leftDoubleQuote] rightString:[NSString rightDoubleQuote]];
+}
+
+- (void)singleQuoteSelection:(id)sender {
+    [self wrapSelectionWithLeftString:[NSString leftSingleQuote] rightString:[NSString rightSingleQuote]];
+}
+
+- (void)parenSelection:(id)sender {
+    [self wrapSelectionWithLeftString:@"(" rightString:@")"];
+}
+
+- (void)bracketSelection:(id)sender {
+    [self wrapSelectionWithLeftString:@"[" rightString:@"]"];
 }
 
 #pragma mark - Drawing
