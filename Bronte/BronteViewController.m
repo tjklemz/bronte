@@ -248,7 +248,9 @@
     CALayer * lastWord = [line wordsForLine].lastObject;
     float newX = lastWord ? [lastWord maxX] : w.position.x;
     
-    if (newX + w.bounds.size.width > [self lineWidth]) {
+    float extra = [CATextLayer extraSpacing];
+    
+    if (newX + w.bounds.size.width - extra > [self lineWidth]) {
         l = [self insertNewLineAfter:l];
         newX = w.position.x;
     }
@@ -1254,8 +1256,10 @@
         NSArray * words = [l wordsForLine];
         CGPoint o = [self originForFirstWord];
         
+        float extra = [CATextLayer extraSpacing];
+        
         for (CATextLayer * word in words) {
-            if (o.x + word.bounds.size.width > [self lineWidth]) {
+            if (o.x + word.bounds.size.width - extra > [self lineWidth]) {
                 o = [self originForFirstWord];
                 l = [self insertNewLineAfter:l];
             }

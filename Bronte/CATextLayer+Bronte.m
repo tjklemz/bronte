@@ -11,8 +11,12 @@
 
 @implementation CATextLayer (Bronte)
 
++ (float)extraSpacing {
+    return 2 + [UIFont bronteWordSpacing];
+}
+
 + (CGRect)frameForString:(NSAttributedString *)str {
-    return CGRectMake(0, 0, str.size.width + 2 + [UIFont bronteWordSpacing], [UIFont bronteLineHeight]);
+    return CGRectMake(0, 0, str.size.width + [self extraSpacing], [UIFont bronteLineHeight]);
 }
 
 + (CATextLayer *)makeWord:(NSString *)word {
