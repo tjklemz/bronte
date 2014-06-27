@@ -11,7 +11,7 @@
 #import "DocumentScrollView.h"
 #import "BronteTextInput.h"
 
-@interface BronteViewController : UIViewController <BronteEditDelegate> {
+@interface BronteViewController : UIViewController <BronteEditDelegate, BronteTextInputDelegate> {
     NSDictionary * _defaultAttr;
     
     NSMutableArray * _lines;

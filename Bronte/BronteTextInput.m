@@ -99,22 +99,15 @@
     return YES;
 }
 
-//- (BOOL)resignFirstResponder {
-//    [super resignFirstResponder];
-//    
-//    NSArray * lines = [_lines copy];
-//    if (self.pre) {
-//        if (self.insertBefore) {
-//            [[lines lastObject] addObject:self.pre];
-//        } else {
-//            [[lines firstObject] insertObject:self.pre atIndex:0];
-//        }
-//    }
-//    
-//    [self.delegate didEnterText:lines];
-//    
-//    return YES;
-//}
+- (BOOL)resignFirstResponder {
+    [super resignFirstResponder];
+    
+    if ([self hasText]) {
+        [self.delegate didEnterText:_lines];
+    }
+    
+    return YES;
+}
 
 - (BOOL)hasText {
     return [[_lines firstObject] length] > 0 || [_lines count] > 1;

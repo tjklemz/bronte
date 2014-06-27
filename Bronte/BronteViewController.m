@@ -205,15 +205,19 @@
     return l;
 }
 
-- (CALayer *)newParagraphSeparator {
+- (CALayer *)newParagraphSeparatorAtIndex:(NSUInteger)n {
     CALayer * l = [self makeParagraphSeparator];
-    [_lines addObject:l];
-    l.position = [self lineOriginForLineNumber:_lines.count-1];
+    l.position = [self lineOriginForLineNumber:n];
+    [_lines insertObject:l atIndex:n];
     [_docLayer addSublayer:l];
     
     [self adjustScrollViewContentSize];
     
     return l;
+}
+
+- (CALayer *)newParagraphSeparator {
+    return [self newParagraphSeparatorAtIndex:_lines.count];
 }
 
 - (CALayer *)insertLineAfter:(CALayer *)l {
@@ -694,6 +698,7 @@
     
     [self zoomDocument:1.0 withAnimationDuration:0.2 completion:^(BOOL finished) {
         _editView = [[BronteEditView alloc] initWithSelection:selection];
+        _editView.layer.zPosition = MAXFLOAT;
         _editView.delegate = self;
         _editView.hidden = YES;
         CGRect origFrame = _editView.frame;
@@ -859,11 +864,12 @@
     
 }
 
-- (void)insertSelection:(NSArray *)selection before:(BOOL)before {
+- (void)insertSelectionRequested:(NSArray *)selection before:(BOOL)before {
     float y = [_editView offset];
     float offset = [self inputOffsetForSelection:selection];
     _inputView = [[BronteTextInput alloc] initWithFrame:CGRectMake(0, y, [self width], [self height] - fabsf(_editView.frame.origin.y - (_scrollView.contentOffset.y + offset)) - y)];
     _inputView.insertBefore = before;
+    _inputView.delegate = self;
     [_editView addSubview:_inputView];
     [_inputView becomeFirstResponder];
     
@@ -875,11 +881,64 @@
 }
 
 - (void)insertBeforeSelection:(NSArray *)selection {
-    [self insertSelection:selection before:YES];
+    [self insertSelectionRequested:selection before:YES];
 }
 
 - (void)insertAfterSelection:(NSArray *)selection {
-    [self insertSelection:selection before:NO];
+    [self insertSelectionRequested:selection before:NO];
+}
+
+- (void)didEnterText:(NSArray *)lines {
+    NSArray * selection = _editView.selection;
+    BOOL before = _inputView.insertBefore;
+    BOOL after = !before;
+    
+    NSMutableString * extra = [NSMutableString new];
+    
+    CALayer * theLine = [selection lastLineOfSelection];
+    CATextLayer * theWord = [selection lastWordOfSelection];
+    NSArray * words = [theLine wordsForLine];
+    
+    [theWord removeFromSuperlayer];
+    
+    NSUInteger theWordIndex = [words indexOfObject:theWord];
+    for (NSUInteger i = theWordIndex + 1; i < words.count; ++i) {
+        CATextLayer * w = words[i];
+        [w removeFromSuperlayer];
+        [extra appendFormat:@"%@ ", [w word]];
+    }
+    
+    long i = 0;
+    CALayer * addedLine = theLine;
+    
+    if (after) {
+        NSString * s = [theWord word];
+        
+        if ([lines.firstObject length] > 0) {
+            s = [s stringByAppendingString:lines.firstObject];
+            ++i;
+        }
+        addedLine = [self addText:s toLine:addedLine];
+    }
+    
+    long stop = after ? (long)lines.count : (long)lines.count - 1;
+    
+    for (; i < stop; ++i) {
+        NSString * line = lines[i];
+        
+        if (line.length == 0) {
+            [self newParagraphSeparatorAtIndex:[_lines indexOfObject:addedLine]+1];
+        } else {
+            addedLine = [self addText:line toLine:addedLine];
+        }
+    }
+    
+    if (before) {
+        NSString * s = [NSString stringWithFormat:@"%@%@", lines.lastObject, [theWord word]];
+        addedLine = [self addText:s toLine:addedLine];
+    }
+    
+    addedLine = [self addText:extra toLine:addedLine];
 }
 
 #pragma mark - Gestures
