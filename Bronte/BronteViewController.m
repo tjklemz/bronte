@@ -669,7 +669,7 @@
 #pragma mark - Editing
 
 - (float)inputOffsetForSelection:(NSArray *)selection {
-    CALayer * l = [selection lastLineOfSelection];
+    CALayer * l = [_editView isInsertingLeft] ? [selection firstLineOfSelection] : [selection lastLineOfSelection];
     return (l.position.y - _scrollView.contentOffset.y) - 0*[self lineHeight];
 }
 
