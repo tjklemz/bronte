@@ -205,26 +205,23 @@
     return l;
 }
 
-- (CALayer *)newParagraphSeparatorAtIndex:(NSUInteger)n {
-    CALayer * l = [self makeParagraphSeparator];
-    l.position = [self lineOriginForLineNumber:n];
-    [_lines insertObject:l atIndex:n];
-    [_docLayer addSublayer:l];
-    
-    [self adjustScrollViewContentSize];
-    
-    return l;
+- (CALayer *)insertNewParagraphSeparatorAfter:(CALayer *)l {
+    return [self insertLine:[self makeParagraphSeparator] after:l];
 }
 
 - (CALayer *)newParagraphSeparator {
-    return [self newParagraphSeparatorAtIndex:_lines.count];
+    return [self insertNewParagraphSeparatorAfter:_lines.lastObject];
 }
 
-- (CALayer *)insertLineAfter:(CALayer *)l {
+- (CALayer *)insertNewLineAfter:(CALayer *)l {
+    return [self insertLine:[self makeLine] after:l];
+}
+
+- (CALayer *)insertLine:(CALayer *)newLine after:(CALayer *)l {
     NSUInteger n = [_lines indexOfObject:l];
-    CALayer * newLine = [self makeLine];
-    [_docLayer addSublayer:newLine];
     [_lines insertObject:newLine atIndex:n+1];
+    newLine.position = [self lineOriginForLineNumber:n+1];
+    [_docLayer addSublayer:newLine];
     
     float currentScale = [self currentScale];
     
@@ -244,15 +241,15 @@
     CALayer * l = line;
     
     if ([l isParagraphSeparator]) {
-        l = [self newLine];
-        [self newParagraphSeparator];
+        l = [self insertNewLineAfter:l];
+        //[self newParagraphSeparator];
     }
     
     CALayer * lastWord = [line wordsForLine].lastObject;
     float newX = lastWord ? [lastWord maxX] : w.position.x;
     
     if (newX + w.bounds.size.width > [self lineWidth]) {
-        l = [self insertLineAfter:l];
+        l = [self insertNewLineAfter:l];
         newX = w.position.x;
     }
     
@@ -921,13 +918,13 @@
         addedLine = [self addText:s toLine:addedLine];
     }
     
-    long stop = after ? (long)lines.count : (long)lines.count - 1;
+    long stop = (long)lines.count - 1;
     
     for (; i < stop; ++i) {
         NSString * line = lines[i];
         
         if (line.length == 0) {
-            [self newParagraphSeparatorAtIndex:[_lines indexOfObject:addedLine]+1];
+            addedLine = [self insertNewParagraphSeparatorAfter:addedLine];
         } else {
             addedLine = [self addText:line toLine:addedLine];
         }
@@ -936,9 +933,15 @@
     if (before) {
         NSString * s = [NSString stringWithFormat:@"%@%@", lines.lastObject, [theWord word]];
         addedLine = [self addText:s toLine:addedLine];
+    } else {
+        if ([lines.lastObject length] > 0) {
+            addedLine = [self addText:lines.lastObject toLine:addedLine];
+        }
     }
     
     addedLine = [self addText:extra toLine:addedLine];
+    
+    [self arrangeLinesBasedOnScale:[self currentScale]];
 }
 
 #pragma mark - Gestures
@@ -1207,7 +1210,7 @@
         for (CATextLayer * word in words) {
             if (o.x + word.bounds.size.width > [self lineWidth]) {
                 o = [self originForFirstWord];
-                l = [self insertLineAfter:l];
+                l = [self insertNewLineAfter:l];
             }
             
             if (word.superlayer != l) {
@@ -1259,7 +1262,7 @@
 }
 
 - (CALayer *)addParagraphSeparatorIfNeeded {
-    if (!_lines.lastObject || ![_lines.lastObject isParagraphSeparator]) {
+    if (_lines.lastObject && ![_lines.lastObject isParagraphSeparator]) {
        return [self newParagraphSeparator];
     }
     return nil;
