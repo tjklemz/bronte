@@ -17,7 +17,7 @@
         self.spellCheckingType = UITextSpellCheckingTypeNo;
         self.keyboardAppearance = UIKeyboardAppearanceDark;
         
-        _marker = [UIImage imageNamed:@"milk_gray.png"].CGImage;
+        _marker = [UIImage imageNamed:@"milk_gray.png"];
         
         [self setAutoresizingMask:UIViewAutoresizingFlexibleWidth];
         
@@ -280,7 +280,7 @@
         
         if (i < maxDrawLines) {
             // draw the position marker
-            CGContextDrawImage(UIGraphicsGetCurrentContext(), CGRectMake(startX - 82, lastRectForLine.origin.y - 13, 50, 50), _marker);
+            CGContextDrawImage(UIGraphicsGetCurrentContext(), CGRectMake(startX - 82, lastRectForLine.origin.y - 13, 50, 50), _marker.CGImage);
         }
     }
     

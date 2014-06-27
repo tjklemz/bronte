@@ -16,7 +16,7 @@
     float _t;
     NSTimer * _timer;
     BOOL _textNeedsDisplay;
-    CGImageRef _marker;
+    UIImage * _marker;
 }
 
 @property (readwrite, nonatomic) id delegate;
