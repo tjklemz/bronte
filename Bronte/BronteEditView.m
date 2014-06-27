@@ -331,8 +331,7 @@
 #pragma mark - Drawing
 
 - (void)drawRect:(CGRect)rect
-{
-    
+{    
     float selectionLineLength = [self selectionLineLength];
     
     [[UIColor colorWithRed:166/255.0 green:96/255.0 blue:54/255.0 alpha:1.0] setStroke];

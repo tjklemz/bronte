@@ -75,7 +75,7 @@
 //}
 
 - (BOOL)hasText {
-    return [[_lines firstObject] length] > 0;
+    return [[_lines firstObject] length] > 0 || [_lines count] > 1;
 }
 
 - (float)maxTextWidth {
@@ -155,26 +155,52 @@
     int i = 0;
     
     float startX = (self.bounds.size.width - [self maxTextWidth]) / 2;
-    float x = startX;
     
     while ((line = [enumerator nextObject])) {
-        BOOL renderPreBefore = !self.insertBefore && i == [_lines count] - 1;
-        
-        x = renderPreBefore ? x : startX;
-        
         CGSize s = [line sizeWithAttributes:_defaultAttr];
-        CGRect rectForLine = CGRectMake(x, (self.frame.size.height / 2) - s.height - (i+3.5)*[UIFont bronteLineHeight]*0.8, s.width, s.height);
+        CGRect rectForLine = CGRectMake(startX, (self.frame.size.height / 2) - s.height - (i+3.5)*[UIFont bronteLineHeight]*0.8, s.width, s.height);
         [line drawInRect:rectForLine withAttributes:_defaultAttr];
         
         if (i == 0) {
             // draw cursor
-            [[UIColor colorWithWhite:0.66 alpha:1.0] set];
-            [[UIBezierPath bezierPathWithRect:CGRectMake(rectForLine.origin.x + rectForLine.size.width - 1, rectForLine.origin.y + rectForLine.size.height - 4.5, 20, 2.5)] fill];
-            [[UIColor bronteCursorColor] set];
-            [[UIBezierPath bezierPathWithRect:CGRectMake(rectForLine.origin.x + rectForLine.size.width - 1, rectForLine.origin.y + rectForLine.size.height - 4.5, 20, 2)] fill];
-            [[UIColor bronteFontColor] set];
-        } else if (renderPreBefore) {
             
+            float x = rectForLine.origin.x + rectForLine.size.width - 1;
+            float w = 20;
+            
+            [[UIColor colorWithWhite:0.66 alpha:1.0] set];
+            [[UIBezierPath bezierPathWithRect:CGRectMake(x, rectForLine.origin.y + rectForLine.size.height - 4.5, w, 2.5)] fill];
+            [[UIColor bronteCursorColor] set];
+            [[UIBezierPath bezierPathWithRect:CGRectMake(x, rectForLine.origin.y + rectForLine.size.height - 4.5, w, 2)] fill];
+            
+            // draw "space"
+            if (![self hasText]) {
+                float midX = x + w / 2.0;
+                float topY = rectForLine.origin.y + rectForLine.size.height/2.0 - 10;
+                float s = 3;
+                float s2 = 3;
+                float h = s2*2;
+                
+                [[UIColor bronteCursorColor] set];
+                UIBezierPath * space = [UIBezierPath bezierPath];
+                [space moveToPoint:CGPointMake(midX, topY)];
+                [space addLineToPoint:CGPointMake(midX - s, topY + s2)];
+                [space addLineToPoint:CGPointMake(midX, topY + h)];
+                [space addLineToPoint:CGPointMake(midX + s, topY + s2)];
+                [space addLineToPoint:CGPointMake(midX, topY)];
+                [space fill];
+                
+                float topY2 = topY + 8;
+                
+                UIBezierPath * space2 = [UIBezierPath bezierPath];
+                [space2 moveToPoint:CGPointMake(midX, topY2)];
+                [space2 addLineToPoint:CGPointMake(midX - s, topY2 + s2)];
+                [space2 addLineToPoint:CGPointMake(midX, topY2 + h)];
+                [space2 addLineToPoint:CGPointMake(midX + s, topY2 + s2)];
+                [space2 addLineToPoint:CGPointMake(midX, topY2)];
+                [space2 fill];
+            }
+            
+            [[UIColor bronteFontColor] set];
         }
         
         ++i;
@@ -254,11 +280,13 @@
     
     UIDictationPhrase * lastPhrase = dictationResult[dictationResult.count-1];
     
-    if ([lastPhrase.text isEqualToString:@" "] && string.length > 0) {
+    if (!self.insertBefore && [lastPhrase.text isEqualToString:@" "] && string.length > 0) {
         // only insert the space if there was a period
         if ([[NSCharacterSet punctuationCharacterSet] characterIsMember:[string characterAtIndex:string.length-1]]) {
             [string appendString:@" "];
         }
+    } else {
+        [string appendString:lastPhrase.text];
     }
     
     [self insertText:string];
