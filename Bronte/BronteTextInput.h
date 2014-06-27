@@ -18,6 +18,15 @@
 @property (readwrite, nonatomic) id delegate;
 @property (readwrite, nonatomic) BOOL insertBefore;
 
+// UITextInpuTrait properties
+
+@property(nonatomic) UITextAutocapitalizationType autocapitalizationType;
+@property(nonatomic) UITextAutocorrectionType autocorrectionType;
+@property(nonatomic) UITextSpellCheckingType spellCheckingType;
+@property(nonatomic) UIKeyboardType keyboardType;
+@property(nonatomic) UIKeyboardAppearance keyboardAppearance;
+@property(nonatomic) UIReturnKeyType returnKeyType;
+
 // UITextInput properties
 
 @property(nonatomic, readonly) UITextPosition *beginningOfDocument;

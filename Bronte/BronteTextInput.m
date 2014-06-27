@@ -12,6 +12,11 @@
 {
     self = [super initWithFrame:frame];
     if (self) {
+        self.autocapitalizationType = UITextAutocapitalizationTypeNone;
+        self.autocorrectionType = UITextAutocorrectionTypeNo;
+        self.spellCheckingType = UITextSpellCheckingTypeNo;
+        self.keyboardAppearance = UIKeyboardAppearanceDark;
+        
         [self setAutoresizingMask:UIViewAutoresizingFlexibleWidth];
         
         _defaultAttr = [UIFont bronteInputFontAttributes];
@@ -77,19 +82,31 @@
     return [UIFont bronteLineWidth] + 80;
 }
 
+- (NSString *)spaceCharacter {
+    return @"\u2004";
+}
+
 - (void)insertText:(NSString *)theText {
     if ([theText isEqualToString:@"\n"] || [theText isEqualToString:@"\r"]) {
         [self newLine];
     } else {
-        if ([theText isEqualToString:@" "] || [theText isEqualToString:@"\t"]) {
-            theText = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone ? @"\u2005" : @"\u2004";
+        if (theText.length > 1) {
+            NSString * trimmed = [theText stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+            if (trimmed.length == 0) {
+                theText = [self spaceCharacter];
+            } else {
+                NSArray * components = [trimmed componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+                components = [components filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"self <> ''"]];
+                trimmed = [components componentsJoinedByString:[self spaceCharacter]];
+                theText = [NSString stringWithFormat:@"%@%@%@", [[theText substringToIndex:1] isEqualToString:@" "] ? [self spaceCharacter] : @"", trimmed, [[theText substringFromIndex:theText.length-1] isEqualToString:@" "] ? [self spaceCharacter] : @""];
+            }
+        } else if ([theText isEqualToString:@" "] || [theText isEqualToString:@"\t"]) {
+            theText = [self spaceCharacter];
         }
         
         float maxW = [self maxTextWidth];
         
-        float extra = 0;
-        
-        float newWidth = extra + [[self currentLine] sizeWithAttributes:_defaultAttr].width + [theText sizeWithAttributes:_defaultAttr].width;
+        float newWidth = [[self currentLine] sizeWithAttributes:_defaultAttr].width + [theText sizeWithAttributes:_defaultAttr].width;
             
         if (newWidth > maxW) {
             // get the last word
@@ -185,28 +202,37 @@
 {
     return nil;
 }
+
 - (UITextRange *)characterRangeByExtendingPosition:(UITextPosition *)position inDirection:(UITextLayoutDirection)direction
 {
     return nil;
 }
+
 - (UITextPosition *)closestPositionToPoint:(CGPoint)point
 {
     return nil;
 }
+
 - (UITextPosition *)closestPositionToPoint:(CGPoint)point withinRange:(UITextRange *)range
 {
     return nil;
 }
+
 - (NSComparisonResult)comparePosition:(UITextPosition *)position toPosition:(UITextPosition *)other
 {
     return 0;
 }
+
 - (void)dictationRecognitionFailed
 {
+    
 }
+
 - (void)dictationRecordingDidEnd
 {
+    
 }
+
 - (CGRect)firstRectForRange:(UITextRange *)range
 {
     return CGRectZero;
@@ -217,10 +243,26 @@
     return CGRectZero;
 }
 
-//- (void)insertDictationResult:(NSArray *)dictationResult
-//{
-//    
-//}
+- (void)insertDictationResult:(NSArray *)dictationResult
+{
+    NSMutableString * string = [NSMutableString new];
+    
+    for (int i = 0; i < dictationResult.count - 1; ++i) {
+        UIDictationPhrase * phrase = dictationResult[i];
+        [string appendString:phrase.text];
+    }
+    
+    UIDictationPhrase * lastPhrase = dictationResult[dictationResult.count-1];
+    
+    if ([lastPhrase.text isEqualToString:@" "] && string.length > 0) {
+        // only insert the space if there was a period
+        if ([[NSCharacterSet punctuationCharacterSet] characterIsMember:[string characterAtIndex:string.length-1]]) {
+            [string appendString:@" "];
+        }
+    }
+    
+    [self insertText:string];
+}
 
 - (id)insertDictationResultPlaceholder
 {
@@ -231,10 +273,12 @@
 {
     return 0;
 }
+
 - (UITextPosition *)positionFromPosition:(UITextPosition *)position inDirection:(UITextLayoutDirection)direction offset:(NSInteger)offset
 {
     return nil;
 }
+
 - (UITextPosition *)positionFromPosition:(UITextPosition *)position offset:(NSInteger)offset
 {
     return nil;
@@ -244,27 +288,37 @@
 {
     return nil;
 }
+
 - (void)removeDictationResultPlaceholder:(id)placeholder willInsertResult:(BOOL)willInsertResult
 {
+    
 }
+
 - (void)replaceRange:(UITextRange *)range withText:(NSString *)text
 {
+    
 }
+
 - (NSArray *)selectionRectsForRange:(UITextRange *)range
 {
     return nil;
 }
+
 - (void)setBaseWritingDirection:(UITextWritingDirection)writingDirection forRange:(UITextRange *)range
 {
+    
 }
+
 - (void)setMarkedText:(NSString *)markedText selectedRange:(NSRange)selectedRange
 {
+    
 }
 
 - (NSString *)textInRange:(UITextRange *)range
 {
     return nil;
 }
+
 - (UITextRange *)textRangeFromPosition:(UITextPosition *)fromPosition toPosition:(UITextPosition *)toPosition
 {
     return nil;
