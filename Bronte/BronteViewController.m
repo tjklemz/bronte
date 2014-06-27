@@ -722,6 +722,8 @@
 
 - (void)dismissEditMenu {
     if (_editView) {
+        [_editView hidePointer];
+        
         [self arrangeWordsInLines:[_editView.selection linesForSelection]];
         
         float maxOffset = [self maxScrollOffset];
@@ -964,6 +966,8 @@
 }
 
 - (void)didEnterText:(NSArray *)lines {
+    [_editView hidePointer];
+    
     @autoreleasepool {
         BOOL before = _inputView.insertBefore;
         

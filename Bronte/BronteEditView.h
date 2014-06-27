@@ -23,12 +23,15 @@
     UIButton * _insertLeftButton;
     UIButton * _insertRightButton;
     UIButton * _deleteCharacterButton;
+    BOOL _hidePointer;
 }
 
 @property (nonatomic) CGPoint selectionPoint;
 @property (readwrite, nonatomic, weak) id<BronteEditDelegate> delegate;
 @property (readwrite, nonatomic) NSMutableArray * selection;
 
+- (void)hidePointer;
+- (void)showPointer;
 - (id)initWithSelection:(NSArray *)selection;
 - (float)offset;
 - (CGPoint)findSelectionPoint;

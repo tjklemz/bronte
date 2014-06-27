@@ -44,6 +44,16 @@
     return 30 + [self offset];
 }
 
+- (void)hidePointer {
+    _hidePointer = YES;
+    [self setNeedsDisplay];
+}
+
+- (void)showPointer {
+    _hidePointer = NO;
+    [self setNeedsDisplay];
+}
+
 - (CGPoint)findSelectionPoint {
     BOOL isInsertingLeft = [self isInsertingLeft];
     CALayer * l = isInsertingLeft ? [_selection firstLineOfSelection] : [_selection lastLineOfSelection];
@@ -338,7 +348,7 @@
     
     float y = [UIFont bronteLineHeight] - 11;
     
-    if (_selection.count) {
+    if (_selection.count && !_hidePointer) {
         UIBezierPath * selectionLine = [UIBezierPath bezierPath];
         [selectionLine moveToPoint:CGPointMake(_selectionPoint.x, y)];
         [selectionLine addLineToPoint:CGPointMake(_selectionPoint.x + selectionLineLength, y)];

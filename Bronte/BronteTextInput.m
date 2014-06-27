@@ -17,6 +17,8 @@
         self.spellCheckingType = UITextSpellCheckingTypeNo;
         self.keyboardAppearance = UIKeyboardAppearanceDark;
         
+        _marker = [UIImage imageNamed:@"milk_gray.png"].CGImage;
+        
         [self setAutoresizingMask:UIViewAutoresizingFlexibleWidth];
         
         _defaultAttr = [UIFont bronteInputFontAttributes];
@@ -263,13 +265,22 @@
         
         NSEnumerator * enumerator = [_lines reverseObjectEnumerator];
         NSMutableString * line = nil;
-        int i = 0;
+        long i = 0;
         
-        while ((line = [enumerator nextObject])) {
+        CGRect lastRectForLine = CGRectZero;
+        
+        const long maxDrawLines = 6;
+        
+        for (; i < maxDrawLines && ((line = [enumerator nextObject])); ++i) {
             CGSize s = [line sizeWithAttributes:_defaultAttr];
             CGRect rectForLine = CGRectMake(startX, (self.frame.size.height / 2) - s.height - (i+3.5)*[UIFont bronteLineHeight]*0.8, s.width, s.height);
+            lastRectForLine = rectForLine;
             [line drawInRect:rectForLine withAttributes:_defaultAttr];
-            ++i;
+        }
+        
+        if (i < maxDrawLines) {
+            // draw the position marker
+            CGContextDrawImage(UIGraphicsGetCurrentContext(), CGRectMake(startX - 82, lastRectForLine.origin.y - 13, 50, 50), _marker);
         }
     }
     
