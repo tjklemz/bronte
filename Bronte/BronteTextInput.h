@@ -10,12 +10,22 @@
 
 @end
 
-@interface BronteTextInput : UIView <UIKeyInput> {
+@interface BronteTextInput : UIView <UITextInput> {
     NSDictionary * _defaultAttr;
     NSMutableArray * _lines;
 }
 
 @property (readwrite, nonatomic) id delegate;
 @property (readwrite, nonatomic) BOOL insertBefore;
+
+// UITextInput properties
+
+@property(nonatomic, readonly) UITextPosition *beginningOfDocument;
+@property(nonatomic, readonly) UITextPosition *endOfDocument;
+@property(nonatomic, assign) id<UITextInputDelegate> inputDelegate;
+@property(nonatomic, readonly) UITextRange *markedTextRange;
+@property(nonatomic, copy) NSDictionary *markedTextStyle;
+@property(readwrite, copy) UITextRange *selectedTextRange;
+@property(nonatomic, readonly) id<UITextInputTokenizer> tokenizer;
 
 @end

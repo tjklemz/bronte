@@ -164,6 +164,111 @@
     }
 }
 
+#pragma mark - UITextInput
+
+- (UITextWritingDirection)baseWritingDirectionForPosition:(UITextPosition *)position inDirection:(UITextStorageDirection)direction
+{
+    return 0;
+}
+
+- (CGRect)caretRectForPosition:(UITextPosition *)position
+{
+    return CGRectZero;
+}
+
+- (void)unmarkText
+{
+    
+}
+
+- (UITextRange *)characterRangeAtPoint:(CGPoint)point
+{
+    return nil;
+}
+- (UITextRange *)characterRangeByExtendingPosition:(UITextPosition *)position inDirection:(UITextLayoutDirection)direction
+{
+    return nil;
+}
+- (UITextPosition *)closestPositionToPoint:(CGPoint)point
+{
+    return nil;
+}
+- (UITextPosition *)closestPositionToPoint:(CGPoint)point withinRange:(UITextRange *)range
+{
+    return nil;
+}
+- (NSComparisonResult)comparePosition:(UITextPosition *)position toPosition:(UITextPosition *)other
+{
+    return 0;
+}
+- (void)dictationRecognitionFailed
+{
+}
+- (void)dictationRecordingDidEnd
+{
+}
+- (CGRect)firstRectForRange:(UITextRange *)range
+{
+    return CGRectZero;
+}
+
+- (CGRect)frameForDictationResultPlaceholder:(id)placeholder
+{
+    return CGRectZero;
+}
+
+//- (void)insertDictationResult:(NSArray *)dictationResult
+//{
+//    
+//}
+
+- (id)insertDictationResultPlaceholder
+{
+    return nil;
+}
+
+- (NSInteger)offsetFromPosition:(UITextPosition *)fromPosition toPosition:(UITextPosition *)toPosition
+{
+    return 0;
+}
+- (UITextPosition *)positionFromPosition:(UITextPosition *)position inDirection:(UITextLayoutDirection)direction offset:(NSInteger)offset
+{
+    return nil;
+}
+- (UITextPosition *)positionFromPosition:(UITextPosition *)position offset:(NSInteger)offset
+{
+    return nil;
+}
+
+- (UITextPosition *)positionWithinRange:(UITextRange *)range farthestInDirection:(UITextLayoutDirection)direction
+{
+    return nil;
+}
+- (void)removeDictationResultPlaceholder:(id)placeholder willInsertResult:(BOOL)willInsertResult
+{
+}
+- (void)replaceRange:(UITextRange *)range withText:(NSString *)text
+{
+}
+- (NSArray *)selectionRectsForRange:(UITextRange *)range
+{
+    return nil;
+}
+- (void)setBaseWritingDirection:(UITextWritingDirection)writingDirection forRange:(UITextRange *)range
+{
+}
+- (void)setMarkedText:(NSString *)markedText selectedRange:(NSRange)selectedRange
+{
+}
+
+- (NSString *)textInRange:(UITextRange *)range
+{
+    return nil;
+}
+- (UITextRange *)textRangeFromPosition:(UITextPosition *)fromPosition toPosition:(UITextPosition *)toPosition
+{
+    return nil;
+}
 
 
 @end
