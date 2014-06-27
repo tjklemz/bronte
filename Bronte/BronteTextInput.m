@@ -32,8 +32,10 @@
 }
 
 - (void)beginAnimation {
-    _timer = [NSTimer scheduledTimerWithTimeInterval:0.001 target:self selector:@selector(doAnimation) userInfo:nil repeats:YES];
-    _t = 0;
+    if (!_timer) {
+        _timer = [NSTimer scheduledTimerWithTimeInterval:0.001 target:self selector:@selector(doAnimation) userInfo:nil repeats:YES];
+        _t = 0;
+    }
 }
 
 - (void)doAnimation {
