@@ -15,6 +15,7 @@
     NSMutableArray * _lines;
     float _t;
     NSTimer * _timer;
+    BOOL _textNeedsDisplay;
 }
 
 @property (readwrite, nonatomic) id delegate;

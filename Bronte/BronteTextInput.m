@@ -31,21 +31,43 @@
     return self;
 }
 
+- (void)setInsertBefore:(BOOL)insertBefore {
+    _insertBefore = insertBefore;
+    [self checkIfAdjunctCursorNeedsDisplay];
+}
+
 - (void)beginAnimation {
     if (!_timer) {
         _timer = [NSTimer scheduledTimerWithTimeInterval:0.001 target:self selector:@selector(doAnimation) userInfo:nil repeats:YES];
         _t = 0;
+        [self setNeedsDisplayInRect:[self cursorRect]];
     }
 }
 
 - (void)doAnimation {
     _t += 0.0009;
-    [self setNeedsDisplay];
+    [self setNeedsDisplayInRect:[self cursorRect]];
 }
 
 - (void)stopAnimation {
     [_timer invalidate];
     _timer = nil;
+}
+
+- (BOOL)adjunctCursorNeedsDisplay {
+    if (self.insertBefore) {
+        NSString * currentLine = [self currentLine];
+        return !currentLine.length || ![[currentLine substringFromIndex:currentLine.length-1] isEqualToString:[self spaceCharacter]];
+    }
+    return ![self hasText];
+}
+
+- (void)checkIfAdjunctCursorNeedsDisplay {
+    if ([self adjunctCursorNeedsDisplay]) {
+        [self beginAnimation];
+    } else {
+        [self stopAnimation];
+    }
 }
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
@@ -66,6 +88,7 @@
 
 - (void)newLine {
     [_lines addObject:[NSMutableString new]];
+    _textNeedsDisplay = YES;
 }
 
 - (NSMutableString *)currentLine {
@@ -140,7 +163,9 @@
         }
     }
     
-    [self stopAnimation];
+    [self checkIfAdjunctCursorNeedsDisplay];
+    
+    _textNeedsDisplay = YES;
     
     [self setNeedsDisplay];
 }
@@ -153,9 +178,9 @@
         [_lines removeLastObject];
     }
     
-    if (![self hasText]) {
-        [self beginAnimation];
-    }
+    [self checkIfAdjunctCursorNeedsDisplay];
+    
+    _textNeedsDisplay = YES;
     
     [self setNeedsDisplay];
 }
@@ -165,77 +190,97 @@
     [self setNeedsDisplay];
 }
 
+- (float)startX {
+    return (self.bounds.size.width - [self maxTextWidth]) / 2;
+}
+
+- (CGRect)cursorRect {
+    int i = 0;
+    float startX = [self startX];
+    
+    NSMutableString * line = _lines.lastObject;
+    CGSize s = [line sizeWithAttributes:_defaultAttr];
+    CGRect rectForLine = CGRectMake(startX, (self.frame.size.height / 2) - s.height - (i+3.5)*[UIFont bronteLineHeight]*0.8, s.width, s.height);
+    float x = rectForLine.origin.x + rectForLine.size.width - 1;
+    float w = 20;
+    return CGRectMake(x, rectForLine.origin.y, w, rectForLine.size.height);
+}
+
 - (void)drawRect:(CGRect)rect {
     [[UIColor bronteSecondaryBackgroundColor] set];
     UIRectFill(rect);
     [[UIColor bronteFontColor] set];
     
     UIBezierPath * path = [[UIBezierPath alloc] init];
-    [path moveToPoint:rect.origin];
-    [path addLineToPoint:CGPointMake(rect.origin.x + rect.size.width, rect.origin.y)];
-    [path moveToPoint:CGPointMake(rect.origin.x, rect.origin.y + rect.size.height)];
-    [path addLineToPoint:CGPointMake(rect.origin.x + rect.size.width, rect.origin.y + rect.size.height)];
+    [path moveToPoint:CGPointZero];
+    [path addLineToPoint:CGPointMake(self.bounds.size.width, 0)];
+    [path moveToPoint:CGPointMake(0, self.bounds.size.height)];
+    [path addLineToPoint:CGPointMake(self.bounds.size.width, self.bounds.size.height)];
     [path stroke];
     
-    NSEnumerator * enumerator = [_lines reverseObjectEnumerator];
-    NSMutableString * line = nil;
-    int i = 0;
+    BOOL drawAjunctCursor = [self adjunctCursorNeedsDisplay];
     
-    float startX = (self.bounds.size.width - [self maxTextWidth]) / 2;
+    // draw cursor
     
-    while ((line = [enumerator nextObject])) {
-        CGSize s = [line sizeWithAttributes:_defaultAttr];
-        CGRect rectForLine = CGRectMake(startX, (self.frame.size.height / 2) - s.height - (i+3.5)*[UIFont bronteLineHeight]*0.8, s.width, s.height);
-        [line drawInRect:rectForLine withAttributes:_defaultAttr];
+    CGRect cursorRect = [self cursorRect];
+    
+    float x = cursorRect.origin.x;
+    float maxY = cursorRect.origin.y + cursorRect.size.height;
+    float w = 20;
+    
+    float alpha = drawAjunctCursor ? sinf((_t*180)/M_PI) + 0.5 : 1.0;
+    
+    [[UIColor colorWithWhite:0.66 alpha:alpha] set];
+    [[UIBezierPath bezierPathWithRect:CGRectMake(x, maxY - 4.5, w, 2.5)] fill];
+    [[UIColor bronteCursorColorWithAlpha:alpha] set];
+    [[UIBezierPath bezierPathWithRect:CGRectMake(x, maxY - 4.5, w, 2)] fill];
+    
+    // draw "space"
+    if (drawAjunctCursor) {
+        float midX = x + w / 2.0;
+        float topY = cursorRect.origin.y + cursorRect.size.height/2.0 - 10;
+        float s = 3;
+        float s2 = 3;
+        float h = s2*2;
         
-        if (i == 0) {
-            BOOL hasText = [self hasText];
-            
-            // draw cursor
-            
-            float x = rectForLine.origin.x + rectForLine.size.width - 1;
-            float w = 20;
-            
-            float alpha = (hasText ? 1.0 : sinf((_t*180)/M_PI) + 0.5);
-            
-            [[UIColor colorWithWhite:0.66 alpha:alpha] set];
-            [[UIBezierPath bezierPathWithRect:CGRectMake(x, rectForLine.origin.y + rectForLine.size.height - 4.5, w, 2.5)] fill];
-            [[UIColor bronteCursorColorWithAlpha:alpha] set];
-            [[UIBezierPath bezierPathWithRect:CGRectMake(x, rectForLine.origin.y + rectForLine.size.height - 4.5, w, 2)] fill];
-            
-            // draw "space"
-            if (!hasText) {
-                float midX = x + w / 2.0;
-                float topY = rectForLine.origin.y + rectForLine.size.height/2.0 - 10;
-                float s = 3;
-                float s2 = 3;
-                float h = s2*2;
-                
-                [[UIColor bronteCursorColorWithAlpha:1.0] set];
-                UIBezierPath * space = [UIBezierPath bezierPath];
-                [space moveToPoint:CGPointMake(midX, topY)];
-                [space addLineToPoint:CGPointMake(midX - s, topY + s2)];
-                [space addLineToPoint:CGPointMake(midX, topY + h)];
-                [space addLineToPoint:CGPointMake(midX + s, topY + s2)];
-                [space addLineToPoint:CGPointMake(midX, topY)];
-                [space fill];
-                
-                float topY2 = topY + 8;
-                
-                UIBezierPath * space2 = [UIBezierPath bezierPath];
-                [space2 moveToPoint:CGPointMake(midX, topY2)];
-                [space2 addLineToPoint:CGPointMake(midX - s, topY2 + s2)];
-                [space2 addLineToPoint:CGPointMake(midX, topY2 + h)];
-                [space2 addLineToPoint:CGPointMake(midX + s, topY2 + s2)];
-                [space2 addLineToPoint:CGPointMake(midX, topY2)];
-                [space2 fill];
-            }
-            
-            [[UIColor bronteFontColor] set];
-        }
+        [[UIColor bronteCursorColorWithAlpha:1.0] set];
+        UIBezierPath * space = [UIBezierPath bezierPath];
+        [space moveToPoint:CGPointMake(midX, topY)];
+        [space addLineToPoint:CGPointMake(midX - s, topY + s2)];
+        [space addLineToPoint:CGPointMake(midX, topY + h)];
+        [space addLineToPoint:CGPointMake(midX + s, topY + s2)];
+        [space addLineToPoint:CGPointMake(midX, topY)];
+        [space fill];
         
-        ++i;
+        float topY2 = topY + 8;
+        
+        UIBezierPath * space2 = [UIBezierPath bezierPath];
+        [space2 moveToPoint:CGPointMake(midX, topY2)];
+        [space2 addLineToPoint:CGPointMake(midX - s, topY2 + s2)];
+        [space2 addLineToPoint:CGPointMake(midX, topY2 + h)];
+        [space2 addLineToPoint:CGPointMake(midX + s, topY2 + s2)];
+        [space2 addLineToPoint:CGPointMake(midX, topY2)];
+        [space2 fill];
     }
+    
+    if (_textNeedsDisplay) {
+        [[UIColor bronteFontColor] set];
+        
+        float startX = [self startX];
+        
+        NSEnumerator * enumerator = [_lines reverseObjectEnumerator];
+        NSMutableString * line = nil;
+        int i = 0;
+        
+        while ((line = [enumerator nextObject])) {
+            CGSize s = [line sizeWithAttributes:_defaultAttr];
+            CGRect rectForLine = CGRectMake(startX, (self.frame.size.height / 2) - s.height - (i+3.5)*[UIFont bronteLineHeight]*0.8, s.width, s.height);
+            [line drawInRect:rectForLine withAttributes:_defaultAttr];
+            ++i;
+        }
+    }
+    
+    _textNeedsDisplay = NO;
 }
 
 #pragma mark - UITextInput

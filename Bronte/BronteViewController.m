@@ -859,14 +859,11 @@
     
 }
 
-- (void)insertBeforeSelection:(NSArray *)selection {
-    
-}
-
-- (void)insertAfterSelection:(NSArray *)selection {
+- (void)insertSelection:(NSArray *)selection before:(BOOL)before {
     float y = [_editView offset];
     float offset = [self inputOffsetForSelection:selection];
     _inputView = [[BronteTextInput alloc] initWithFrame:CGRectMake(0, y, [self width], [self height] - fabsf(_editView.frame.origin.y - (_scrollView.contentOffset.y + offset)) - y)];
+    _inputView.insertBefore = before;
     [_editView addSubview:_inputView];
     [_inputView becomeFirstResponder];
     
@@ -875,6 +872,14 @@
     } completion:^(BOOL finished) {
         
     }];
+}
+
+- (void)insertBeforeSelection:(NSArray *)selection {
+    [self insertSelection:selection before:YES];
+}
+
+- (void)insertAfterSelection:(NSArray *)selection {
+    [self insertSelection:selection before:NO];
 }
 
 #pragma mark - Gestures
