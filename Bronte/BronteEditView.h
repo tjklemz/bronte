@@ -30,6 +30,7 @@
 @property (readwrite, nonatomic) NSMutableArray * selection;
 
 - (id)initWithSelection:(NSArray *)selection;
+- (float)offset;
 - (CGPoint)findSelectionPoint;
 - (void)adjustPosition;
 - (BOOL)isInsertingLeft;

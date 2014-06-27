@@ -92,6 +92,10 @@
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(keyboardDidHide:)
                                                      name:UIKeyboardDidHideNotification object:nil];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(keyboardWillHide:)
+                                                     name:UIKeyboardWillHideNotification object:nil];
     }
     return self;
 }
@@ -664,6 +668,16 @@
 
 #pragma mark - Editing
 
+- (float)inputOffsetForSelection:(NSArray *)selection {
+    CALayer * l = [selection lastLineOfSelection];
+    return (l.position.y - _scrollView.contentOffset.y) - 0*[self lineHeight];
+}
+
+- (float)editMenuOffsetForSelection:(NSArray *)selection {
+    CALayer * l = [selection lastLineOfSelection];
+    return (l.position.y - _scrollView.contentOffset.y) - 5*[self lineHeight];
+}
+
 - (void)bringUpEditMenuForSelection:(NSArray *)selection {
     if (_editView && [_editView superview]) {
         return;
@@ -676,11 +690,9 @@
     _touchInfo = [NSMutableDictionary new];
     _touchInfo[@"selection"] = selection;
     
+    float offset = [self editMenuOffsetForSelection:selection];
+    
     [self zoomDocument:1.0 withAnimationDuration:0.2 completion:^(BOOL finished) {
-        CALayer * l = [selection lastLineOfSelection];
-        
-        float offset = (l.position.y - _scrollView.contentOffset.y) - 5*[self lineHeight];
-        
         _editView = [[BronteEditView alloc] initWithSelection:selection];
         _editView.delegate = self;
         _editView.hidden = YES;
@@ -708,10 +720,6 @@
 
 - (void)dismissEditMenu {
     if (_editView) {
-        if (_touchInfo && _touchInfo[@"selection"]) {
-            [self unmarkSelection:_touchInfo[@"selection"]];
-        }
-        
         [self arrangeWordsInLines:[_editView.selection linesForSelection]];
         
         float maxOffset = [self maxScrollOffset];
@@ -730,13 +738,20 @@
         }
         
         CGRect newFrame = _editView.frame;
-        newFrame.origin.y += newFrame.size.height;
+        newFrame.origin.y += _inputView ? _inputView.frame.size.height + _inputView.frame.origin.y : newFrame.size.height;
         
-        [UIView animateWithDuration:0.175 delay:0 options:UIViewAnimationOptionCurveLinear animations:^{
+        __weak BronteViewController * me = self;
+        
+        [UIView animateWithDuration:(_inputView ? 0.3 : 0.175) delay:0 options:(_inputView ? UIViewAnimationOptionCurveEaseOut :UIViewAnimationOptionCurveLinear) animations:^{
             _editView.frame = newFrame;
         } completion:^(BOOL finished) {
+            if (_touchInfo && _touchInfo[@"selection"]) {
+                [me unmarkSelection:_touchInfo[@"selection"]];
+                _touchInfo = nil;
+            }
             [_editView removeFromSuperview];
             _editView = nil;
+            _inputView = nil;
         }];
     }
 }
@@ -835,8 +850,13 @@
 
 - (void)keyboardDidHide:(NSNotification *)notification {
     if (!_isRotating) {
-        [self dismissInputView];
+        //[self dismissInputView];
+        [self dismissEditMenu];
     }
+}
+
+- (void)keyboardWillHide:(NSNotification *)notification {
+    
 }
 
 - (void)insertBeforeSelection:(NSArray *)selection {
@@ -844,9 +864,17 @@
 }
 
 - (void)insertAfterSelection:(NSArray *)selection {
-    _inputView = [[BronteTextInput alloc] initWithFrame:CGRectMake(0, 0, [self width], [self height])];
-    [self.view addSubview:_inputView];
+    float y = [_editView offset];
+    float offset = [self inputOffsetForSelection:selection];
+    _inputView = [[BronteTextInput alloc] initWithFrame:CGRectMake(0, y, [self width], [self height] - fabsf(_editView.frame.origin.y - (_scrollView.contentOffset.y + offset)) - y)];
+    [_editView addSubview:_inputView];
     [_inputView becomeFirstResponder];
+    
+    [UIView animateWithDuration:0.2 delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
+        _scrollView.contentOffset = CGPointMake(0, _scrollView.contentOffset.y + offset);
+    } completion:^(BOOL finished) {
+        
+    }];
 }
 
 #pragma mark - Gestures
@@ -969,19 +997,6 @@
 }
 
 - (void)handleSingleTapOnWord:(CATextLayer *)word {
-//    NSArray * selection = _touchInfo[@"selection"];
-//    
-//    if (selection.count == 1 && [selection isDealingWithWords] && selection.firstObject == word) {
-//        [self editWord:word];
-//    } else if (!_selectionInfo && !selection) {
-//        selection = @[word];
-//        [self markSelection:selection];
-//        _touchInfo = [NSMutableDictionary new];
-//        _touchInfo[@"selection"] = selection;
-//        _touchInfo[@"hitInfo"] = @{};
-//    } else {
-//        [self dismissSelections];
-//    }
     [self dismissSelections];
 }
 
