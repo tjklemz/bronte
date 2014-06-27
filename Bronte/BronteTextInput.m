@@ -25,8 +25,25 @@
         
         _lines = [NSMutableArray new];
         [self newLine];
+        
+        [self beginAnimation];
     }
     return self;
+}
+
+- (void)beginAnimation {
+    _timer = [NSTimer scheduledTimerWithTimeInterval:0.001 target:self selector:@selector(doAnimation) userInfo:nil repeats:YES];
+    _t = 0;
+}
+
+- (void)doAnimation {
+    _t += 0.0009;
+    [self setNeedsDisplay];
+}
+
+- (void)stopAnimation {
+    [_timer invalidate];
+    _timer = nil;
 }
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
@@ -120,6 +137,9 @@
             [[self currentLine] appendString:theText];
         }
     }
+    
+    [self stopAnimation];
+    
     [self setNeedsDisplay];
 }
 
@@ -130,6 +150,11 @@
     } else if ([_lines count] > 1) {
         [_lines removeLastObject];
     }
+    
+    if (![self hasText]) {
+        [self beginAnimation];
+    }
+    
     [self setNeedsDisplay];
 }
 
@@ -162,25 +187,29 @@
         [line drawInRect:rectForLine withAttributes:_defaultAttr];
         
         if (i == 0) {
+            BOOL hasText = [self hasText];
+            
             // draw cursor
             
             float x = rectForLine.origin.x + rectForLine.size.width - 1;
             float w = 20;
             
-            [[UIColor colorWithWhite:0.66 alpha:1.0] set];
+            float alpha = (hasText ? 1.0 : sinf((_t*180)/M_PI) + 0.5);
+            
+            [[UIColor colorWithWhite:0.66 alpha:alpha] set];
             [[UIBezierPath bezierPathWithRect:CGRectMake(x, rectForLine.origin.y + rectForLine.size.height - 4.5, w, 2.5)] fill];
-            [[UIColor bronteCursorColor] set];
+            [[UIColor bronteCursorColorWithAlpha:alpha] set];
             [[UIBezierPath bezierPathWithRect:CGRectMake(x, rectForLine.origin.y + rectForLine.size.height - 4.5, w, 2)] fill];
             
             // draw "space"
-            if (![self hasText]) {
+            if (!hasText) {
                 float midX = x + w / 2.0;
                 float topY = rectForLine.origin.y + rectForLine.size.height/2.0 - 10;
                 float s = 3;
                 float s2 = 3;
                 float h = s2*2;
                 
-                [[UIColor bronteCursorColor] set];
+                [[UIColor bronteCursorColorWithAlpha:1.0] set];
                 UIBezierPath * space = [UIBezierPath bezierPath];
                 [space moveToPoint:CGPointMake(midX, topY)];
                 [space addLineToPoint:CGPointMake(midX - s, topY + s2)];

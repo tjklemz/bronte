@@ -13,6 +13,8 @@
 @interface BronteTextInput : UIView <UITextInput> {
     NSDictionary * _defaultAttr;
     NSMutableArray * _lines;
+    float _t;
+    NSTimer * _timer;
 }
 
 @property (readwrite, nonatomic) id delegate;
