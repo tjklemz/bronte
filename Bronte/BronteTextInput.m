@@ -126,12 +126,12 @@
     UIRectFill(rect);
     [[UIColor bronteFontColor] set];
     
-//    UIBezierPath * path = [[UIBezierPath alloc] init];
-//    [path moveToPoint:rect.origin];
-//    [path addLineToPoint:CGPointMake(rect.origin.x + rect.size.width, rect.origin.y)];
-//    [path moveToPoint:CGPointMake(rect.origin.x, rect.origin.y + rect.size.height)];
-//    [path addLineToPoint:CGPointMake(rect.origin.x + rect.size.width, rect.origin.y + rect.size.height)];
-//    [path stroke];
+    UIBezierPath * path = [[UIBezierPath alloc] init];
+    [path moveToPoint:rect.origin];
+    [path addLineToPoint:CGPointMake(rect.origin.x + rect.size.width, rect.origin.y)];
+    [path moveToPoint:CGPointMake(rect.origin.x, rect.origin.y + rect.size.height)];
+    [path addLineToPoint:CGPointMake(rect.origin.x + rect.size.width, rect.origin.y + rect.size.height)];
+    [path stroke];
     
     NSEnumerator * enumerator = [_lines reverseObjectEnumerator];
     NSMutableString * line = nil;
@@ -146,7 +146,7 @@
         x = renderPreBefore ? x : startX;
         
         CGSize s = [line sizeWithAttributes:_defaultAttr];
-        CGRect rectForLine = CGRectMake(x, (self.frame.size.height / 2) - s.height - (i+1.5)*[UIFont bronteLineHeight]*0.8, s.width, s.height);
+        CGRect rectForLine = CGRectMake(x, (self.frame.size.height / 2) - s.height - (i+3.5)*[UIFont bronteLineHeight]*0.8, s.width, s.height);
         [line drawInRect:rectForLine withAttributes:_defaultAttr];
         
         if (i == 0) {

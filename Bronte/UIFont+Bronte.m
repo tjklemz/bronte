@@ -53,7 +53,7 @@
 + (UIFont *)bronteInputFont {
     static UIFont * font = nil;
     if (!font) {
-        font = [UIFont fontWithName:@"Lekton-Regular" size:24];
+        font = [UIFont fontWithName:@"Lekton-Regular" size:[UIFont bronteFontSize]];
     }
     return font;
 }
