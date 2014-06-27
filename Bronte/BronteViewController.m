@@ -885,40 +885,66 @@
     [self insertSelectionRequested:selection before:NO];
 }
 
-- (void)didEnterText:(NSArray *)lines {
-    NSArray * selection = _editView.selection;
-    BOOL before = _inputView.insertBefore;
-    BOOL after = !before;
+- (NSArray *)wordsFromLine:(CALayer *)line afterWord:(CATextLayer *)word {
+    NSMutableArray * wordsAfter = [NSMutableArray new];
+    NSArray * words = [line wordsForLine];
     
-    NSMutableString * extra = [NSMutableString new];
-    
-    CALayer * theLine = [selection lastLineOfSelection];
-    CATextLayer * theWord = [selection lastWordOfSelection];
-    NSArray * words = [theLine wordsForLine];
-    
-    [theWord removeFromSuperlayer];
-    
-    NSUInteger theWordIndex = [words indexOfObject:theWord];
+    NSUInteger theWordIndex = [words indexOfObject:word];
     for (NSUInteger i = theWordIndex + 1; i < words.count; ++i) {
         CATextLayer * w = words[i];
-        [w removeFromSuperlayer];
-        [extra appendFormat:@"%@ ", [w word]];
+        [wordsAfter addObject:w];
     }
     
-    long i = 0;
+    return wordsAfter;
+}
+
+- (void)removeWordsFromLine:(NSArray *)words {
+    for (CATextLayer * w in words) {
+        [w removeFromSuperlayer];
+    }
+}
+
+- (NSString *)wordsAsString:(NSArray *)words {
+    NSMutableString * string = [NSMutableString new];
+    
+    for (CATextLayer * w in words) {
+        [string appendFormat:@"%@ ", [w word]];
+    }
+    
+    return string;
+}
+
+- (void)didEnterText:(NSArray *)lines beforeWord:(NSString *)theWord onLine:(CALayer *)theLine withExtra:(NSString *)extra {
     CALayer * addedLine = theLine;
     
-    if (after) {
-        NSString * s = [theWord word];
+    long stop = lines.count - 1;
+    
+    for (long i = 0; i < stop; ++i) {
+        NSString * line = lines[i];
         
-        if ([lines.firstObject length] > 0) {
-            s = [s stringByAppendingString:lines.firstObject];
-            ++i;
+        if (line.length == 0) {
+            addedLine = [self insertNewParagraphSeparatorAfter:addedLine];
+        } else {
+            addedLine = [self addText:line toLine:addedLine];
         }
-        addedLine = [self addText:s toLine:addedLine];
     }
     
-    long stop = (long)lines.count - 1;
+    NSString * s = [NSString stringWithFormat:@"%@%@", lines.lastObject, theWord];
+    addedLine = [self addText:s toLine:addedLine];
+    
+    addedLine = [self addText:extra toLine:addedLine];
+}
+
+- (void)didEnterText:(NSArray *)lines afterWord:(NSString *)theWord onLine:(CALayer *)theLine withExtra:(NSString *)extra {
+    long i = 0;
+
+    NSString * s = [NSString stringWithFormat:@"%@%@", theWord, lines.firstObject];
+    i += [lines.firstObject length] ? 1 : 0;
+    
+    CALayer * addedLine = theLine;
+    addedLine = [self addText:s toLine:addedLine];
+    
+    long stop = lines.count - 1;
     
     for (; i < stop; ++i) {
         NSString * line = lines[i];
@@ -930,16 +956,33 @@
         }
     }
     
-    if (before) {
-        NSString * s = [NSString stringWithFormat:@"%@%@", lines.lastObject, [theWord word]];
-        addedLine = [self addText:s toLine:addedLine];
-    } else {
-        if ([lines.lastObject length] > 0) {
-            addedLine = [self addText:lines.lastObject toLine:addedLine];
-        }
+    if (i < lines.count && [lines.lastObject length] > 0) {
+        addedLine = [self addText:lines.lastObject toLine:addedLine];
     }
     
     addedLine = [self addText:extra toLine:addedLine];
+}
+
+- (void)didEnterText:(NSArray *)lines {
+    @autoreleasepool {
+        BOOL before = _inputView.insertBefore;
+        
+        NSArray * selection = _editView.selection;
+        
+        CALayer * theLine = before ? [selection firstLineOfSelection] : [selection lastLineOfSelection];
+        CATextLayer * theWord = before ? [selection firstWordOfSelection] : [selection lastWordOfSelection];
+        
+        NSArray * words = [self wordsFromLine:theLine afterWord:theWord];
+        NSString * extra = [self wordsAsString:words];
+        [self removeWordsFromLine:words];
+        [theWord removeFromSuperlayer];
+        
+        if (before) {
+            [self didEnterText:lines beforeWord:[theWord word] onLine:theLine withExtra:extra];
+        } else {
+            [self didEnterText:lines afterWord:[theWord word] onLine:theLine withExtra:extra];
+        }
+    }
     
     [self arrangeLinesBasedOnScale:[self currentScale]];
 }
