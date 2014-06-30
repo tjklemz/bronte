@@ -248,9 +248,7 @@
     CALayer * lastWord = [line wordsForLine].lastObject;
     float newX = lastWord ? [lastWord maxX] : w.position.x;
     
-    float extra = [CATextLayer extraSpacing];
-    
-    if (newX + w.bounds.size.width - extra > [self lineWidth]) {
+    if (newX + w.bounds.size.width > [self lineWidth]) {
         l = [self insertNewLineAfter:l];
         newX = w.position.x;
     }
@@ -535,137 +533,157 @@
     [CATransaction commit];
 }
 
-- (void)didDropSelection:(NSDictionary *)selectionInfo {
+- (void)didDropWords:(NSDictionary *)selectionInfo {
     NSArray * selection = selectionInfo[@"selection"];
-    NSDictionary * hitInfo = selectionInfo[@"hitInfo"];
+    CGPoint dropPoint = [selectionInfo[@"dropPoint"] CGPointValue];
+    NSDictionary * dropInfo = [self hitForPoint:dropPoint];
+    CALayer * dropLine = dropInfo[@"line"];
+    
+    if (dropLine && ![dropLine isParagraphSeparator]) {
+        float currentScale = [self currentScale];
+        float startX = [self lineOriginForLineNumber:_lines.count].x;
+        
+        NSDictionary * hitInfo = selectionInfo[@"hitInfo"];
+        CALayer * origLine = hitInfo[@"line"];
+        CALayer * dropWord = dropInfo[@"word"];
+        
+        if (selection.count > 1 && !dropWord) {
+            [self putBackSelection:selection];
+        } else {
+            int dropLineNo = [dropInfo[@"lineNo"] intValue];
+            CGPoint dropLineOrigin = [self lineOriginForLineNumber:dropLineNo];
+            CGPoint origLineOrigin = [self lineOriginForLineNumber:[hitInfo[@"lineNo"] intValue]];
+            CGPoint origHitPoint = [hitInfo[@"origPoint"] CGPointValue];
+            
+            __block NSMutableSet * affectedLines = [NSMutableSet new];
+            
+            [CATransaction begin];
+            [CATransaction setAnimationDuration:0];
+            // needs to be in reverse due to the z ordering. see the method -wordsForLine
+            NSEnumerator * reverse = [selection reverseObjectEnumerator];
+            CATextLayer * w = nil;
+            while ((w = [reverse nextObject])) {
+                [affectedLines addObject:w.superlayer];
+                [w removeFromSuperlayer];
+                w.position = CGPointMake(dropPoint.x/currentScale - startX, dropPoint.y/currentScale - dropLineOrigin.y - (origHitPoint.y/currentScale - (w.originalPosition.y + origLineOrigin.y)));
+                w.hidden = NO;
+                [dropLine addSublayer:w];
+            }
+            [CATransaction commit];
+            
+            [affectedLines addObject:dropLine];
+            
+            if (origLine != dropLine) {
+                __weak __block BronteViewController * me = self;
+                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.001 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                    [me arrangeWordsInLines:affectedLines];
+                    [me removeBlankLines];
+                    [me arrangeLinesBasedOnScale:currentScale];
+                    affectedLines = nil;
+                });
+            } else {
+                [self arrangeWordsInLines:affectedLines];
+                [self removeBlankLines];
+                [self arrangeLinesBasedOnScale:currentScale];
+            }
+        }
+    } else {
+        [self putBackSelection:selection];
+    }
+}
+
+- (void)didDropLines:(NSDictionary *)selectionInfo {
+    NSArray * selection = selectionInfo[@"selection"];
+    
     CGPoint dropPoint = [selectionInfo[@"dropPoint"] CGPointValue];
     
-    for (CALayer * l in selection) {
-        l.hidden = YES;
+    float startX = [self lineOriginForLineNumber:_lines.count].x + [self lineHandleWidth];
+    
+    if (dropPoint.x < startX) {
+        dropPoint.x = startX + 1;
     }
     
-    float startX = [self lineOriginForLineNumber:0].x;
-    BOOL didDropOnDocument = dropPoint.x >= startX && dropPoint.x <= [self lineWidth] + startX;
+    NSDictionary * dropInfo = [self hitForPoint:dropPoint];
+    CALayer * dropLine = dropInfo[@"line"];
     
-    if (didDropOnDocument) {
-        float currentScale = [self currentScale];
-        
-        NSDictionary * dropInfo = [self hitForPoint:dropPoint];
-        
-        if (selection) [self unmarkSelection:selection];
-        if (_selectionInfo) [self unmarkMultiWordSelection];
-        
-        BOOL dealingWithWords = [selection isDealingWithWords];
-        
-        CALayer * dropLine = dropInfo[@"line"];
-        CALayer * origLine = hitInfo[@"line"];
+    float currentScale = [self currentScale];
+    
+    BOOL before = NO;
+    BOOL validDrop = NO;
+    
+    if (!dropLine) {
+        CGPoint firstOrigin = [self lineOriginForLineNumber:0];
+        CGPoint lastOrigin = [self lineOriginForLineNumber:_lines.count];
+        if (dropPoint.y < currentScale*firstOrigin.y) {
+            [_lines removeObjectsInArray:[[selection reverseObjectEnumerator] allObjects]];
+            dropLine = _lines.firstObject;
+            before = YES;
+            validDrop = YES;
+        } else if (dropPoint.y > currentScale*lastOrigin.y) {
+            [_lines removeObjectsInArray:[[selection reverseObjectEnumerator] allObjects]];
+            dropLine = _lines.lastObject;
+            before = NO;
+            validDrop = YES;
+        }
+    } else if ([selection isParagraph]) {
         int dropLineNo = [dropInfo[@"lineNo"] intValue];
-        CGPoint dropLineOrigin = [self lineOriginForLineNumber:dropLineNo];
-        CGPoint origLineOrigin = [self lineOriginForLineNumber:[hitInfo[@"lineNo"] intValue]];
         
-        CGPoint origHitPoint = [hitInfo[@"origPoint"] CGPointValue];
+        NSArray * p = [self paragraphForLineNumber:dropLineNo];
+        CALayer * halfway = p[p.count/2];
         
-        if (dealingWithWords && dropLine && ![dropLine isParagraphSeparator]) {
-            CALayer * dropWord = dropInfo[@"word"];
-            
-            if (selection.count > 1 && !dropWord) {
-                [self putBackSelection:selection];
-            } else {
-                __block NSMutableSet * affectedLines = [NSMutableSet new];
-                
-                [CATransaction begin];
-                [CATransaction setAnimationDuration:0];
-                // needs to be in reverse due to the z ordering. see the method -wordsForLine
-                NSEnumerator * reverse = [selection reverseObjectEnumerator];
-                CATextLayer * w = nil;
-                while ((w = [reverse nextObject])) {
-                    [affectedLines addObject:w.superlayer];
-                    [w removeFromSuperlayer];
-                    w.position = CGPointMake(dropPoint.x/currentScale - startX, dropPoint.y/currentScale - dropLineOrigin.y - (origHitPoint.y/currentScale - (w.originalPosition.y + origLineOrigin.y)));
-                    w.hidden = NO;
-                    [dropLine addSublayer:w];
-                }
-                [CATransaction commit];
-                
-                [affectedLines addObject:dropLine];
-                
-                if (origLine != dropLine) {
-                    __weak __block BronteViewController * me = self;
-                    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.001 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                        [me arrangeWordsInLines:affectedLines];
-                        [me removeBlankLines];
-                        [me arrangeLinesBasedOnScale:currentScale];
-                        affectedLines = nil;
-                    });
-                } else {
-                    [self arrangeWordsInLines:affectedLines];
-                    [self removeBlankLines];
-                    [self arrangeLinesBasedOnScale:currentScale];
-                }
-            }
-        } else if (!dealingWithWords) {
-            BOOL before = NO;
-            BOOL validDrop = NO;
-            
-            if (!dropLine) {
-                CGPoint firstOrigin = [self lineOriginForLineNumber:0];
-                CGPoint lastOrigin = [self lineOriginForLineNumber:_lines.count];
-                if (dropPoint.y < currentScale*firstOrigin.y) {
-                    [_lines removeObjectsInArray:[[selection reverseObjectEnumerator] allObjects]];
-                    dropLine = _lines.firstObject;
-                    before = YES;
-                    validDrop = YES;
-                } else if (dropPoint.y > currentScale*lastOrigin.y) {
-                    [_lines removeObjectsInArray:[[selection reverseObjectEnumerator] allObjects]];
-                    dropLine = _lines.lastObject;
-                    before = NO;
-                    validDrop = YES;
-                }
-            } else if ([selection.lastObject isParagraphSeparator]) {
-                NSArray * p = [self paragraphForLineNumber:dropLineNo];
-                CALayer * halfway = p[p.count/2];
-                
-                if (dropPoint.y < halfway.position.y) {
-                    dropLine = p.firstObject;
-                    before = YES;
-                } else {
-                    dropLine = p.lastObject;
-                    before = NO;
-                }
-
-                [_lines removeObjectsInArray:[[selection reverseObjectEnumerator] allObjects]];
-                validDrop = YES;
-            } else {
-                validDrop = YES;
-                before = dropPoint.y < dropLine.position.y + currentScale*[self lineHeight]*0.5;
-                [_lines removeObjectsInArray:[[selection reverseObjectEnumerator] allObjects]];
-            }
-            
-            if (validDrop) {
-                NSUInteger n = _lines.count ? ([_lines indexOfObject:dropLine] + (before ? 0 : 1)) : 0;
-                
-                NSEnumerator * e = [selection reverseObjectEnumerator];
-                CALayer * l = nil;
-                
-                while ((l = [e nextObject])) {
-                    l.hidden = NO;
-                    [_lines insertObject:l atIndex:n];
-                }
-                
-                [self arrangeLinesBasedOnScale:currentScale];
-                [self adjustScrollViewContentSize];
-            } else {
-                [self putBackSelection:selection];
-            }
+        if (dropPoint.y < halfway.position.y) {
+            dropLine = p.firstObject;
+            before = YES;
         } else {
-            [self putBackSelection:selection];
+            dropLine = p.lastObject;
+            before = NO;
         }
         
+        [_lines removeObjectsInArray:[[selection reverseObjectEnumerator] allObjects]];
+        validDrop = YES;
     } else {
+        validDrop = YES;
+        before = dropPoint.y < dropLine.position.y + currentScale*[self lineHeight]*0.5;
+        [_lines removeObjectsInArray:[[selection reverseObjectEnumerator] allObjects]];
+    }
+    
+    if (validDrop) {
+        NSUInteger n = _lines.count ? ([_lines indexOfObject:dropLine] + (before ? 0 : 1)) : 0;
         
-        //TODO: check the clipboard area
+        NSEnumerator * e = [selection reverseObjectEnumerator];
+        CALayer * l = nil;
         
+        while ((l = [e nextObject])) {
+            l.hidden = NO;
+            [_lines insertObject:l atIndex:n];
+        }
+        
+        [self arrangeLinesBasedOnScale:currentScale];
+        [self adjustScrollViewContentSize];
+    } else {
         [self putBackSelection:selection];
+    }
+}
+
+- (void)didDropSelection:(NSDictionary *)selectionInfo {
+    NSArray * selection = selectionInfo[@"selection"];
+    
+    if (selection) [self unmarkSelection:selection];
+    if (_selectionInfo) [self unmarkMultiWordSelection];
+    
+    CGPoint dropPoint = [selectionInfo[@"dropPoint"] CGPointValue];
+    BOOL didDropOnClipboard = CGRectContainsPoint([self clipboardHandle], dropPoint);
+    
+    if (!didDropOnClipboard) {
+        for (CALayer * l in selection) {
+            l.hidden = YES;
+        }
+        
+        if ([selection isDealingWithWords]) {
+            [self didDropWords:selectionInfo];
+        } else {
+            [self didDropLines:selectionInfo];
+        }
     }
 }
 
@@ -1256,10 +1274,8 @@
         NSArray * words = [l wordsForLine];
         CGPoint o = [self originForFirstWord];
         
-        float extra = [CATextLayer extraSpacing];
-        
         for (CATextLayer * word in words) {
-            if (o.x + word.bounds.size.width - extra > [self lineWidth]) {
+            if (o.x + word.bounds.size.width > [self lineWidth]) {
                 o = [self originForFirstWord];
                 l = [self insertNewLineAfter:l];
             }
