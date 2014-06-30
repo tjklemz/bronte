@@ -694,9 +694,26 @@
     return (l.position.y - _scrollView.contentOffset.y) - 0*[self lineHeight];
 }
 
+- (NSUInteger)linesAboveEditMenu {
+    return 5;
+}
+
 - (float)editMenuOffsetForSelection:(NSArray *)selection {
     CALayer * l = [selection lastLineOfSelection];
-    return (l.position.y - _scrollView.contentOffset.y) - 5*[self lineHeight];
+    return (l.position.y - _scrollView.contentOffset.y) - [self linesAboveEditMenu]*[self lineHeight];
+}
+
+- (CALayer *)focusLineForSelection:(NSArray *)selection {
+    CALayer * l = [selection lastLineOfSelection];
+    NSUInteger i = [_lines indexOfObject:l];
+    if (i != NSNotFound) {
+        long n = i - [self linesAboveEditMenu];
+        if (n >= 0) {
+            return _lines[i];
+        }
+    }
+    
+    return nil;
 }
 
 - (void)bringUpEditMenuForSelection:(NSArray *)selection {
@@ -711,9 +728,11 @@
     _touchInfo = [NSMutableDictionary new];
     _touchInfo[@"selection"] = selection;
     
-    float offset = [self editMenuOffsetForSelection:selection];
+    __weak BronteViewController * me = self;
     
-    [self zoomDocument:1.0 withAnimationDuration:0.2 completion:^(BOOL finished) {
+    [self zoomDocument:1.0 focusLine:[self focusLineForSelection:selection] animationDuration:0 completion:^(BOOL finished) {
+        float offset = [me editMenuOffsetForSelection:selection];
+        
         _editView = [[BronteEditView alloc] initWithSelection:selection];
         _editView.layer.zPosition = MAXFLOAT;
         _editView.delegate = self;
@@ -753,7 +772,15 @@
         prevOffset = prevOffset < minOffset ? minOffset : prevOffset;
         prevOffset = prevOffset > maxOffset ? maxOffset : prevOffset;
         
-        if (fabs(prevOffset - _scrollView.contentOffset.y) < [self height]) {
+        float currentOffset = _scrollView.contentOffset.y;
+        BOOL outOfBounds = currentOffset < minOffset || currentOffset > maxOffset;
+        
+        if ((fabs(prevOffset - currentOffset) < 0.8*_scrollView.bounds.size.height) || outOfBounds) {
+            if (outOfBounds) {
+                currentOffset = currentOffset < minOffset ? minOffset : currentOffset;
+                currentOffset = currentOffset > maxOffset ? maxOffset : currentOffset;
+                prevOffset = currentOffset;
+            }
             [UIView animateWithDuration:0.3 delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
                 [_scrollView setContentOffset:CGPointMake(0, prevOffset)];
             } completion:^(BOOL finished) {
@@ -1335,7 +1362,9 @@
     return nil;
 }
 
-- (void)zoomDocument:(float)scale withAnimationDuration:(float)duration completion:(void (^)(BOOL finished))completion {
+- (void)zoomDocument:(float)scale focusLine:(CALayer *)focusLine animationDuration:(float)duration completion:(void (^)(BOOL finished))completion {
+    float delta = focusLine ? (_scrollView.contentOffset.y - focusLine.frame.origin.y)*[self currentScale] : 0;
+    
     [UIView animateWithDuration:duration animations:^{
         CGFloat minScale = [self minDocScale];
         CGFloat maxScale = [self maxDocScale];
@@ -1349,6 +1378,7 @@
         currentScale = currentScale < minScale ? minScale : currentScale;
         
         _scrollView.frame = CGRectMake(0, 0, currentScale*fullW, _scrollView.frame.size.height);
+        
         UIEdgeInsets insets = [self scrollViewInsets];
         _scrollView.scrollIndicatorInsets = UIEdgeInsetsMake(currentScale*insets.top, currentScale*insets.left, currentScale*insets.bottom, currentScale*insets.right);
         
@@ -1357,12 +1387,17 @@
         [self arrangeLinesBasedOnScale:currentScale];
         [CATransaction commit];
         
+        if (focusLine) {
+            float newOffset = focusLine.frame.origin.y + delta;
+            [_scrollView setContentOffset:CGPointMake(0, newOffset) animated:NO];
+        }
+        
         [self adjustScrollViewContentSize];
     } completion:completion];
 }
 
-- (void)zoomDocument:(float)scale {
-    [self zoomDocument:scale withAnimationDuration:0 completion:nil];
+- (void)zoomDocument:(float)scale focusLine:(CALayer *)focusLine {
+    [self zoomDocument:scale focusLine:focusLine animationDuration:0 completion:nil];
 }
 
 - (float)currentScale {
@@ -1421,9 +1456,150 @@
     [_scrollView pop_removeAnimationForKey:@"decelerate"];
 }
 
+- (void)handleSelectionDrag:(UIPanGestureRecognizer *)gesture {
+    CGPoint p = [gesture locationInView:_scrollView];
+    
+    if (gesture.state == UIGestureRecognizerStateBegan) {
+        NSDictionary * hitInfo = [self hitForPoint:p];
+        NSArray * selection = [self selectionForHit:hitInfo];
+        NSArray * currentSelection = [self currentSelection];
+        
+        if (selection.count && (!currentSelection.count || [currentSelection isEqualToArray:selection])) {
+            _touchInfo = [NSMutableDictionary new];
+            _touchInfo[@"selection"] = selection;
+            _touchInfo[@"hitInfo"] = hitInfo;
+        } else {
+            [self dismissSelections];
+        }
+    } else {
+        NSArray * selection = _touchInfo[@"selection"];
+        
+        if (selection) {
+            static BOOL isScrolling = NO;
+            
+            if (gesture.state == UIGestureRecognizerStateEnded) {
+                [NSObject cancelPreviousPerformRequestsWithTarget:self];
+                isScrolling = NO;
+                _touchInfo[@"dropPoint"] = [NSValue valueWithCGPoint:[gesture locationInView:_scrollView]];
+                [self didDropSelection:_touchInfo];
+                _touchInfo = nil;
+            } else {
+                CGPoint t = [gesture translationInView:_scrollView];
+                
+                [self translateSelection:selection withTranslation:t];
+                
+                NSTimeInterval holdDelay = 0.2;
+                
+                if ([self pointIsInLowerScrollArea:p]) {
+                    if (!isScrolling) {
+                        [self performSelector:@selector(scrollDownBasedOnDrag:) withObject:nil afterDelay:holdDelay];
+                        isScrolling = YES;
+                    }
+                } else if ([self pointIsInUpperScrollArea:p]) {
+                    if (!isScrolling) {
+                        [self performSelector:@selector(scrollUpBasedOnDrag:) withObject:nil afterDelay:holdDelay];
+                        isScrolling = YES;
+                    }
+                } else {
+                    [NSObject cancelPreviousPerformRequestsWithTarget:self];
+                    isScrolling = NO;
+                }
+                
+                [gesture setTranslation:CGPointZero inView:_scrollView];
+            }
+        }
+    }
+}
+
+- (void)doInertialScroll:(UIPanGestureRecognizer *)gesture {
+    float velocity = -[gesture velocityInView:_scrollView].y;
+    
+    float minOffset = [self minScrollOffset];
+    float maxOffset = [self maxScrollOffset];
+    
+    if (_scrollView.contentOffset.y <= minOffset || _scrollView.contentOffset.y >= maxOffset) {
+        velocity = 0;
+    }
+    
+    POPDecayAnimation *decayAnimation = [POPDecayAnimation animation];
+    
+    POPAnimatableProperty *prop = [POPAnimatableProperty propertyWithName:@"com.rounak.bounds.origin" initializer:^(POPMutableAnimatableProperty *prop) {
+        // read value
+        prop.readBlock = ^(id obj, CGFloat values[]) {
+            values[0] = [obj bounds].origin.x;
+            values[1] = [obj bounds].origin.y;
+        };
+        // write value
+        prop.writeBlock = ^(UIScrollView * obj, const CGFloat values[]) {
+            CGRect tempBounds = [obj bounds];
+            tempBounds.origin.x = values[0];
+            tempBounds.origin.y = values[1];
+            [obj setBounds:tempBounds];
+            
+            CGRect bounds = [obj bounds];
+            
+            BOOL outsideBoundsMinimum = obj.contentOffset.y < minOffset;
+            BOOL outsideBoundsMaximum = obj.contentOffset.y > maxOffset;
+            
+            if (outsideBoundsMaximum || outsideBoundsMinimum) {
+                POPDecayAnimation *decayAnimation = [obj pop_animationForKey:@"decelerate"];
+                if (decayAnimation) {
+                    CGPoint target = bounds.origin;
+                    if (outsideBoundsMinimum) {
+                        target.x = fmax(target.x, 0.0);
+                        target.y = fmax(target.y, 0.0);
+                    } else if (outsideBoundsMaximum) {
+                        target.x = fmin(target.x, obj.contentSize.width - bounds.size.width);
+                        target.y = fmin(target.y, obj.contentSize.height - bounds.size.height);
+                    }
+                    
+                    //NSLog(@"bouncing with velocity: %@", decayAnimation.velocity);
+                    
+                    POPSpringAnimation *springAnimation = [POPSpringAnimation animation];
+                    POPAnimatableProperty *prop = [POPAnimatableProperty propertyWithName:@"com.rounak.bounds.origin" initializer:^(POPMutableAnimatableProperty *prop) {
+                        // read value
+                        prop.readBlock = ^(id obj, CGFloat values[]) {
+                            values[0] = [obj bounds].origin.x;
+                            values[1] = [obj bounds].origin.y;
+                        };
+                        // write value
+                        prop.writeBlock = ^(id obj, const CGFloat values[]) {
+                            CGRect tempBounds = [obj bounds];
+                            tempBounds.origin.x = values[0];
+                            tempBounds.origin.y = values[1];
+                            [obj setBounds:tempBounds];
+                        };
+                        // dynamics threshold
+                        prop.threshold = 0.01;
+                    }];
+                    springAnimation.property = prop;
+                    springAnimation.velocity = decayAnimation.velocity;
+                    springAnimation.toValue = [NSValue valueWithCGPoint:target];
+                    springAnimation.springBounciness = 0.0;
+                    springAnimation.springSpeed = 5.0;
+                    [obj pop_addAnimation:springAnimation forKey:@"bounce"];
+                    
+                    [obj pop_removeAnimationForKey:@"decelerate"];
+                }
+            }
+        };
+        // dynamics threshold
+        prop.threshold = 0.01;
+    }];
+    decayAnimation.property = prop;
+    decayAnimation.velocity = [NSValue valueWithCGPoint:CGPointMake(0, velocity)];
+    [_scrollView pop_addAnimation:decayAnimation forKey:@"decelerate"];
+}
+
+- (CALayer *)zoomFocusLine {
+    CGPoint focusPoint = CGPointMake(_scrollView.bounds.size.width / 2.0, 20);
+    focusPoint = [self.view convertPoint:focusPoint toView:_scrollView];
+    NSDictionary * hitInfo = [self hitForPoint:focusPoint];
+    return hitInfo[@"line"];
+}
+
 - (void)panGesture:(UIPanGestureRecognizer *)gesture {
     static CALayer * focusLine = nil;
-    static CGFloat delta = 0;
     
     static CGFloat origOffset = 0;
     
@@ -1464,167 +1640,34 @@
                 isScrollingOnSides = fabs(t.y) > fabs(t.x) || fabs(v.y) > fabs(v.x);
                 
                 if (!isScrollingOnSides) {
-                    CGPoint focusPoint = CGPointMake(_scrollView.bounds.size.width / 2.0, 20);
-                    focusPoint = [self.view convertPoint:focusPoint toView:_scrollView];
-                    NSDictionary * hitInfo = [self hitForPoint:focusPoint];
-                    if (hitInfo) {
-                        focusLine = hitInfo[@"line"];
-                    }
-                    delta = _scrollView.contentOffset.y - focusLine.frame.origin.y;
+                    focusLine = [self zoomFocusLine];
                 }
                 
                 stillDeciding = NO;
             }
             
-            float newOffset = _scrollView.contentOffset.y;
-            
             if (isScrollingOnSides && canScroll) {
-                newOffset = origOffset - t.y;
+                float newOffset = origOffset - t.y;
                 
                 if (newOffset < minOffset) {
                     newOffset -= (origOffset - t.y - minOffset)*(1-0.33);
                 } else if (newOffset > maxOffset) {
                     newOffset -= (origOffset - t.y - maxOffset)*(1-0.33);
                 }
+                
+                [_scrollView setContentOffset:CGPointMake(0, newOffset)];
             } else if (isDraggingClipboardArea) {
                 CGFloat scale = [self currentScale] + t.x / [self width];
-                [self zoomDocument:scale];
-                newOffset = focusLine.frame.origin.y + [self currentScale]*delta;
+                [self zoomDocument:scale focusLine:focusLine];
                 [gesture setTranslation:CGPointZero inView:_scrollView];
             }
-            
-            [_scrollView setContentOffset:CGPointMake(0, newOffset)];
         } else {
-            CGPoint p = [gesture locationInView:_scrollView];
-            
-            if (gesture.state == UIGestureRecognizerStateBegan) {
-                NSDictionary * hitInfo = [self hitForPoint:p];
-                NSArray * selection = [self selectionForHit:hitInfo];
-                NSArray * currentSelection = [self currentSelection];
-                
-                if (selection.count && (!currentSelection.count || [currentSelection isEqualToArray:selection])) {
-                    _touchInfo = [NSMutableDictionary new];
-                    _touchInfo[@"selection"] = selection;
-                    _touchInfo[@"hitInfo"] = hitInfo;
-                } else {
-                    [self dismissSelections];
-                }
-            } else {
-                NSArray * selection = _touchInfo[@"selection"];
-                
-                if (selection) {
-                    static BOOL isScrolling = NO;
-                    
-                    if (gesture.state == UIGestureRecognizerStateEnded) {
-                        [NSObject cancelPreviousPerformRequestsWithTarget:self];
-                        isScrolling = NO;
-                        _touchInfo[@"dropPoint"] = [NSValue valueWithCGPoint:[gesture locationInView:_scrollView]];
-                        [self didDropSelection:_touchInfo];
-                        _touchInfo = nil;
-                    } else {
-                        CGPoint t = [gesture translationInView:_scrollView];
-                        
-                        [self translateSelection:selection withTranslation:t];
-                        
-                        NSTimeInterval holdDelay = 0.2;
-                        
-                        if ([self pointIsInLowerScrollArea:p]) {
-                            if (!isScrolling) {
-                                [self performSelector:@selector(scrollDownBasedOnDrag:) withObject:nil afterDelay:holdDelay];
-                                isScrolling = YES;
-                            }
-                        } else if ([self pointIsInUpperScrollArea:p]) {
-                            if (!isScrolling) {
-                                [self performSelector:@selector(scrollUpBasedOnDrag:) withObject:nil afterDelay:holdDelay];
-                                isScrolling = YES;
-                            }
-                        } else {
-                            [NSObject cancelPreviousPerformRequestsWithTarget:self];
-                            isScrolling = NO;
-                        }
-                        
-                        [gesture setTranslation:CGPointZero inView:_scrollView];
-                    }
-                }
-            }
+            [self handleSelectionDrag:gesture];
         }
         
         if (gesture.state == UIGestureRecognizerStateEnded) {
             if (isScrollingOnSides && canScroll) {
-                float velocity = -[gesture velocityInView:_scrollView].y;
-                
-                if (_scrollView.contentOffset.y <= minOffset || _scrollView.contentOffset.y >= maxOffset) {
-                    velocity = 0;
-                }
-                
-                POPDecayAnimation *decayAnimation = [POPDecayAnimation animation];
-                
-                POPAnimatableProperty *prop = [POPAnimatableProperty propertyWithName:@"com.rounak.bounds.origin" initializer:^(POPMutableAnimatableProperty *prop) {
-                    // read value
-                    prop.readBlock = ^(id obj, CGFloat values[]) {
-                        values[0] = [obj bounds].origin.x;
-                        values[1] = [obj bounds].origin.y;
-                    };
-                    // write value
-                    prop.writeBlock = ^(UIScrollView * obj, const CGFloat values[]) {
-                        CGRect tempBounds = [obj bounds];
-                        tempBounds.origin.x = values[0];
-                        tempBounds.origin.y = values[1];
-                        [obj setBounds:tempBounds];
-                        
-                        CGRect bounds = [obj bounds];
-                        
-                        BOOL outsideBoundsMinimum = obj.contentOffset.y < minOffset;
-                        BOOL outsideBoundsMaximum = obj.contentOffset.y > maxOffset;
-                        
-                        if (outsideBoundsMaximum || outsideBoundsMinimum) {
-                            POPDecayAnimation *decayAnimation = [obj pop_animationForKey:@"decelerate"];
-                            if (decayAnimation) {
-                                CGPoint target = bounds.origin;
-                                if (outsideBoundsMinimum) {
-                                    target.x = fmax(target.x, 0.0);
-                                    target.y = fmax(target.y, 0.0);
-                                } else if (outsideBoundsMaximum) {
-                                    target.x = fmin(target.x, obj.contentSize.width - bounds.size.width);
-                                    target.y = fmin(target.y, obj.contentSize.height - bounds.size.height);
-                                }
-                                
-                                //NSLog(@"bouncing with velocity: %@", decayAnimation.velocity);
-                                
-                                POPSpringAnimation *springAnimation = [POPSpringAnimation animation];
-                                POPAnimatableProperty *prop = [POPAnimatableProperty propertyWithName:@"com.rounak.bounds.origin" initializer:^(POPMutableAnimatableProperty *prop) {
-                                    // read value
-                                    prop.readBlock = ^(id obj, CGFloat values[]) {
-                                        values[0] = [obj bounds].origin.x;
-                                        values[1] = [obj bounds].origin.y;
-                                    };
-                                    // write value
-                                    prop.writeBlock = ^(id obj, const CGFloat values[]) {
-                                        CGRect tempBounds = [obj bounds];
-                                        tempBounds.origin.x = values[0];
-                                        tempBounds.origin.y = values[1];
-                                        [obj setBounds:tempBounds];
-                                    };
-                                    // dynamics threshold
-                                    prop.threshold = 0.01;
-                                }];
-                                springAnimation.property = prop;
-                                springAnimation.velocity = decayAnimation.velocity;
-                                springAnimation.toValue = [NSValue valueWithCGPoint:target];
-                                springAnimation.springBounciness = 0.0;
-                                springAnimation.springSpeed = 5.0;
-                                [obj pop_addAnimation:springAnimation forKey:@"bounce"];
-                                
-                                [obj pop_removeAnimationForKey:@"decelerate"];
-                            }
-                        }
-                    };
-                    // dynamics threshold
-                    prop.threshold = 0.01;
-                }];
-                decayAnimation.property = prop;
-                decayAnimation.velocity = [NSValue valueWithCGPoint:CGPointMake(0, velocity)];
-                [_scrollView pop_addAnimation:decayAnimation forKey:@"decelerate"];
+                [self doInertialScroll:gesture];
             }
             
             focusLine = nil;
