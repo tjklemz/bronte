@@ -18,5 +18,7 @@
 - (BOOL)isLine;
 - (BOOL)isParagraphSeparator;
 - (NSArray *)wordsForLine;
+- (BOOL)shouldComeBeforePoint:(CGPoint)p;
+- (BOOL)shouldComeAfterPoint:(CGPoint)p;
 
 @end

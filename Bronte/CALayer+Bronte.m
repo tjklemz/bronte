@@ -33,19 +33,19 @@
     return [self.name isEqualToString:@"P"];
 }
 
+- (BOOL)shouldComeBeforePoint:(CGPoint)p {
+    return ([self minX] + 0.5*self.bounds.size.width < p.x);
+}
+
+- (BOOL)shouldComeAfterPoint:(CGPoint)p {
+    return ![self shouldComeBeforePoint:p];
+}
+
 - (NSArray *)wordsForLine {
     if ([self isLine]) {
         NSArray * words = [self.sublayers filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"self isKindOfClass:%@", [CATextLayer class]]];
         return [words sortedArrayUsingComparator:^NSComparisonResult(CALayer * obj1, CALayer * obj2) {
-            float x1 = [obj1 minX];
-            float w1 = obj1.bounds.size.width;
-            float x2 = [obj2 minX];
-            //float w2 = obj2.bounds.size.width;
-            
-            // NOTE: Nothing should ever return NSOrderedSame
-            return (x1 + 0.4*w1 < x2) ? NSOrderedAscending : NSOrderedDescending;
-            
-            //return obj1.position.x - obj2.position.x;
+            return [obj1 shouldComeBeforePoint:CGPointMake([obj2 minX], 0)] ? NSOrderedAscending : NSOrderedDescending;
         }];
     }
     return nil;

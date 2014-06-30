@@ -7,6 +7,7 @@
 //
 
 #import "CATextLayer+Bronte.h"
+#import "CALayer+Bronte.h"
 #import "UIFont+Bronte.h"
 
 @implementation CATextLayer (Bronte)

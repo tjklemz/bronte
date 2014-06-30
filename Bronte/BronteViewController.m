@@ -280,6 +280,16 @@
 
 #pragma mark - Moving stuff
 
+- (CALayer *)lineForPoint:(CGPoint)p {
+    for (CALayer * l in _lines) {
+        if (CGRectContainsPoint(l.frame, p)) {
+            return l;
+        }
+    }
+    
+    return nil;
+}
+
 - (NSDictionary *)hitForPoint:(CGPoint)p {
     for (int i = 0; i < _lines.count; ++i) {
         CALayer * line = _lines[i];
@@ -1320,6 +1330,41 @@
     }
 }
 
+- (void)arrangeWordsInLine:(CALayer *)l basedOnPoint:(CGPoint)point excludingWord:(CATextLayer *)excluded {
+    NSArray * words = [l wordsForLine];
+    CGPoint o = [self originForFirstWord];
+    
+    for (CATextLayer * word in words) {
+        float width = word.bounds.size.width;
+        
+        if (word == excluded) {
+            continue;
+        }
+        
+        if ([word shouldComeAfterPoint:point]) {
+            word.position = CGPointMake(o.x + excluded.bounds.size.width, o.y);
+        } else {
+            word.position = o;
+        }
+        
+        o.x += width;
+    }
+}
+
+- (void)arrangeWordsInLine:(CALayer *)l ignoringWord:(CATextLayer *)excluded {
+    NSArray * words = [l wordsForLine];
+    CGPoint o = [self originForFirstWord];
+    
+    for (CATextLayer * word in words) {
+        if (word == excluded) {
+            continue;
+        }
+        
+        word.position = o;
+        o.x += word.bounds.size.width;
+    }
+}
+
 - (void)removeBlankLines {
     NSMutableArray * itemsToRemove = [NSMutableArray new];
     
@@ -1457,6 +1502,8 @@
 }
 
 - (void)handleSelectionDrag:(UIPanGestureRecognizer *)gesture {
+    static CALayer * affectedLine = nil;
+    
     CGPoint p = [gesture locationInView:_scrollView];
     
     if (gesture.state == UIGestureRecognizerStateBegan) {
@@ -1480,13 +1527,29 @@
             if (gesture.state == UIGestureRecognizerStateEnded) {
                 [NSObject cancelPreviousPerformRequestsWithTarget:self];
                 isScrolling = NO;
-                _touchInfo[@"dropPoint"] = [NSValue valueWithCGPoint:[gesture locationInView:_scrollView]];
+                _touchInfo[@"dropPoint"] = [NSValue valueWithCGPoint:p];
                 [self didDropSelection:_touchInfo];
                 _touchInfo = nil;
+                affectedLine = nil;
             } else {
                 CGPoint t = [gesture translationInView:_scrollView];
                 
                 [self translateSelection:selection withTranslation:t];
+                
+                if (selection.count == 1 && [selection isDealingWithWords]) {
+                    CALayer * line = [self lineForPoint:p];
+                    CATextLayer * excluded = [selection firstWordOfSelection];
+                    
+                    if (line) {
+                        [self arrangeWordsInLine:line basedOnPoint:[line convertPoint:p fromLayer:line.superlayer] excludingWord:excluded];
+                    }
+                    
+                    if (affectedLine && affectedLine != line) {
+                        [self arrangeWordsInLine:affectedLine ignoringWord:excluded];
+                    }
+                    
+                    affectedLine = line;
+                }
                 
                 NSTimeInterval holdDelay = 0.2;
                 
