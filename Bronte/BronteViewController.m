@@ -529,10 +529,14 @@
 }
 
 - (void)putBackSelection:(NSArray *)selection {
+    __block NSSet * affectedLines = [selection linesForSelection];
+    
     [CATransaction begin];
     [CATransaction setCompletionBlock:^{
         if (selection) [self unmarkSelection:selection];
         if (_selectionInfo) [self unmarkMultiWordSelection];
+        [self linesNeedArranging:affectedLines];
+        affectedLines = nil;
     }];
     
     for (CALayer * l in selection) {
@@ -557,9 +561,9 @@
         CALayer * origLine = hitInfo[@"line"];
         CALayer * dropWord = dropInfo[@"word"];
         
-        if (selection.count > 1 && !dropWord) {
-            [self putBackSelection:selection];
-        } else {
+//        if (selection.count > 1 && !dropWord) {
+//            [self putBackSelection:selection];
+//        } else {
             int dropLineNo = [dropInfo[@"lineNo"] intValue];
             CGPoint dropLineOrigin = [self lineOriginForLineNumber:dropLineNo];
             CGPoint origLineOrigin = [self lineOriginForLineNumber:[hitInfo[@"lineNo"] intValue]];
@@ -596,7 +600,7 @@
                 [self removeBlankLines];
                 [self arrangeLinesBasedOnScale:currentScale];
             }
-        }
+        //}
     } else {
         [self putBackSelection:selection];
     }
@@ -694,6 +698,10 @@
         } else {
             [self didDropLines:selectionInfo];
         }
+    } else {
+        // TODO: do clipboard
+        
+        [self putBackSelection:selection];
     }
 }
 
@@ -1330,19 +1338,21 @@
     }
 }
 
-- (void)arrangeWordsInLine:(CALayer *)l basedOnPoint:(CGPoint)point excludingWord:(CATextLayer *)excluded {
+- (void)arrangeWordsInLine:(CALayer *)l basedOnPoint:(CGPoint)point excludingWords:(NSArray *)excluded {
     NSArray * words = [l wordsForLine];
     CGPoint o = [self originForFirstWord];
+    
+    float exWidth = fmaxf([excluded firstWordOfSelection].bounds.size.width, 50);
     
     for (CATextLayer * word in words) {
         float width = word.bounds.size.width;
         
-        if (word == excluded) {
+        if ([excluded containsObject:word]) {
             continue;
         }
         
         if ([word shouldComeAfterPoint:point]) {
-            word.position = CGPointMake(o.x + excluded.bounds.size.width, o.y);
+            word.position = CGPointMake(o.x + exWidth, o.y);
         } else {
             word.position = o;
         }
@@ -1351,12 +1361,12 @@
     }
 }
 
-- (void)arrangeWordsInLine:(CALayer *)l ignoringWord:(CATextLayer *)excluded {
+- (void)arrangeWordsInLine:(CALayer *)l ignoringWords:(NSArray *)excluded {
     NSArray * words = [l wordsForLine];
     CGPoint o = [self originForFirstWord];
     
     for (CATextLayer * word in words) {
-        if (word == excluded) {
+        if ([excluded containsObject:word]) {
             continue;
         }
         
@@ -1536,16 +1546,16 @@
                 
                 [self translateSelection:selection withTranslation:t];
                 
-                if (selection.count == 1 && [selection isDealingWithWords]) {
+                if ([selection isDealingWithWords]) {
                     CALayer * line = [self lineForPoint:p];
-                    CATextLayer * excluded = [selection firstWordOfSelection];
+                    NSArray * excluded = [selection wordsForSelection];
                     
                     if (line) {
-                        [self arrangeWordsInLine:line basedOnPoint:[line convertPoint:p fromLayer:line.superlayer] excludingWord:excluded];
+                        [self arrangeWordsInLine:line basedOnPoint:[line convertPoint:p fromLayer:line.superlayer] excludingWords:excluded];
                     }
                     
                     if (affectedLine && affectedLine != line) {
-                        [self arrangeWordsInLine:affectedLine ignoringWord:excluded];
+                        [self arrangeWordsInLine:affectedLine ignoringWords:excluded];
                     }
                     
                     affectedLine = line;
