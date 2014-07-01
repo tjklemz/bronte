@@ -4,6 +4,16 @@
 <dict>
 	<key>SchemeUserState</key>
 	<dict>
+		<key>HockeySDKResources.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>Pods-HockeySDK.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
 		<key>Pods-pop.xcscheme</key>
 		<dict>
 			<key>isShown</key>
@@ -17,12 +27,22 @@
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
-		<key>77C46599A90B49D8BBF00E35</key>
+		<key>325D19C174ED4ABBB8FA7103</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>BFA9F431E1FE4D5B93BD6FD8</key>
+		<key>5798D941C3974E3F89EAC343</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>7B9C77DF40C148F39F232141</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>B01F77261913491381CEA535</key>
 		<dict>
 			<key>primary</key>
 			<true/>
