@@ -87,6 +87,8 @@
 
 - (CALayer *)duplicate {
     CALayer * d = [self isParagraphSeparator] ? [CALayer makeParagraphSeparator] : [CALayer makeLine];
+    d.transform = self.transform;
+    d.position = self.position;
     
     NSArray * words = [self wordsForLine];
     

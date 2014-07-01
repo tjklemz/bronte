@@ -32,6 +32,7 @@
     BOOL _isRotating;
     
     BOOL _shouldAllowPan;
+    BOOL _didPan;
 }
 
 @end

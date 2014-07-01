@@ -1658,6 +1658,8 @@
         return;
     }
     
+    _didPan = YES;
+    
     BOOL canScroll = _scrollView.contentSize.height > _scrollView.bounds.size.height;
     
     BOOL failed = NO;
@@ -1678,7 +1680,9 @@
         }
     }
     
-    if (!failed && gesture.state != UIGestureRecognizerStateFailed && gesture.state != UIGestureRecognizerStateCancelled && gesture.state != UIGestureRecognizerStatePossible) {
+    failed = failed || gesture.state == UIGestureRecognizerStateFailed || gesture.state == UIGestureRecognizerStateCancelled || gesture.state == UIGestureRecognizerStatePossible;
+    
+    if (!failed) {
         float maxOffset = [self maxScrollOffset];
         float minOffset = [self minScrollOffset];
         
@@ -1714,18 +1718,19 @@
         } else {
             [self handleSelectionDrag:gesture];
         }
-        
-        if (gesture.state == UIGestureRecognizerStateEnded) {
-            if (isScrollingOnSides && canScroll) {
-                [self doInertialScroll:gesture];
-            }
-            
-            focusLine = nil;
-            isDraggingClipboardArea = NO;
-            isDraggingInfoArea = NO;
-            isScrollingOnSides = NO;
-            stillDeciding = YES;
+    }
+    
+    if (gesture.state == UIGestureRecognizerStateEnded || failed) {
+        if (!failed && isScrollingOnSides && canScroll) {
+            [self doInertialScroll:gesture];
         }
+        
+        focusLine = nil;
+        isDraggingClipboardArea = NO;
+        isDraggingInfoArea = NO;
+        isScrollingOnSides = NO;
+        stillDeciding = YES;
+        _didPan = NO;
     }
 }
 
@@ -1762,17 +1767,10 @@
             gesture.state = UIGestureRecognizerStateFailed;
         }
     } else if (gesture.state == UIGestureRecognizerStateEnded) {
-        float dX = p.x - firstPoint.x;
-        float dY = p.y - firstPoint.y;
-        
-        float dist = sqrtf(dX*dX + dY*dY);
-        
-        if (dist <= gesture.allowableMovement) {
-            NSArray * selection = [self currentSelection];
-            if (selection) {
-                [self arrangeWordsInLines:[selection linesForSelection]];
-                [self dismissSelections];
-            }
+        if (!_didPan && _touchInfo[@"selection"]) {
+            _touchInfo[@"dropPoint"] = [NSValue valueWithCGPoint:p];
+            [self didDropSelection:_touchInfo];
+            _touchInfo = nil;
         }
     }
 }

@@ -46,6 +46,7 @@
 
 - (CATextLayer *)duplicate {
     CATextLayer * d = [CATextLayer makeWord:[self word]];
+    d.transform = self.transform;
     d.position = self.position;
     return d;
 }
