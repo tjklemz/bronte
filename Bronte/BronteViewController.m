@@ -496,6 +496,13 @@
 - (void)didDropWords:(NSDictionary *)selectionInfo {
     NSArray * selection = selectionInfo[@"selection"];
     CGPoint dropPoint = [selectionInfo[@"dropPoint"] CGPointValue];
+    
+    float startX = [self lineOriginForLineNumber:_lines.count].x;
+    
+    if (dropPoint.x < startX) {
+        dropPoint.x = startX + 1;
+    }
+    
     NSDictionary * dropInfo = [self hitForPoint:dropPoint];
     CALayer * dropLine = dropInfo[@"line"];
     
@@ -1495,6 +1502,12 @@
                 [self translateSelection:selection withTranslation:t];
                 
                 if ([selection isDealingWithWords]) {
+                    float startX = [self lineOriginForLineNumber:_lines.count].x;
+                    
+                    if (p.x < startX) {
+                        p.x = startX + 1;
+                    }
+                    
                     CALayer * line = [self lineForPoint:p];
                     NSArray * excluded = [selection wordsForSelection];
                     
