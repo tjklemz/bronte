@@ -34,7 +34,7 @@
 }
 
 - (BOOL)shouldComeBeforePoint:(CGPoint)p {
-    return ([self minX] + 0.5*self.bounds.size.width < p.x);
+    return ([self minX] + 0.55*self.bounds.size.width < p.x);
 }
 
 - (BOOL)shouldComeAfterPoint:(CGPoint)p {

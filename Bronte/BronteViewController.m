@@ -1342,7 +1342,7 @@
     NSArray * words = [l wordsForLine];
     CGPoint o = [self originForFirstWord];
     
-    float exWidth = fmaxf([excluded firstWordOfSelection].bounds.size.width, 50);
+    float exWidth = [excluded firstWordOfSelection].bounds.size.width;
     
     for (CATextLayer * word in words) {
         float width = word.bounds.size.width;
