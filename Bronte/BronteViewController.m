@@ -39,11 +39,6 @@
         
         _lines = [NSMutableArray new];
         
-        _wordIcon = [UIImage wordIcon];
-        _lineIcon = [UIImage lineIcon];
-        _lineIconActive = [UIImage lineIconActive];
-        _paraIcon = [UIImage paragraphIcon];
-        
         self.view.backgroundColor = [UIColor bronteSecondaryBackgroundColor];
         
         DocumentScrollView * scrollView = [[DocumentScrollView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.height, self.view.bounds.size.width)];
@@ -425,7 +420,7 @@
         } else {
             CALayer * wordIcon = [CALayer layer];
             wordIcon.frame = CGRectMake(0, 0, 50, 50);
-            wordIcon.contents = (id)_wordIcon.CGImage;
+            wordIcon.contents = (id)[UIImage wordIcon].CGImage;
             wordIcon.name = @"M";
             
             int lineNo1 = [hitInfo1[@"lineNo"] intValue];
@@ -1778,7 +1773,10 @@
 #pragma mark - Gesture delegate methods
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
-    return YES;
+    if ([gestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]] && [otherGestureRecognizer isKindOfClass:[UILongPressGestureRecognizer class]]) {
+        return YES;
+    }
+    return NO;
 }
 
 - (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer {

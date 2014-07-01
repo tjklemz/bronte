@@ -16,11 +16,6 @@
     
     NSMutableArray * _lines;
     
-    UIImage * _wordIcon;
-    UIImage * _lineIcon;
-    UIImage * _lineIconActive;
-    UIImage * _paraIcon;
-    
     CALayer * _docLayer;
     DocumentScrollView * _scrollView;
     
