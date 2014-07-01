@@ -96,9 +96,8 @@
     }
     
     BOOL activateLineIcon = [attr[@"BronteActivateLineIcon"] boolValue];
-    BOOL deactivateLineIcon = [attr[@"BronteDeactivateLineIcon"] boolValue];
     
-    if (![self isDealingWithWords] && (activateLineIcon || deactivateLineIcon)) {
+    if (![self isDealingWithWords]) {
         NSSet * lines = [self linesForSelection];
         for (CALayer * l in lines) {
             if (activateLineIcon) {
@@ -118,7 +117,7 @@
 
 - (void)unmarkSelection {
     NSMutableDictionary * attr = [[UIFont bronteDefaultFontAttributes] mutableCopy];
-    attr[@"BronteDeactivateLineIcon"] = @YES;
+    attr[@"BronteActivateLineIcon"] = @NO;
     [self configureWithAttributes:attr];
 }
 

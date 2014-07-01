@@ -12,7 +12,7 @@
 
 @implementation CALayer (Bronte)
 
-@dynamic originalPosition, dropPoint;
+@dynamic originalPosition, dropPoint, activated;
 
 - (float)maxX {
     return self.position.x + self.bounds.size.width - self.anchorPoint.x*self.bounds.size.width;
@@ -99,11 +99,17 @@
 }
 
 - (void)activateLine {
-    self.contents = (id)[UIImage lineIconActive].CGImage;
+    if (!self.activated && [self isLine]) {
+        self.contents = (id)[UIImage lineIconActive].CGImage;
+        self.activated = YES;
+    }
 }
 
 - (void)deactivateLine {
-    self.contents = (id)[UIImage lineIcon].CGImage;
+    if (self.activated && [self isLine]) {
+        self.contents = (id)[UIImage lineIcon].CGImage;
+        self.activated = NO;
+    }
 }
 
 @end
