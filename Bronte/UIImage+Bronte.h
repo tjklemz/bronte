@@ -11,5 +11,9 @@
 @interface UIImage (Bronte)
 
 - (UIImage *)imageByApplyingAlpha:(CGFloat)alpha;
++ (UIImage *)lineIcon;
++ (UIImage *)lineIconActive;
++ (UIImage *)wordIcon;
++ (UIImage *)paragraphIcon;
 
 @end

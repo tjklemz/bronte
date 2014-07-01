@@ -16,6 +16,7 @@
 #import "NSArray+Bronte.h"
 #import "CATextLayer+Bronte.h"
 #import "NSMutableArray+Bronte.h"
+#import "NSNumber+Bronte.h"
 
 #import <POP.h>
 
@@ -28,7 +29,7 @@
 - (UIEdgeInsets)scrollViewInsets {
     CGPoint o = [self lineOriginForLineNumber:0];
     float p = o.y + 10;
-    return UIEdgeInsetsMake(p, 0, p, [self width] - (o.x + [self lineWidth] + 60));
+    return UIEdgeInsetsMake(p, 0, p, [self width] - (o.x + [NSNumber lineWidth] + 60));
 }
 
 - (id)init {
@@ -38,11 +39,10 @@
         
         _lines = [NSMutableArray new];
         
-        _wordIcon = [UIImage imageNamed:@"milk.png"];
-        _lineIcon = [UIImage imageNamed:@"sugar_gray.png"];
-        _lineIcon = [_lineIcon imageByApplyingAlpha:0.5];
-        _lineIconActive = [UIImage imageNamed:@"sugar.png"];
-        _paraIcon = [UIImage imageNamed:@"mix.png"];
+        _wordIcon = [UIImage wordIcon];
+        _lineIcon = [UIImage lineIcon];
+        _lineIconActive = [UIImage lineIconActive];
+        _paraIcon = [UIImage paragraphIcon];
         
         self.view.backgroundColor = [UIColor bronteSecondaryBackgroundColor];
         
@@ -74,7 +74,15 @@
         UIPanGestureRecognizer * panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(panGesture:)];
         panGesture.maximumNumberOfTouches = 1;
         panGesture.minimumNumberOfTouches = 1;
+        panGesture.delegate = self;
         [self.view addGestureRecognizer:panGesture];
+        
+        UILongPressGestureRecognizer * longPressGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPressGesture:)];
+        longPressGesture.delegate = self;
+        longPressGesture.minimumPressDuration = 0.75;
+        [self.view addGestureRecognizer:longPressGesture];
+        
+        _shouldAllowPan = YES;
         
         [self newLine]; //required
         
@@ -152,18 +160,6 @@
     return fminf(self.view.bounds.size.width, self.view.bounds.size.height);
 }
 
-- (float)lineHeight {
-    return [UIFont bronteLineHeight];
-}
-
-- (float)lineHandleWidth {
-    return 80;
-}
-
-- (float)lineWidth {
-    return [UIFont bronteLineWidth] + [self lineHandleWidth];
-}
-
 - (float)maxScrollOffset {
     return fmaxf(0, _scrollView.contentSize.height - _scrollView.bounds.size.height);
 }
@@ -173,12 +169,12 @@
 }
 
 - (CGPoint)originForFirstWord {
-    return CGPointMake([self lineHandleWidth] + [UIFont bronteWordSpacing], ([UIFont bronteWordHeight]/2.0) - 0.5 - 4);
+    return CGPointMake([NSNumber lineHandleWidth] + [UIFont bronteWordSpacing], ([UIFont bronteWordHeight]/2.0) - 0.5 - 4);
 }
 
 - (CGPoint)lineOriginForLineNumber:(NSUInteger)n {
     float offset = n < _lines.count && [_lines[n] isParagraphSeparator] ? 63 : 0;
-    return CGPointMake(([self width] - [UIFont bronteLineWidth])/2.0 - [self lineHandleWidth] + 15 + offset, 50 + n*[self lineHeight]);
+    return CGPointMake(([self width] - [UIFont bronteLineWidth])/2.0 - [NSNumber lineHandleWidth] + 15 + offset, 50 + n*[NSNumber lineHeight]);
 }
 
 - (void)adjustScrollViewContentSize {
@@ -187,38 +183,8 @@
     [_scrollView setContentOffset:offset animated:NO];
 }
 
-- (CALayer *)makeBlankLine {
-    CALayer * l = [CALayer layer];
-    l.contentsScale = [[UIScreen mainScreen] scale];
-    l.anchorPoint = CGPointZero;
-    l.frame = CGRectMake(0, 0, [self lineWidth], [self lineHeight]);
-    return l;
-}
-
-- (CALayer *)makeLine {
-    CALayer * l = [self makeBlankLine];
-    
-    l.contents = (id)_lineIcon.CGImage;
-    l.contentsGravity = kCAGravityLeft;
-    l.name = @"L";
-    
-    return l;
-}
-
-- (CALayer *)makeParagraphSeparator {
-    CALayer * l = [self makeBlankLine];
-    
-    l.frame = CGRectMake(0, 0, [self lineWidth] - [self lineHandleWidth], l.bounds.size.height);
-    
-    l.contents = (id)_paraIcon.CGImage;
-    l.contentsGravity = kCAGravityCenter;
-    l.name = @"P";
-    
-    return l;
-}
-
 - (CALayer *)newLine {
-    CALayer * l = [self makeLine];
+    CALayer * l = [CALayer makeLine];
     l.position = [self lineOriginForLineNumber:_lines.count];
     //l.backgroundColor = [UIColor colorWithWhite:1.0 alpha:0.5].CGColor;
     [_docLayer addSublayer:l];
@@ -230,7 +196,7 @@
 }
 
 - (CALayer *)insertNewParagraphSeparatorAfter:(CALayer *)l {
-    return [self insertLine:[self makeParagraphSeparator] after:l];
+    return [self insertLine:[CALayer makeParagraphSeparator] after:l];
 }
 
 - (CALayer *)newParagraphSeparator {
@@ -238,7 +204,7 @@
 }
 
 - (CALayer *)insertNewLineAfter:(CALayer *)l {
-    return [self insertLine:[self makeLine] after:l];
+    return [self insertLine:[CALayer makeLine] after:l];
 }
 
 - (CALayer *)insertLine:(CALayer *)newLine after:(CALayer *)l {
@@ -272,7 +238,7 @@
     CALayer * lastWord = [line wordsForLine].lastObject;
     float newX = lastWord ? [lastWord maxX] : w.position.x;
     
-    if (newX + w.bounds.size.width > [self lineWidth]) {
+    if (newX + w.bounds.size.width > [NSNumber lineWidth]) {
         l = [self insertNewLineAfter:l];
         newX = w.position.x;
     }
@@ -328,7 +294,7 @@
                 hitInfo[@"word"] = hit;
             } else {
                 float currentScale = [self currentScale];
-                if (p.x < line.position.x + currentScale*[self lineHandleWidth]) {
+                if (p.x < line.position.x + currentScale*[NSNumber lineHandleWidth]) {
                     hitInfo[@"hitLineHandle"] = @YES;
                 }
             }
@@ -411,13 +377,9 @@
     }
 }
 
-- (void)configureWord:(CATextLayer *)word withAttributes:(NSDictionary *)attr {
-    word.string = [[NSAttributedString alloc] initWithString:((NSAttributedString *)(word.string)).string attributes:attr];
-}
-
 - (void)configureMultiWordSelection:(NSDictionary *)selectionInfo withAttributes:(NSDictionary *)attr {
     [self forEachWordInMultiSelection:selectionInfo Do:^(CATextLayer *word) {
-        [self configureWord:word withAttributes:attr];
+        [word configureWithAttributes:attr];
     }];
 }
 
@@ -469,48 +431,13 @@
             int lineNo1 = [hitInfo1[@"lineNo"] intValue];
             int lineNo2 = [hitInfo2[@"lineNo"] intValue];
             
-            wordIcon.position = CGPointMake((w1.superlayer.bounds.size.width - w1.position.x) + 30, 0.5*(lineNo2 - lineNo1 + 0.675)*[self lineHeight]);
+            wordIcon.position = CGPointMake((w1.superlayer.bounds.size.width - w1.position.x) + 30, 0.5*(lineNo2 - lineNo1 + 0.675)*[NSNumber lineHeight]);
             [w1 addSublayer:wordIcon];
             _selectionInfo[@"icon"] = wordIcon;
             
             _selectionInfo[@"selection"] = [self wordsForMultiSelection:_selectionInfo];
         }
     }
-}
-
-- (void)configureSelection:(NSArray *)selection withAttributes:(NSDictionary *)attr {
-    BOOL activateLineIcon = [attr[@"BronteActivateLineIcon"] boolValue];
-    BOOL deactivateLineIcon = [attr[@"BronteDeactivateLineIcon"] boolValue];
-    
-    for (CALayer * l in selection) {
-        if ([l isLine]) {
-            NSArray * words = [l wordsForLine];
-            for (CATextLayer * word in words) {
-                [self configureWord:word withAttributes:attr];
-            }
-            
-            if (activateLineIcon) {
-                l.contents = (id)_lineIconActive.CGImage;
-            } else if (deactivateLineIcon) {
-                l.contents = (id)_lineIcon.CGImage;
-            }
-        } else if ([l isWord]) {
-            CATextLayer * word = (CATextLayer *)l;
-            [self configureWord:word withAttributes:attr];
-        }
-    }
-}
-
-- (void)markSelection:(NSArray *)selection {
-    NSMutableDictionary * attr = [[UIFont bronteSelectedFontAttributes] mutableCopy];
-    attr[@"BronteActivateLineIcon"] = @YES;
-    [self configureSelection:selection withAttributes:attr];
-}
-
-- (void)unmarkSelection:(NSArray *)selection {
-    NSMutableDictionary * attr = [[UIFont bronteDefaultFontAttributes] mutableCopy];
-    attr[@"BronteDeactivateLineIcon"] = @YES;
-    [self configureSelection:selection withAttributes:attr];
 }
 
 - (NSArray *)currentSelection {
@@ -557,7 +484,7 @@
     
     [CATransaction begin];
     [CATransaction setCompletionBlock:^{
-        if (selection) [self unmarkSelection:selection];
+        if (selection) [selection unmarkSelection];
         if (_selectionInfo) [self unmarkMultiWordSelection];
         [self linesNeedArranging:affectedLines];
         affectedLines = nil;
@@ -635,7 +562,7 @@
     
     CGPoint dropPoint = [selectionInfo[@"dropPoint"] CGPointValue];
     
-    float startX = [self lineOriginForLineNumber:_lines.count].x + [self lineHandleWidth];
+    float startX = [self lineOriginForLineNumber:_lines.count].x + [NSNumber lineHandleWidth];
     
     if (dropPoint.x < startX) {
         dropPoint.x = startX + 1;
@@ -681,7 +608,7 @@
         validDrop = YES;
     } else {
         validDrop = YES;
-        before = dropPoint.y < dropLine.position.y + currentScale*[self lineHeight]*0.5;
+        before = dropPoint.y < dropLine.position.y + currentScale*[NSNumber lineHeight]*0.5;
         [_lines removeObjectsInArray:[[selection reverseObjectEnumerator] allObjects]];
     }
     
@@ -706,7 +633,7 @@
 - (void)didDropSelection:(NSDictionary *)selectionInfo {
     NSArray * selection = selectionInfo[@"selection"];
     
-    if (selection) [self unmarkSelection:selection];
+    if (selection) [selection unmarkSelection];
     if (_selectionInfo) [self unmarkMultiWordSelection];
     
     CGPoint dropPoint = [selectionInfo[@"dropPoint"] CGPointValue];
@@ -733,7 +660,7 @@
 
 - (float)inputOffsetForSelection:(NSArray *)selection {
     CALayer * l = [_editView isInsertingLeft] ? [selection firstLineOfSelection] : [selection lastLineOfSelection];
-    return (l.position.y - _scrollView.contentOffset.y) - 0*[self lineHeight];
+    return (l.position.y - _scrollView.contentOffset.y) - 0*[NSNumber lineHeight];
 }
 
 - (NSUInteger)linesAboveEditMenu {
@@ -742,7 +669,7 @@
 
 - (float)editMenuOffsetForSelection:(NSArray *)selection {
     CALayer * l = [selection lastLineOfSelection];
-    return (l.position.y - _scrollView.contentOffset.y) - [self linesAboveEditMenu]*[self lineHeight];
+    return (l.position.y - _scrollView.contentOffset.y) - [self linesAboveEditMenu]*[NSNumber lineHeight];
 }
 
 - (CALayer *)focusLineForSelection:(NSArray *)selection {
@@ -766,7 +693,7 @@
     [self cancelScrolling];
     [self dismissSelections];
     
-    [self markSelection:selection];
+    [selection markSelection];
     _touchInfo = [NSMutableDictionary new];
     _touchInfo[@"selection"] = selection;
     
@@ -833,15 +760,13 @@
         CGRect newFrame = _editView.frame;
         newFrame.origin.y += _inputView ? _inputView.frame.size.height + _inputView.frame.origin.y : newFrame.size.height;
         
-        __weak BronteViewController * me = self;
-        
         [UIView animateWithDuration:(_inputView ? 0.3 : 0.175) delay:0 options:(_inputView ? UIViewAnimationOptionCurveEaseOut :UIViewAnimationOptionCurveLinear) animations:^{
             _editView.frame = newFrame;
         } completion:^(BOOL finished) {
-            if (_touchInfo && _touchInfo[@"selection"]) {
-                [me unmarkSelection:_touchInfo[@"selection"]];
-                _touchInfo = nil;
-            }
+            NSArray * selection = _touchInfo[@"selection"];
+            [selection unmarkSelection];
+            _touchInfo = nil;
+            
             [_editView removeFromSuperview];
             _editView = nil;
             _inputView = nil;
@@ -1100,7 +1025,7 @@
     NSArray * currentSelection = _touchInfo[@"selection"];
     
     if (currentSelection) {
-        [self unmarkSelection:currentSelection];
+        [currentSelection unmarkSelection];
     }
     if (_selectionInfo) {
         [self unmarkMultiWordSelection];
@@ -1144,7 +1069,7 @@
             }
         } else {
             // no multi select, no current selection, so go ahead and mark the new selection
-            [self markSelection:selection];
+            [selection markSelection];
             _touchInfo = [NSMutableDictionary new];
             _touchInfo[@"selection"] = selection;
             _touchInfo[@"hitInfo"] = hitInfo;
@@ -1174,7 +1099,7 @@
     if (_selectionInfo || ![currentSelection isEqualToArray:selection]) {
         [self dismissSelections];
     } else {
-        [self markSelection:selection];
+        [selection markSelection];
         _touchInfo = [NSMutableDictionary new];
         _touchInfo[@"selection"] = selection;
         _touchInfo[@"hitInfo"] = hitInfo;
@@ -1344,7 +1269,7 @@
         CGPoint o = [self originForFirstWord];
         
         for (CATextLayer * word in words) {
-            if (o.x + word.bounds.size.width > [self lineWidth]) {
+            if (o.x + word.bounds.size.width > [NSNumber lineWidth]) {
                 o = [self originForFirstWord];
                 l = [self insertNewLineAfter:l];
             }
@@ -1540,12 +1465,11 @@
     
     CGPoint p = [gesture locationInView:_scrollView];
     
-    if (gesture.state == UIGestureRecognizerStateBegan) {
+    if (gesture.state == UIGestureRecognizerStateBegan && !_touchInfo[@"alreadyDraggingSelection"]) {
         NSDictionary * hitInfo = [self hitForPoint:p];
-        NSArray * selection = [self selectionForHit:hitInfo];
-        NSArray * currentSelection = [self currentSelection];
+        NSArray * selection = [self allowedSelectionForHitInfo:hitInfo];
         
-        if (selection.count && (!currentSelection.count || [currentSelection isEqualToArray:selection])) {
+        if (selection) {
             _touchInfo = [NSMutableDictionary new];
             _touchInfo[@"selection"] = selection;
             _touchInfo[@"hitInfo"] = hitInfo;
@@ -1695,6 +1619,29 @@
     return hitInfo[@"line"];
 }
 
+- (NSArray *)allowedSelectionForHitInfo:(NSDictionary *)hitInfo {
+    NSArray * selection = [self selectionForHit:hitInfo];
+    NSArray * currentSelection = [self currentSelection];
+    
+    if(selection.count && (!currentSelection.count || [currentSelection isEqualToArray:selection])) {
+        return selection;
+    }
+    
+    return nil;
+}
+
+- (NSArray *)duplicateSelection:(NSArray *)selection {
+    NSMutableArray * dup = [NSMutableArray new];
+    
+    for (CALayer * l in selection) {
+        CALayer * d = [l duplicate];
+        [l.superlayer addSublayer:d];
+        [dup addObject:d];
+    }
+    
+    return dup;
+}
+
 - (void)panGesture:(UIPanGestureRecognizer *)gesture {
     static CALayer * focusLine = nil;
     
@@ -1704,6 +1651,10 @@
     static BOOL isDraggingInfoArea = NO;
     static BOOL isScrollingOnSides = NO;
     static BOOL stillDeciding = YES;
+    
+    if (!_shouldAllowPan) {
+        return;
+    }
     
     BOOL canScroll = _scrollView.contentSize.height > _scrollView.bounds.size.height;
     
@@ -1776,5 +1727,65 @@
     }
 }
 
+- (void)longPressGesture:(UILongPressGestureRecognizer *)gesture {
+    _shouldAllowPan = gesture.state != UIGestureRecognizerStateBegan;
+    
+    static CGPoint firstPoint = {0, 0};
+    
+    CGPoint p = [gesture locationInView:_scrollView];
+    
+    if (gesture.state == UIGestureRecognizerStateBegan) {
+        firstPoint = p;
+        
+        NSDictionary * hitInfo = [self hitForPoint:p];
+        NSArray * selection = [self allowedSelectionForHitInfo:hitInfo];
+        
+        [self dismissSelections];
+        
+        if (selection) {
+            selection = [self duplicateSelection:selection];
+            [selection markSelectionAsDuplicate];
+            
+            float dY = -0.2*[NSNumber lineHeight];
+            float dX = 1;
+            for (CALayer * l in selection) {
+                l.position = CGPointMake(l.position.x + dX, l.position.y + dY);
+            }
+            
+            _touchInfo = [NSMutableDictionary new];
+            _touchInfo[@"selection"] = selection;
+            _touchInfo[@"hitInfo"] = hitInfo;
+            _touchInfo[@"alreadyDraggingSelection"] = @YES;
+        } else {
+            gesture.state = UIGestureRecognizerStateFailed;
+        }
+    } else if (gesture.state == UIGestureRecognizerStateEnded) {
+        float dX = p.x - firstPoint.x;
+        float dY = p.y - firstPoint.y;
+        
+        float dist = sqrtf(dX*dX + dY*dY);
+        
+        if (dist <= gesture.allowableMovement) {
+            NSArray * selection = [self currentSelection];
+            if (selection) {
+                [self arrangeWordsInLines:[selection linesForSelection]];
+                [self dismissSelections];
+            }
+        }
+    }
+}
+
+#pragma mark - Gesture delegate methods
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
+    return YES;
+}
+
+- (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer {
+    if([gestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]] && !_shouldAllowPan) {
+        return NO;
+    }
+    return YES;
+}
 
 @end

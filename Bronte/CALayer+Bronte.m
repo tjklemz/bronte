@@ -7,6 +7,8 @@
 //
 
 #import "CALayer+Bronte.h"
+#import "NSNumber+Bronte.h"
+#import "UIImage+Bronte.h"
 
 @implementation CALayer (Bronte)
 
@@ -49,6 +51,49 @@
         }];
     }
     return nil;
+}
+
++ (CALayer *)makeBlankLine {
+    CALayer * l = [CALayer layer];
+    l.contentsScale = [[UIScreen mainScreen] scale];
+    l.anchorPoint = CGPointZero;
+    l.frame = CGRectMake(0, 0, [NSNumber lineWidth], [NSNumber lineHeight]);
+    return l;
+}
+
++ (CALayer *)makeLine {
+    CALayer * l = [self makeBlankLine];
+    
+    l.contents = (id)[UIImage lineIcon].CGImage;
+    l.contentsGravity = kCAGravityLeft;
+    l.name = @"L";
+    
+    return l;
+}
+
++ (CALayer *)makeParagraphSeparator {
+    CALayer * l = [CALayer makeBlankLine];
+    
+    l.frame = CGRectMake(0, 0, [NSNumber lineWidth] - [NSNumber lineHandleWidth], l.bounds.size.height);
+    
+    l.contents = (id)[UIImage paragraphIcon].CGImage;
+    l.contentsGravity = kCAGravityCenter;
+    l.name = @"P";
+    
+    return l;
+}
+
+- (CALayer *)duplicate {
+    CALayer * d = [self isParagraphSeparator] ? [CALayer makeParagraphSeparator] : [CALayer makeLine];
+    
+    NSArray * words = [self wordsForLine];
+    
+    for (CATextLayer * w in words) {
+        CATextLayer * w2 = (CATextLayer *)[w duplicate];
+        [d addSublayer:w2];
+    }
+    
+    return d;
 }
 
 @end

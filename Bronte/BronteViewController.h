@@ -11,7 +11,7 @@
 #import "DocumentScrollView.h"
 #import "BronteTextInput.h"
 
-@interface BronteViewController : UIViewController <BronteEditDelegate, BronteTextInputDelegate> {
+@interface BronteViewController : UIViewController <BronteEditDelegate, BronteTextInputDelegate, UIGestureRecognizerDelegate> {
     NSDictionary * _defaultAttr;
     
     NSMutableArray * _lines;
@@ -35,6 +35,8 @@
     BronteTextInput * _inputView;
     
     BOOL _isRotating;
+    
+    BOOL _shouldAllowPan;
 }
 
 @end

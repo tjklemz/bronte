@@ -8,6 +8,9 @@
 
 #import "NSArray+Bronte.h"
 #import "CALayer+Bronte.h"
+#import "CATextLayer+Bronte.h"
+#import "UIFont+Bronte.h"
+#import "UIImage+Bronte.h"
 
 @implementation NSArray (Bronte)
 
@@ -84,6 +87,42 @@
     }
     
     return lines;
+}
+
+- (void)configureWithAttributes:(NSDictionary *)attr {
+    NSArray * words = [self wordsForSelection];
+    for (CATextLayer * w in words) {
+        [w configureWithAttributes:attr];
+    }
+    
+    BOOL activateLineIcon = [attr[@"BronteActivateLineIcon"] boolValue];
+    BOOL deactivateLineIcon = [attr[@"BronteDeactivateLineIcon"] boolValue];
+    
+    if (![self isDealingWithWords] && (activateLineIcon || deactivateLineIcon)) {
+        UIImage * img = activateLineIcon ? [UIImage lineIconActive] : [UIImage lineIcon];
+        NSSet * lines = [self linesForSelection];
+        for (CALayer * l in lines) {
+            l.contents = (id)img.CGImage;
+        }
+    }
+}
+
+- (void)markSelection {
+    NSMutableDictionary * attr = [[UIFont bronteSelectedFontAttributes] mutableCopy];
+    attr[@"BronteActivateLineIcon"] = @YES;
+    [self configureWithAttributes:attr];
+}
+
+- (void)unmarkSelection {
+    NSMutableDictionary * attr = [[UIFont bronteDefaultFontAttributes] mutableCopy];
+    attr[@"BronteDeactivateLineIcon"] = @YES;
+    [self configureWithAttributes:attr];
+}
+
+- (void)markSelectionAsDuplicate {
+    NSMutableDictionary * attr = [[UIFont bronteDuplicateFontAttributes] mutableCopy];
+    attr[@"BronteActivateLineIcon"] = @YES;
+    [self configureWithAttributes:attr];
 }
 
 @end

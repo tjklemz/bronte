@@ -21,4 +21,10 @@
 - (BOOL)shouldComeBeforePoint:(CGPoint)p;
 - (BOOL)shouldComeAfterPoint:(CGPoint)p;
 
++ (CALayer *)makeBlankLine;
++ (CALayer *)makeLine;
++ (CALayer *)makeParagraphSeparator;
+
+- (CALayer *)duplicate;
+
 @end

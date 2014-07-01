@@ -14,5 +14,7 @@
 + (CATextLayer *)makeWord:(NSString *)word;
 - (NSString *)word;
 - (void)setWord:(NSString *)newWord;
+- (CATextLayer *)duplicate;
+- (void)configureWithAttributes:(NSDictionary *)attr;
 
 @end

@@ -19,5 +19,9 @@
 - (BOOL)selectionContainsWord:(CATextLayer *)word;
 - (NSArray *)wordsForSelection;
 - (NSSet *)linesForSelection;
+- (void)configureWithAttributes:(NSDictionary *)attr;
+- (void)markSelection;
+- (void)unmarkSelection;
+- (void)markSelectionAsDuplicate;
 
 @end

@@ -45,6 +45,7 @@
 		813E42E2194802FE00260C0E /* Lekton-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 813E42E11948013200260C0E /* Lekton-Bold.ttf */; };
 		813E42E31948030100260C0E /* Lekton-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 813E42C219466CF000260C0E /* Lekton-Regular.ttf */; };
 		81497EC3194F7A310018A1D8 /* UIImage+Bronte.m in Sources */ = {isa = PBXBuildFile; fileRef = 81497EC2194F7A310018A1D8 /* UIImage+Bronte.m */; };
+		816CA3901963259400A04EAF /* NSNumber+Bronte.m in Sources */ = {isa = PBXBuildFile; fileRef = 816CA38F1963259400A04EAF /* NSNumber+Bronte.m */; };
 		81FAE6641958BFBE00F6B4AC /* NSArray+Bronte.m in Sources */ = {isa = PBXBuildFile; fileRef = 81FAE6631958BFBE00F6B4AC /* NSArray+Bronte.m */; };
 		81FAE667195A583B00F6B4AC /* CATextLayer+Bronte.m in Sources */ = {isa = PBXBuildFile; fileRef = 81FAE666195A583B00F6B4AC /* CATextLayer+Bronte.m */; };
 		81FAE66A195A58C200F6B4AC /* NSString+Bronte.m in Sources */ = {isa = PBXBuildFile; fileRef = 81FAE669195A58C200F6B4AC /* NSString+Bronte.m */; };
@@ -106,6 +107,8 @@
 		813E42E11948013200260C0E /* Lekton-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Lekton-Bold.ttf"; sourceTree = "<group>"; };
 		81497EC1194F7A310018A1D8 /* UIImage+Bronte.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+Bronte.h"; sourceTree = "<group>"; };
 		81497EC2194F7A310018A1D8 /* UIImage+Bronte.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+Bronte.m"; sourceTree = "<group>"; };
+		816CA38E1963259400A04EAF /* NSNumber+Bronte.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSNumber+Bronte.h"; sourceTree = "<group>"; };
+		816CA38F1963259400A04EAF /* NSNumber+Bronte.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSNumber+Bronte.m"; sourceTree = "<group>"; };
 		81FAE6621958BFBE00F6B4AC /* NSArray+Bronte.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSArray+Bronte.h"; sourceTree = "<group>"; };
 		81FAE6631958BFBE00F6B4AC /* NSArray+Bronte.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSArray+Bronte.m"; sourceTree = "<group>"; };
 		81FAE665195A583B00F6B4AC /* CATextLayer+Bronte.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "CATextLayer+Bronte.h"; sourceTree = "<group>"; };
@@ -195,6 +198,8 @@
 				81FAE669195A58C200F6B4AC /* NSString+Bronte.m */,
 				81FAE66B195B3AE600F6B4AC /* NSMutableArray+Bronte.h */,
 				81FAE66C195B3AE600F6B4AC /* NSMutableArray+Bronte.m */,
+				816CA38E1963259400A04EAF /* NSNumber+Bronte.h */,
+				816CA38F1963259400A04EAF /* NSNumber+Bronte.m */,
 			);
 			path = Bronte;
 			sourceTree = "<group>";
@@ -401,6 +406,7 @@
 				81FAE667195A583B00F6B4AC /* CATextLayer+Bronte.m in Sources */,
 				813E42A019466C5800260C0E /* CALayer+Bronte.m in Sources */,
 				813E42D919466EBC00260C0E /* UIFont+Bronte.m in Sources */,
+				816CA3901963259400A04EAF /* NSNumber+Bronte.m in Sources */,
 				813E427C1946651700260C0E /* main.m in Sources */,
 				813E42A319466CB200260C0E /* BronteTextInput.m in Sources */,
 				813E42D619466EA800260C0E /* UIColor+Bronte.m in Sources */,

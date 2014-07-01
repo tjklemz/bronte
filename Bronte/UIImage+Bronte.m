@@ -32,4 +32,40 @@
     return newImage;
 }
 
++ (UIImage *)lineIcon {
+    static UIImage * icon = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        icon = [[UIImage imageNamed:@"sugar_gray.png"] imageByApplyingAlpha:0.5];
+    });
+    return icon;
+}
+
++ (UIImage *)lineIconActive {
+    static UIImage * icon = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        icon = [UIImage imageNamed:@"sugar.png"];
+    });
+    return icon;
+}
+
++ (UIImage *)wordIcon {
+    static UIImage * icon = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        icon = [UIImage imageNamed:@"milk.png"];
+    });
+    return icon;
+}
+
++ (UIImage *)paragraphIcon {
+    static UIImage * icon = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        icon = [UIImage imageNamed:@"mix.png"];
+    });
+    return icon;
+}
+
 @end

@@ -36,52 +36,68 @@
 
 + (UIFont *)bronteFontRegular {
     static UIFont * font = nil;
-    if (!font) {
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
         font = [UIFont fontWithName:@"Lekton-Regular" size:[UIFont bronteFontSize]];
-    }
+    });
     return font;
 }
 
 + (UIFont *)bronteFontBold {
     static UIFont * font = nil;
-    if (!font) {
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
         font = [UIFont fontWithName:@"Lekton-Bold" size:[UIFont bronteFontSize]];
-    }
+    });
     return font;
 }
 
 + (UIFont *)bronteInputFont {
     static UIFont * font = nil;
-    if (!font) {
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
         font = [UIFont fontWithName:@"Lekton-Regular" size:[UIFont bronteFontSize]];
-    }
+    });
     return font;
 }
 
 + (NSDictionary *)bronteDefaultFontAttributes {
     static NSDictionary * attr = nil;
-    if (!attr) {
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
         attr = @{ NSFontAttributeName : [UIFont bronteFontRegular],
                   NSForegroundColorAttributeName: (id)([UIColor bronteFontColor].CGColor) };
-    }
+    });
     return attr;
 }
 
 + (NSDictionary *)bronteSelectedFontAttributes {
     static NSDictionary * attr = nil;
-    if (!attr) {
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
         attr = @{ NSFontAttributeName : [UIFont bronteFontBold],
                   NSForegroundColorAttributeName: (id)[UIColor bronteSelectedFontColor].CGColor };
-    }
+    });
     return attr;
 }
 
 + (NSDictionary *)bronteInputFontAttributes {
     static NSDictionary * attr = nil;
-    if (!attr) {
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
         attr = @{ NSFontAttributeName : [UIFont bronteInputFont],
                   NSForegroundColorAttributeName: [UIColor bronteFontColor] };
-    }
+    });
+    return attr;
+}
+
++ (NSDictionary *)bronteDuplicateFontAttributes {
+    static NSDictionary * attr = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        attr = @{ NSFontAttributeName : [UIFont bronteFontBold],
+                  NSForegroundColorAttributeName: (id)[UIColor bronteDuplicateFontColor].CGColor };
+    });
     return attr;
 }
 

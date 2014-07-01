@@ -44,4 +44,14 @@
     self.frame = CGRectMake(self.frame.origin.x, self.frame.origin.y, frame.size.width, frame.size.height);
 }
 
+- (CATextLayer *)duplicate {
+    CATextLayer * d = [CATextLayer makeWord:[self word]];
+    d.position = self.position;
+    return d;
+}
+
+- (void)configureWithAttributes:(NSDictionary *)attr {
+    self.string = [[NSAttributedString alloc] initWithString:[self word] attributes:attr];
+}
+
 @end

@@ -19,5 +19,6 @@
 + (NSDictionary *)bronteDefaultFontAttributes;
 + (NSDictionary *)bronteSelectedFontAttributes;
 + (NSDictionary *)bronteInputFontAttributes;
++ (NSDictionary *)bronteDuplicateFontAttributes;
 
 @end

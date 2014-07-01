@@ -1,0 +1,17 @@
+//
+//  NSNumber+Bronte.h
+//  Bronte
+//
+//  Created by Thomas Klemz on 7/1/14.
+//  Copyright (c) 2014 Lory & Ludlow. All rights reserved.
+//
+
+#import <Foundation/Foundation.h>
+
+@interface NSNumber (Bronte)
+
++ (float)lineHandleWidth;
++ (float)lineWidth;
++ (float)lineHeight;
+
+@end
