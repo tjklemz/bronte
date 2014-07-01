@@ -99,10 +99,13 @@
     BOOL deactivateLineIcon = [attr[@"BronteDeactivateLineIcon"] boolValue];
     
     if (![self isDealingWithWords] && (activateLineIcon || deactivateLineIcon)) {
-        UIImage * img = activateLineIcon ? [UIImage lineIconActive] : [UIImage lineIcon];
         NSSet * lines = [self linesForSelection];
         for (CALayer * l in lines) {
-            l.contents = (id)img.CGImage;
+            if (activateLineIcon) {
+                [l activateLine];
+            } else {
+                [l deactivateLine];
+            }
         }
     }
 }

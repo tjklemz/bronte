@@ -12,7 +12,7 @@
 
 @implementation CALayer (Bronte)
 
-@dynamic originalPosition;
+@dynamic originalPosition, dropPoint;
 
 - (float)maxX {
     return self.position.x + self.bounds.size.width - self.anchorPoint.x*self.bounds.size.width;
@@ -36,7 +36,8 @@
 }
 
 - (BOOL)shouldComeBeforePoint:(CGPoint)p {
-    return ([self minX] + 0.55*self.bounds.size.width < p.x);
+    float x = self.dropPoint ? [self.dropPoint CGPointValue].x : [self minX];
+    return (x + 0.55*self.bounds.size.width < p.x);
 }
 
 - (BOOL)shouldComeAfterPoint:(CGPoint)p {
@@ -47,7 +48,8 @@
     if ([self isLine]) {
         NSArray * words = [self.sublayers filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"self isKindOfClass:%@", [CATextLayer class]]];
         return [words sortedArrayUsingComparator:^NSComparisonResult(CALayer * obj1, CALayer * obj2) {
-            return [obj1 shouldComeBeforePoint:CGPointMake([obj2 minX], 0)] ? NSOrderedAscending : NSOrderedDescending;
+            float x = obj2.dropPoint ? [obj2.dropPoint CGPointValue].x : [obj2 minX];
+            return [obj1 shouldComeBeforePoint:CGPointMake(x, 0)] ? NSOrderedAscending : NSOrderedDescending;
         }];
     }
     return nil;
@@ -94,6 +96,14 @@
     }
     
     return d;
+}
+
+- (void)activateLine {
+    self.contents = (id)[UIImage lineIconActive].CGImage;
+}
+
+- (void)deactivateLine {
+    self.contents = (id)[UIImage lineIcon].CGImage;
 }
 
 @end

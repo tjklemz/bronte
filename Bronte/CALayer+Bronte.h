@@ -11,6 +11,7 @@
 @interface CALayer (Bronte)
 
 @property (nonatomic) CGPoint originalPosition;
+@property (nonatomic) NSValue * dropPoint;
 
 - (float)maxX;
 - (float)minX;
@@ -26,5 +27,7 @@
 + (CALayer *)makeParagraphSeparator;
 
 - (CALayer *)duplicate;
+- (void)activateLine;
+- (void)deactivateLine;
 
 @end

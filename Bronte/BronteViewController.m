@@ -505,7 +505,7 @@
         
         NSDictionary * hitInfo = selectionInfo[@"hitInfo"];
         CALayer * origLine = hitInfo[@"line"];
-        CALayer * dropWord = dropInfo[@"word"];
+//        CALayer * dropWord = dropInfo[@"word"];
         
 //        if (selection.count > 1 && !dropWord) {
 //            [self putBackSelection:selection];
@@ -525,7 +525,9 @@
             while ((w = [reverse nextObject])) {
                 [affectedLines addObject:w.superlayer];
                 [w removeFromSuperlayer];
-                w.position = CGPointMake(dropPoint.x/currentScale - startX, dropPoint.y/currentScale - dropLineOrigin.y - (origHitPoint.y/currentScale - (w.originalPosition.y + origLineOrigin.y)));
+                CGPoint dp = CGPointMake(dropPoint.x/currentScale - startX, dropPoint.y/currentScale - dropLineOrigin.y - (origHitPoint.y/currentScale - (w.originalPosition.y + origLineOrigin.y)));
+                w.dropPoint = [NSValue valueWithCGPoint:dp];
+                w.position = CGPointMake(w.position.x, dp.y);
                 w.hidden = NO;
                 [dropLine addSublayer:w];
             }
@@ -1264,6 +1266,8 @@
         CGPoint o = [self originForFirstWord];
         
         for (CATextLayer * word in words) {
+            word.dropPoint = nil;
+            
             if (o.x + word.bounds.size.width > [NSNumber lineWidth]) {
                 o = [self originForFirstWord];
                 l = [self insertNewLineAfter:l];
@@ -1482,6 +1486,7 @@
                 isScrolling = NO;
                 _touchInfo[@"dropPoint"] = [NSValue valueWithCGPoint:p];
                 [self didDropSelection:_touchInfo];
+                [affectedLine deactivateLine];
                 _touchInfo = nil;
                 affectedLine = nil;
             } else {
@@ -1494,10 +1499,12 @@
                     NSArray * excluded = [selection wordsForSelection];
                     
                     if (line) {
+                        [line activateLine];
                         [self arrangeWordsInLine:line basedOnPoint:[line convertPoint:p fromLayer:line.superlayer] excludingWords:excluded];
                     }
                     
                     if (affectedLine && affectedLine != line) {
+                        [affectedLine deactivateLine];
                         [self arrangeWordsInLine:affectedLine ignoringWords:excluded];
                     }
                     
@@ -1741,8 +1748,8 @@
             selection = [self duplicateSelection:selection];
             [selection markSelectionAsDuplicate];
             
-            float dY = -0.2*[NSNumber lineHeight];
-            float dX = 1;
+            float dY = 0;
+            float dX = 0;
             for (CALayer * l in selection) {
                 l.position = CGPointMake(l.position.x + dX, l.position.y + dY);
             }
