@@ -11,7 +11,7 @@
 @interface CALayer (Bronte)
 
 @property (nonatomic) CGPoint originalPosition;
-@property (nonatomic) NSValue * dropPoint;
+@property (nonatomic, strong) NSValue * dropPoint;
 @property (nonatomic) BOOL activated;
 
 - (float)maxX;

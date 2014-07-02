@@ -265,22 +265,21 @@
 
 #pragma mark - Moving stuff
 
-- (CALayer *)lineForPoint:(CGPoint)p {
-    for (CALayer * l in _lines) {
-        if (CGRectContainsPoint(l.frame, p)) {
-            return l;
-        }
-    }
-    
-    return nil;
+- (NSDictionary *)hitForPoint:(CGPoint)p {
+    return [self hitForPoint:p restricted:YES];
 }
 
-- (NSDictionary *)hitForPoint:(CGPoint)p {
+- (NSDictionary *)hitForPoint:(CGPoint)p restricted:(BOOL)restricted {
+    float w = [self clipboardHandle].origin.x;
+    
     for (int i = 0; i < _lines.count; ++i) {
         CALayer * line = _lines[i];
-        CALayer * hit = [line hitTest:p];
+        CALayer * hit = nil;
         
-        if (hit) {
+        CGRect hitZone = CGRectMake(0, line.frame.origin.y, w, line.frame.size.height);
+        BOOL allowedHit = !restricted || CGRectContainsPoint(hitZone, p);
+        
+        if (allowedHit && (hit = [line hitTest:p])) {
             NSMutableDictionary * hitInfo = [NSMutableDictionary new];
             hitInfo[@"line"] = line;
             hitInfo[@"lineNo"] = [NSNumber numberWithInt:i];
@@ -1162,7 +1161,7 @@
         // step 1. did it hit an icon?
         
         CGPoint p = [[touches anyObject] locationInView:_scrollView];
-        NSDictionary * hitInfo = [self hitForPoint:p];
+        NSDictionary * hitInfo = [self hitForPoint:p restricted:NO];
         
         BOOL didHitHandle = hitInfo && [self didHitHandle:hitInfo];
         
@@ -1197,8 +1196,8 @@
     CGPoint p1 = [selectionInfo[@"firstPoint"] CGPointValue];
     CGPoint p2 = [selectionInfo[@"lastPoint"] CGPointValue];
     
-    NSDictionary * hitInfo1 = [self hitForPoint:p1];
-    NSDictionary * hitInfo2 = [self hitForPoint:p2];
+    NSDictionary * hitInfo1 = [self hitForPoint:p1 restricted:NO];
+    NSDictionary * hitInfo2 = [self hitForPoint:p2 restricted:NO];
     
     if (!hitInfo1 || !hitInfo2) return nil;
     
@@ -1472,7 +1471,7 @@
     CGPoint p = [gesture locationInView:_scrollView];
     
     if (gesture.state == UIGestureRecognizerStateBegan && !_touchInfo[@"alreadyDraggingSelection"]) {
-        NSDictionary * hitInfo = [self hitForPoint:p];
+        NSDictionary * hitInfo = [self hitForPoint:p restricted:NO];
         NSArray * selection = [self allowedSelectionForHitInfo:hitInfo];
         
         if (selection) {
@@ -1508,8 +1507,8 @@
                         p.x = startX + 1;
                     }
                     
-                    CALayer * line = [self lineForPoint:p];
                     NSArray * excluded = [selection wordsForSelection];
+                    CALayer * line = [[self hitForPoint:p] objectForKey:@"line"];
                     
                     if (line) {
                         [line activateLine];
@@ -1757,7 +1756,7 @@
     if (gesture.state == UIGestureRecognizerStateBegan) {
         firstPoint = p;
         
-        NSDictionary * hitInfo = [self hitForPoint:p];
+        NSDictionary * hitInfo = [self hitForPoint:p restricted:NO];
         NSArray * selection = [self allowedSelectionForHitInfo:hitInfo];
         
         [self dismissSelections];
