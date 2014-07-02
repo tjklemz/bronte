@@ -1315,7 +1315,7 @@
 }
 
 - (void)arrangeWordsInLine:(CALayer *)l ignoringWords:(NSArray *)excluded {
-    NSArray * words = [l wordsForLine];
+    NSArray * words = [l wordsForLineUnsorted]; //[l wordsForLine];
     CGPoint o = [self originForFirstWord];
     
     for (CATextLayer * word in words) {
