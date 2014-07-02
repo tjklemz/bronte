@@ -532,7 +532,6 @@
                 [affectedLines addObject:w.superlayer];
                 [w removeFromSuperlayer];
                 CGPoint dp = CGPointMake(dropPoint.x/currentScale - startX, dropPoint.y/currentScale - dropLineOrigin.y - (origHitPoint.y/currentScale - (w.originalPosition.y + origLineOrigin.y)));
-                w.dropPoint = [NSValue valueWithCGPoint:dp];
                 w.position = CGPointMake(w.position.x, dp.y);
                 w.hidden = NO;
                 [dropLine addSublayer:w];
@@ -1272,7 +1271,6 @@
         CGPoint o = [self originForFirstWord];
         
         for (CATextLayer * word in words) {
-            word.dropPoint = nil;
             
             if (o.x + word.bounds.size.width > [NSNumber lineWidth]) {
                 o = [self originForFirstWord];
@@ -1294,9 +1292,8 @@
 
 - (void)arrangeWordsInLine:(CALayer *)l basedOnPoint:(CGPoint)point excludingWords:(NSArray *)excluded {
     CATextLayer * anchorWord = [excluded firstWordOfSelection];
-    anchorWord.dropPoint = [NSValue valueWithCGPoint:point];
     
-    NSArray * words = [l wordsForLineUnsorted];
+    NSArray * words = [l wordsForLine];
     CGPoint o = [self originForFirstWord];
     
     float exWidth = anchorWord.bounds.size.width;
@@ -1308,14 +1305,13 @@
             continue;
         }
         
-        word.dropPoint = nil;
-        word.position = [word shouldComeBeforePoint:point] ? o : CGPointMake(o.x + exWidth, o.y);
+        word.position = [word shouldComeBeforeWord:anchorWord] ? o : CGPointMake(o.x + exWidth, o.y);
         o.x += width;
     }
 }
 
 - (void)arrangeWordsInLine:(CALayer *)l ignoringWords:(NSArray *)excluded {
-    NSArray * words = [l wordsForLineUnsorted]; //[l wordsForLine];
+    NSArray * words = [l wordsForLine];
     CGPoint o = [self originForFirstWord];
     
     for (CATextLayer * word in words) {

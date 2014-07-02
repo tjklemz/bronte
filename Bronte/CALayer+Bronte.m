@@ -16,14 +16,6 @@
 
 @dynamic activated, originalPosition;
 
-- (NSValue *)dropPoint {
-    return objc_getAssociatedObject(self, @selector(dropPoint));
-}
-
-- (void)setDropPoint:(NSValue *)dropPoint {
-    objc_setAssociatedObject(self, @selector(dropPoint), dropPoint, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-}
-
 - (float)maxX {
     return self.position.x + self.bounds.size.width - self.anchorPoint.x*self.bounds.size.width;
 }
@@ -45,13 +37,15 @@
     return [self.name isEqualToString:@"P"];
 }
 
-- (BOOL)shouldComeBeforePoint:(CGPoint)p {
-    float x = self.dropPoint ? [self.dropPoint CGPointValue].x : [self minX];
-    return (x + 0.55*self.bounds.size.width < p.x);
+- (BOOL)shouldComeBeforeWord:(CALayer *)w {
+    if (self.presentationLayer && w.presentationLayer) {
+        return ([self.presentationLayer minX] < [w.presentationLayer minX]);
+    }
+    return [self minX] < [w minX];
 }
 
-- (BOOL)shouldComeAfterPoint:(CGPoint)p {
-    return ![self shouldComeBeforePoint:p];
+- (BOOL)shouldComeAfterWord:(CALayer *)w {
+    return ![self shouldComeBeforeWord:w];
 }
 
 - (NSArray *)wordsForLineUnsorted {
@@ -61,9 +55,8 @@
 - (NSArray *)wordsForLine {
     if ([self isLine]) {
         NSArray * words = [self wordsForLineUnsorted];
-        return [words sortedArrayUsingComparator:^NSComparisonResult(CALayer * obj1, CALayer * obj2) {
-            float x = obj2.dropPoint ? [obj2.dropPoint CGPointValue].x : [obj2 minX];
-            return [obj1 shouldComeBeforePoint:CGPointMake(x, 0)] ? NSOrderedAscending : NSOrderedDescending;
+        return [words sortedArrayUsingComparator:^NSComparisonResult(CALayer * w1, CALayer * w2) {
+            return [w1 shouldComeBeforeWord:w2] ? NSOrderedAscending : NSOrderedDescending;
         }];
     }
     return nil;

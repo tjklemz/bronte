@@ -11,7 +11,6 @@
 @interface CALayer (Bronte)
 
 @property (nonatomic) CGPoint originalPosition;
-@property (nonatomic, strong) NSValue * dropPoint;
 @property (nonatomic) BOOL activated;
 
 - (float)maxX;
@@ -21,8 +20,8 @@
 - (BOOL)isParagraphSeparator;
 - (NSArray *)wordsForLineUnsorted;
 - (NSArray *)wordsForLine;
-- (BOOL)shouldComeBeforePoint:(CGPoint)p;
-- (BOOL)shouldComeAfterPoint:(CGPoint)p;
+- (BOOL)shouldComeBeforeWord:(CALayer *)w;
+- (BOOL)shouldComeAfterWord:(CALayer *)w;
 
 + (CALayer *)makeBlankLine;
 + (CALayer *)makeLine;
