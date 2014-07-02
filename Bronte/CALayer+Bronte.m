@@ -6,13 +6,23 @@
 //  Copyright (c) 2014 Lory and Ludlow. All rights reserved.
 //
 
+#import <objc/runtime.h>
+
 #import "CALayer+Bronte.h"
 #import "NSNumber+Bronte.h"
 #import "UIImage+Bronte.h"
 
 @implementation CALayer (Bronte)
 
-@dynamic originalPosition, dropPoint, activated;
+@dynamic activated, originalPosition;
+
+- (NSValue *)dropPoint {
+    return objc_getAssociatedObject(self, @selector(dropPoint));
+}
+
+- (void)setDropPoint:(NSValue *)dropPoint {
+    objc_setAssociatedObject(self, @selector(dropPoint), dropPoint, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
 
 - (float)maxX {
     return self.position.x + self.bounds.size.width - self.anchorPoint.x*self.bounds.size.width;
@@ -44,9 +54,13 @@
     return ![self shouldComeBeforePoint:p];
 }
 
+- (NSArray *)wordsForLineUnsorted {
+    return [self.sublayers filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"self isKindOfClass:%@", [CATextLayer class]]];
+}
+
 - (NSArray *)wordsForLine {
     if ([self isLine]) {
-        NSArray * words = [self.sublayers filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"self isKindOfClass:%@", [CATextLayer class]]];
+        NSArray * words = [self wordsForLineUnsorted];
         return [words sortedArrayUsingComparator:^NSComparisonResult(CALayer * obj1, CALayer * obj2) {
             float x = obj2.dropPoint ? [obj2.dropPoint CGPointValue].x : [obj2 minX];
             return [obj1 shouldComeBeforePoint:CGPointMake(x, 0)] ? NSOrderedAscending : NSOrderedDescending;

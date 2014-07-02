@@ -1293,10 +1293,13 @@
 }
 
 - (void)arrangeWordsInLine:(CALayer *)l basedOnPoint:(CGPoint)point excludingWords:(NSArray *)excluded {
-    NSArray * words = [l wordsForLine];
+    CATextLayer * anchorWord = [excluded firstWordOfSelection];
+    anchorWord.dropPoint = [NSValue valueWithCGPoint:point];
+    
+    NSArray * words = [l wordsForLineUnsorted];
     CGPoint o = [self originForFirstWord];
     
-    float exWidth = [excluded firstWordOfSelection].bounds.size.width;
+    float exWidth = anchorWord.bounds.size.width;
     
     for (CATextLayer * word in words) {
         float width = word.bounds.size.width;
@@ -1305,12 +1308,8 @@
             continue;
         }
         
-        if ([word shouldComeAfterPoint:point]) {
-            word.position = CGPointMake(o.x + exWidth, o.y);
-        } else {
-            word.position = o;
-        }
-        
+        word.dropPoint = nil;
+        word.position = [word shouldComeBeforePoint:point] ? o : CGPointMake(o.x + exWidth, o.y);
         o.x += width;
     }
 }
