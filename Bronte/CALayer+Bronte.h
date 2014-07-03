@@ -14,7 +14,9 @@
 @property (nonatomic) BOOL activated;
 
 - (float)maxX;
+- (float)maxY;
 - (float)minX;
+- (float)minY;
 - (BOOL)isWord;
 - (BOOL)isLine;
 - (BOOL)isParagraphSeparator;

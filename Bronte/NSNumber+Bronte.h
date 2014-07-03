@@ -13,5 +13,6 @@
 + (float)lineHandleWidth;
 + (float)lineWidth;
 + (float)lineHeight;
++ (float)bound:(float)n low:(float)low high:(float)high;
 
 @end

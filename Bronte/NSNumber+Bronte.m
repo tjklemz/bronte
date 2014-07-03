@@ -23,4 +23,8 @@
     return [UIFont bronteLineHeight];
 }
 
++ (float)bound:(float)n low:(float)low high:(float)high {
+    return fmaxf(low, fminf(high, n));
+}
+
 @end

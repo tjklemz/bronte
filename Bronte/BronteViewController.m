@@ -701,6 +701,8 @@
     
     __weak BronteViewController * me = self;
     
+    float deltaZoom = 1.0 - [self currentScale];
+    
     [self zoomDocument:1.0 focusLine:[self focusLineForSelection:selection] animationDuration:0 completion:^(BOOL finished) {
         float offset = [me editMenuOffsetForSelection:selection];
         
@@ -719,6 +721,10 @@
         [UIView animateWithDuration:0.25 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
             [_scrollView setContentOffset:CGPointMake(0, _scrollView.contentOffset.y + offset)];
         } completion:^(BOOL finished) {
+            if (deltaZoom > 0.1) {
+                _scrollView.previousContentOffset = _scrollView.contentOffset;
+            }
+            
             _editView.hidden = NO;
             
             [UIView animateWithDuration:0.15 delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
@@ -743,18 +749,14 @@
         float maxOffset = [self maxScrollOffset];
         float minOffset = [self minScrollOffset];
         
-        float prevOffset = _scrollView.previousContentOffset.y;
-        prevOffset = prevOffset < minOffset ? minOffset : prevOffset;
-        prevOffset = prevOffset > maxOffset ? maxOffset : prevOffset;
+        float prevOffset = [NSNumber bound:_scrollView.previousContentOffset.y low:minOffset high:maxOffset];
         
         float currentOffset = _scrollView.contentOffset.y;
         BOOL outOfBounds = currentOffset < minOffset || currentOffset > maxOffset;
         
         if (force || (fabs(prevOffset - currentOffset) < 0.8*_scrollView.bounds.size.height) || outOfBounds) {
             if (outOfBounds) {
-                currentOffset = currentOffset < minOffset ? minOffset : currentOffset;
-                currentOffset = currentOffset > maxOffset ? maxOffset : currentOffset;
-                prevOffset = currentOffset;
+                prevOffset = [NSNumber bound:currentOffset low:minOffset high:maxOffset];
             }
             [UIView animateWithDuration:0.3 delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
                 [_scrollView setContentOffset:CGPointMake(0, prevOffset)];
@@ -1395,16 +1397,13 @@
 - (void)zoomDocument:(float)scale focusLine:(CALayer *)focusLine animationDuration:(float)duration completion:(void (^)(BOOL finished))completion {
     float delta = focusLine ? (_scrollView.contentOffset.y - focusLine.frame.origin.y) : 0;
     
+    [self cancelScrolling];
+    
     [UIView animateWithDuration:duration animations:^{
-        CGFloat minScale = [self minDocScale];
-        CGFloat maxScale = [self maxDocScale];
+        float fullW = [self width];
         
-        float fullW = fmaxf(self.view.frame.size.width, self.view.frame.size.height);
-        
-        float currentScale = scale;
-        currentScale = currentScale > maxScale ? maxScale : currentScale;
-        currentScale = currentScale < minScale ? minScale : currentScale;
-        
+        float currentScale = [NSNumber bound:scale low:[self minDocScale] high:[self maxDocScale]];
+
         CGPoint prevOffset = _scrollView.contentOffset;
         _scrollView.frame = CGRectMake(0, 0, currentScale*fullW, _scrollView.frame.size.height);
         _scrollView.contentOffset = prevOffset;
@@ -1414,6 +1413,9 @@
         
         [CATransaction begin];
         [CATransaction setAnimationDuration:duration];
+        [CATransaction setCompletionBlock:^{
+            
+        }];
         [self arrangeLinesBasedOnScale:currentScale];
         [CATransaction commit];
         

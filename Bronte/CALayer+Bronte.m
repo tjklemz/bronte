@@ -20,8 +20,16 @@
     return self.position.x + self.bounds.size.width - self.anchorPoint.x*self.bounds.size.width;
 }
 
+- (float)maxY {
+    return self.position.y + self.bounds.size.height - self.anchorPoint.y*self.bounds.size.height;
+}
+
 - (float)minX {
     return self.position.x - self.anchorPoint.x*self.bounds.size.width;
+}
+
+- (float)minY {
+    return self.position.y - self.anchorPoint.y*self.bounds.size.height;
 }
 
 - (BOOL)isWord {
