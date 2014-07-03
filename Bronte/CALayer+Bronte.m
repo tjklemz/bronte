@@ -45,6 +45,13 @@
     return [self.name isEqualToString:@"P"];
 }
 
+- (BOOL)shouldComeBeforePoint:(CGPoint)p {
+    if (self.presentationLayer) {
+        return [self.presentationLayer minX] < p.x;
+    }
+    return [self minX] < p.x;
+}
+
 - (BOOL)shouldComeBeforeWord:(CALayer *)w {
     if (self.presentationLayer && w.presentationLayer) {
         return ([self.presentationLayer minX] < [w.presentationLayer minX]);

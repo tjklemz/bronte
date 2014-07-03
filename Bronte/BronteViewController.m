@@ -46,6 +46,7 @@
         scrollView.backgroundColor = [UIColor bronteBackgroundColor];
         _docLayer = scrollView.layer;
         _docLayer.masksToBounds = NO;
+        _docLayer.zPosition = -10;
         [scrollView.panGestureRecognizer setMinimumNumberOfTouches:2];
         [scrollView setScrollIndicatorInsets:[self scrollViewInsets]];
         scrollView.indicatorStyle = UIScrollViewIndicatorStyleBlack;
@@ -270,7 +271,7 @@
 }
 
 - (NSDictionary *)hitForPoint:(CGPoint)p restricted:(BOOL)restricted {
-    float w = [self clipboardHandle].origin.x;
+    float w = [self clipboardFrame].origin.x;
     
     for (int i = 0; i < _lines.count; ++i) {
         CALayer * line = _lines[i];
@@ -525,14 +526,18 @@
             
             [CATransaction begin];
             [CATransaction setAnimationDuration:0];
+            [CATransaction setCompletionBlock:^{
+                
+            }];
+            CGPoint dp = CGPointMake(selection.count > 1 ? [self anchorPointForSelection:selection basedOnDropPoint:CGPointMake((dropPoint.x/currentScale - startX), 0)].x : [[selection firstObject] position].x, 0);
             // needs to be in reverse due to the z ordering. see the method -wordsForLine
             NSEnumerator * reverse = [selection reverseObjectEnumerator];
             CATextLayer * w = nil;
             while ((w = [reverse nextObject])) {
                 [affectedLines addObject:w.superlayer];
                 [w removeFromSuperlayer];
-                CGPoint dp = CGPointMake(dropPoint.x/currentScale - startX, dropPoint.y/currentScale - dropLineOrigin.y - (origHitPoint.y/currentScale - (w.originalPosition.y + origLineOrigin.y)));
-                w.position = CGPointMake(w.position.x, dp.y);
+                dp.y = dropPoint.y/currentScale - dropLineOrigin.y - (origHitPoint.y/currentScale - (w.originalPosition.y + origLineOrigin.y));
+                w.position = dp;
                 w.hidden = NO;
                 [dropLine addSublayer:w];
             }
@@ -540,7 +545,7 @@
             
             [affectedLines addObject:dropLine];
             
-            if (origLine != dropLine) {
+            if (origLine != dropLine || selection.count > 1) {
                 __weak __block BronteViewController * me = self;
                 dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.001 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                     [me arrangeWordsInLines:affectedLines];
@@ -696,8 +701,7 @@
     [self dismissSelections];
     
     [selection markSelection];
-    _touchInfo = [NSMutableDictionary new];
-    _touchInfo[@"selection"] = selection;
+    _touchInfo = [self newTouchSelection:selection];
     
     __weak BronteViewController * me = self;
     
@@ -1038,9 +1042,15 @@
 #pragma mark - Gestures
 
 - (CGRect)clipboardHandle {
+    CGRect frame = [self clipboardFrame];
+    frame.size.width *= 2;
+    return frame;
+}
+
+- (CGRect)clipboardFrame {
     float p = 0.09;
     float s = p*_scrollView.bounds.size.width;
-    return CGRectMake(_scrollView.bounds.size.width - s, 0, s*2, _scrollView.bounds.size.height);
+    return CGRectMake(_scrollView.bounds.size.width - s, 0, s, _scrollView.bounds.size.height);
 }
 
 - (CGRect)infoHandle {
@@ -1100,9 +1110,7 @@
         } else {
             // no multi select, no current selection, so go ahead and mark the new selection
             [selection markSelection];
-            _touchInfo = [NSMutableDictionary new];
-            _touchInfo[@"selection"] = selection;
-            _touchInfo[@"hitInfo"] = hitInfo;
+            _touchInfo = [self newTouchSelection:selection withHitInfo:hitInfo];
         }
     } else {
         // see if the handle hit was on the multi select handle.
@@ -1130,10 +1138,7 @@
         [self dismissSelections];
     } else {
         [selection markSelection];
-        _touchInfo = [NSMutableDictionary new];
-        _touchInfo[@"selection"] = selection;
-        _touchInfo[@"hitInfo"] = hitInfo;
-        
+        _touchInfo = [self newTouchSelection:selection withHitInfo:hitInfo];
         [self bringUpEditMenuForSelection:selection];
     }
 }
@@ -1318,13 +1323,28 @@
     }
 }
 
+- (CATextLayer *)anchorWordForSelection:(NSArray *)selection {
+    return [selection firstWordOfSelection];
+}
+
+- (float)anchorWordWidth:(CATextLayer *)anchorWord forSelection:(NSArray *)selection {
+    return selection.count > 1 ? 100 : anchorWord.bounds.size.width;
+}
+
+- (CGPoint)anchorPointForSelection:(NSArray *)selection basedOnDropPoint:(CGPoint)dropPoint {
+    CGPoint anchorPoint = dropPoint;
+    anchorPoint.x -= 0.5*[self anchorWordWidth:[self anchorWordForSelection:selection] forSelection:selection];
+    return anchorPoint;
+}
+
 - (void)arrangeWordsInLine:(CALayer *)l basedOnPoint:(CGPoint)point excludingWords:(NSArray *)excluded {
-    CATextLayer * anchorWord = [excluded firstWordOfSelection];
+    CATextLayer * anchorWord = [self anchorWordForSelection:excluded];
     
     NSArray * words = [l wordsForLine];
     CGPoint o = [self originForFirstWord];
     
-    float exWidth = anchorWord.bounds.size.width;
+    float anchorWordWidth = [self anchorWordWidth:anchorWord forSelection:excluded];
+    CGPoint anchorPoint = [self anchorPointForSelection:excluded basedOnDropPoint:point];
     
     for (CATextLayer * word in words) {
         float width = word.bounds.size.width;
@@ -1333,7 +1353,8 @@
             continue;
         }
         
-        word.position = [word shouldComeBeforeWord:anchorWord] ? o : CGPointMake(o.x + exWidth, o.y);
+        BOOL before = [excluded count] > 1 ? [word shouldComeBeforePoint:anchorPoint] : [word shouldComeBeforeWord:anchorWord];
+        word.position = before ? o : CGPointMake(o.x + anchorWordWidth, o.y);
         o.x += width;
     }
 }
@@ -1488,6 +1509,64 @@
     [_scrollView pop_removeAnimationForKey:@"decelerate"];
 }
 
+static BOOL _isScrollingBasedOnDrag = NO;
+
+- (void)cancelScrollingBasedOnDrag {
+    [NSObject cancelPreviousPerformRequestsWithTarget:self];
+    _isScrollingBasedOnDrag = NO;
+}
+
+- (void)checkIfShouldScrollBasedOnPoint:(CGPoint)p {
+    NSTimeInterval holdDelay = 0.2;
+    
+    if ([self pointIsInLowerScrollArea:p]) {
+        if (!_isScrollingBasedOnDrag) {
+            [self performSelector:@selector(scrollDownBasedOnDrag:) withObject:nil afterDelay:holdDelay];
+            _isScrollingBasedOnDrag = YES;
+        }
+    } else if ([self pointIsInUpperScrollArea:p]) {
+        if (!_isScrollingBasedOnDrag) {
+            [self performSelector:@selector(scrollUpBasedOnDrag:) withObject:nil afterDelay:holdDelay];
+            _isScrollingBasedOnDrag = YES;
+        }
+    } else {
+        [self cancelScrollingBasedOnDrag];
+    }
+}
+
+static CAShapeLayer * _clipboardMask = nil;
+
+- (void)checkIfShouldMarkClipboardAreaBasedOnPoint:(CGPoint)p {
+    if (CGRectContainsPoint([self clipboardHandle], p)) {
+        [self markClipboardArea];
+    } else {
+        [self unmarkClipboardArea];
+    }
+}
+
+- (void)markClipboardArea {
+    if (!_clipboardMask.superlayer) {
+        _clipboardMask = [CAShapeLayer layer];
+        _clipboardMask.backgroundColor = [UIColor bronteSelectedFontColor].CGColor;
+        _clipboardMask.frame = [self clipboardHandle];
+        [_docLayer addSublayer:_clipboardMask];
+        _clipboardMask.zPosition = _docLayer.zPosition + 1;
+    }
+}
+
+- (void)unmarkClipboardArea {
+    [_clipboardMask removeFromSuperlayer];
+    _clipboardMask = nil;
+}
+
+- (NSMutableDictionary *)newTouchSelection:(NSArray *)selection withHitInfo:(NSDictionary *)hitInfo {
+    return [@{@"selection": selection, @"hitInfo": hitInfo} mutableCopy];
+}
+
+- (NSMutableDictionary *)newTouchSelection:(NSArray *)selection {
+    return [@{@"selection": selection} mutableCopy];
+}
+
 - (void)handleSelectionDrag:(UIPanGestureRecognizer *)gesture {
     static CALayer * affectedLine = nil;
     
@@ -1498,9 +1577,7 @@
         NSArray * selection = [self allowedSelectionForHitInfo:hitInfo];
         
         if (selection) {
-            _touchInfo = [NSMutableDictionary new];
-            _touchInfo[@"selection"] = selection;
-            _touchInfo[@"hitInfo"] = hitInfo;
+            _touchInfo = [self newTouchSelection:selection withHitInfo:hitInfo];
         } else {
             [self dismissSelections];
         }
@@ -1508,15 +1585,12 @@
         NSArray * selection = _touchInfo[@"selection"];
         
         if (selection) {
-            static BOOL isScrolling = NO;
-            
             if (gesture.state == UIGestureRecognizerStateEnded) {
-                [NSObject cancelPreviousPerformRequestsWithTarget:self];
-                isScrolling = NO;
-                _touchInfo[@"dropPoint"] = [NSValue valueWithCGPoint:p];
-                [self didDropSelection:_touchInfo];
+                [self cancelScrollingBasedOnDrag];
+                
+                [self dropCurrentTouchSelectionAtPoint:p];
+                
                 [affectedLine deactivateLine];
-                _touchInfo = nil;
                 affectedLine = nil;
             } else {
                 CGPoint t = [gesture translationInView:_scrollView];
@@ -1546,22 +1620,8 @@
                     affectedLine = line;
                 }
                 
-                NSTimeInterval holdDelay = 0.2;
-                
-                if ([self pointIsInLowerScrollArea:p]) {
-                    if (!isScrolling) {
-                        [self performSelector:@selector(scrollDownBasedOnDrag:) withObject:nil afterDelay:holdDelay];
-                        isScrolling = YES;
-                    }
-                } else if ([self pointIsInUpperScrollArea:p]) {
-                    if (!isScrolling) {
-                        [self performSelector:@selector(scrollUpBasedOnDrag:) withObject:nil afterDelay:holdDelay];
-                        isScrolling = YES;
-                    }
-                } else {
-                    [NSObject cancelPreviousPerformRequestsWithTarget:self];
-                    isScrolling = NO;
-                }
+                [self checkIfShouldScrollBasedOnPoint:p];
+                [self checkIfShouldMarkClipboardAreaBasedOnPoint:p];
                 
                 [gesture setTranslation:CGPointZero inView:_scrollView];
             }
@@ -1769,6 +1829,14 @@
     }
 }
 
+- (void)dropCurrentTouchSelectionAtPoint:(CGPoint)p {
+    _touchInfo[@"dropPoint"] = [NSValue valueWithCGPoint:p];
+    [self didDropSelection:_touchInfo];
+    _touchInfo = nil;
+    
+    [self unmarkClipboardArea];
+}
+
 - (void)longPressGesture:(UILongPressGestureRecognizer *)gesture {
     _shouldAllowPan = gesture.state != UIGestureRecognizerStateBegan;
     
@@ -1794,18 +1862,14 @@
                 l.position = CGPointMake(l.position.x + dX, l.position.y + dY);
             }
             
-            _touchInfo = [NSMutableDictionary new];
-            _touchInfo[@"selection"] = selection;
-            _touchInfo[@"hitInfo"] = hitInfo;
+            _touchInfo = [self newTouchSelection:selection withHitInfo:hitInfo];
             _touchInfo[@"alreadyDraggingSelection"] = @YES;
         } else {
             gesture.state = UIGestureRecognizerStateFailed;
         }
     } else if (gesture.state == UIGestureRecognizerStateEnded) {
         if (!_didPan && _touchInfo[@"selection"]) {
-            _touchInfo[@"dropPoint"] = [NSValue valueWithCGPoint:p];
-            [self didDropSelection:_touchInfo];
-            _touchInfo = nil;
+            [self dropCurrentTouchSelectionAtPoint:p];
         }
     }
 }

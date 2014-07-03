@@ -22,6 +22,7 @@
 - (BOOL)isParagraphSeparator;
 - (NSArray *)wordsForLineUnsorted;
 - (NSArray *)wordsForLine;
+- (BOOL)shouldComeBeforePoint:(CGPoint)p;
 - (BOOL)shouldComeBeforeWord:(CALayer *)w;
 - (BOOL)shouldComeAfterWord:(CALayer *)w;
 
