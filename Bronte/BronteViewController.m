@@ -731,6 +731,10 @@
 }
 
 - (void)dismissEditMenu {
+    [self dismissEditMenuAndForceOffset:NO];
+}
+
+- (void)dismissEditMenuAndForceOffset:(BOOL)force {
     if (_editView) {
         [_editView hidePointer];
         
@@ -746,7 +750,7 @@
         float currentOffset = _scrollView.contentOffset.y;
         BOOL outOfBounds = currentOffset < minOffset || currentOffset > maxOffset;
         
-        if ((fabs(prevOffset - currentOffset) < 0.8*_scrollView.bounds.size.height) || outOfBounds) {
+        if (force || (fabs(prevOffset - currentOffset) < 0.8*_scrollView.bounds.size.height) || outOfBounds) {
             if (outOfBounds) {
                 currentOffset = currentOffset < minOffset ? minOffset : currentOffset;
                 currentOffset = currentOffset > maxOffset ? maxOffset : currentOffset;
@@ -818,15 +822,37 @@
     NSSet * lines = [selection linesForSelection];
     NSArray * words = [selection wordsForSelection];
     
+    CGPoint prevOffset = _scrollView.previousContentOffset;
+    
+    CALayer * firstLine = [selection firstLineOfSelection];
+    
+    if (firstLine.position.y < _scrollView.contentOffset.y) {
+        prevOffset.y = firstLine.position.y - ([self linesAboveEditMenu] + 1)*[self currentScale]*[NSNumber lineHeight];
+    } else {
+        prevOffset = _scrollView.contentOffset;
+    }
+    
     for (CATextLayer * word in words) {
         [word removeFromSuperlayer];
     }
     
     [self arrangeWordsInLines:lines];
-    [self removeBlankLines];
-    [self arrangeLinesBasedOnScale:[self currentScale]];
     
-    [self dismissEditMenu];
+    if ([selection isParagraph]) {
+        [selection.lastObject removeFromSuperlayer];
+        [_lines removeObject:selection.lastObject];
+    }
+    
+    _scrollView.previousContentOffset = prevOffset;
+    [self dismissEditMenuAndForceOffset:YES];
+    
+    __weak BronteViewController * me = self;
+    
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [me removeBlankLines];
+        [me arrangeLinesBasedOnScale:[me currentScale]];
+        [me adjustScrollViewContentSize];
+    });
 }
 
 - (void)editMenuNeedsAdjusting {
@@ -1360,7 +1386,7 @@
 }
 
 - (CALayer *)addParagraphSeparatorIfNeeded {
-    if (_lines.lastObject && ![_lines.lastObject isParagraphSeparator]) {
+    if (_lines.count > 1 && ![_lines.lastObject isParagraphSeparator]) {
        return [self newParagraphSeparator];
     }
     return nil;

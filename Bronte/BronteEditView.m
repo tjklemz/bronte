@@ -55,9 +55,16 @@
 }
 
 - (CGPoint)findSelectionPoint {
+    if ([_selection isParagraph]) {
+        return CGPointMake([_selection.lastObject maxX], [_selection.lastObject position].y);
+    }
+    
     BOOL isInsertingLeft = [self isInsertingLeft];
+    
     CALayer * l = isInsertingLeft ? [_selection firstLineOfSelection] : [_selection lastLineOfSelection];
-    float x = isInsertingLeft ? [_selection firstWordOfSelection].position.x - 4: ([[_selection lastWordOfSelection] maxX] - [UIFont bronteWordSpacing] - [self selectionLineLength]);
+    
+    float x = isInsertingLeft ? [_selection firstWordOfSelection].position.x - 4 : ([[_selection lastWordOfSelection] maxX] - [UIFont bronteWordSpacing] - [self selectionLineLength]);
+    
     return CGPointMake(l.position.x + x, l.position.y);
 }
 
