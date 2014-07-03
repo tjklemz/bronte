@@ -14,6 +14,14 @@
     return [[self cappedString] isEqualToString:self];
 }
 
+- (BOOL)cannotBeCapped {
+    return [[self cappedString] isEqualToString:[self uncappedString]];
+}
+
+- (BOOL)canBeCapped {
+    return ![self cannotBeCapped];
+}
+
 - (BOOL)isUncapped {
     return [[self uncappedString] isEqualToString:self];
 }

@@ -12,6 +12,8 @@
 
 - (BOOL)isCapitalized;
 - (BOOL)isUncapped;
+- (BOOL)cannotBeCapped;
+- (BOOL)canBeCapped;
 - (NSString *)cappedString;
 - (NSString *)allCappedString;
 - (NSString *)uncappedString;

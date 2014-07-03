@@ -244,20 +244,22 @@
 - (void)capitalizeSelection:(UIButton *)sender {
     NSArray * words = [_selection wordsForSelection];
     
-    BOOL allWordsCapped = YES;
-    BOOL allWordsUncapped = YES;
-    
-    for (CATextLayer * w in words) {
-        if ([[w word] isUncapped]) {
-            allWordsCapped = NO;
-        } else {
-            allWordsUncapped = NO;
-        }
-    }
-    
-    if (allWordsUncapped) {
+    if ([[words.firstObject word] canBeCapped] && [[words.firstObject word] isUncapped]) {
         [words.firstObject setWord:[[words.firstObject word] cappedString]];
     } else {
+        BOOL allWordsCapped = YES;
+        BOOL allWordsUncapped = YES;
+        
+        for (CATextLayer * w in words) {
+            if ([[w word] canBeCapped]) {
+                if ([[w word] isUncapped]) {
+                    allWordsCapped = NO;
+                } else {
+                    allWordsUncapped = NO;
+                }
+            }
+        }
+        
         for (CATextLayer * w in words) {
             NSString * capped = !allWordsCapped ? [[w word] cappedString] : [[w word] allCappedString];
             [w setWord:capped];
