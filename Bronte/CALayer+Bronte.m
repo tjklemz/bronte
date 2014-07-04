@@ -63,13 +63,13 @@
     return ![self shouldComeBeforeWord:w];
 }
 
-- (NSArray *)wordsForLineUnsorted {
+- (NSArray *)wordsForLayer {
     return [self.sublayers filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"self isKindOfClass:%@", [CATextLayer class]]];
 }
 
 - (NSArray *)wordsForLine {
     if ([self isLine]) {
-        NSArray * words = [self wordsForLineUnsorted];
+        NSArray * words = [self wordsForLayer];
         return [words sortedArrayUsingComparator:^NSComparisonResult(CALayer * w1, CALayer * w2) {
             return [w1 shouldComeBeforeWord:w2] ? NSOrderedAscending : NSOrderedDescending;
         }];

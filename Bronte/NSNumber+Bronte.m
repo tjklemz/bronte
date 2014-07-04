@@ -15,8 +15,16 @@
     return 80;
 }
 
++ (float)linePadding {
+    return 80;
+}
+
 + (float)lineWidth {
-    return [UIFont bronteLineWidth] + [self lineHandleWidth];
+    return [UIFont bronteLineWidth] + [self lineHandleWidth] + [self linePadding];
+}
+
++ (float)availableLineWidth {
+    return [self lineWidth] - [self linePadding];
 }
 
 + (float)lineHeight {

@@ -48,6 +48,11 @@
         _docLayer = scrollView.layer;
         _docLayer.masksToBounds = NO;
         _docLayer.zPosition = -10;
+        
+        _docLayer = [CALayer layer];
+        _docLayer.frame = scrollView.layer.frame;
+        [scrollView.layer addSublayer:_docLayer];
+        
         [scrollView.panGestureRecognizer setMinimumNumberOfTouches:2];
         [scrollView setScrollIndicatorInsets:[self scrollViewInsets]];
         scrollView.indicatorStyle = UIScrollViewIndicatorStyleBlack;
@@ -86,35 +91,21 @@
         //testing only
         [self addText:@"You don't know about me without you have read a book by the name of The Adventures of Tom Sawyer; but that ain't no matter.  That book was made by Mr. Mark Twain, and he told the truth, mainly.  There was things which he stretched, but mainly he told the truth.  That is nothing.  I never seen anybody but lied one time or another, without it was Aunt Polly, or the widow, or maybe Mary.  Aunt Polly — Tom's Aunt Polly, she is — and Mary, and the Widow Douglas is all told about in that book, which is mostly a true book, with some stretchers, as I said before." toLine:_lines.lastObject];
         
-        [self addText:@"Now the way that the book winds up is this:  Tom and me found the money that the robbers hid in the cave, and it made us rich.  We got six thousand dollars apiece — all gold.  It was an awful sight of money when it was piled up.  Well, Judge Thatcher he took it and put it out at interest, and it fetched us a dollar a day apiece all the year round — more than a body could tell what to do with.  The Widow Douglas she took me for her son, and allowed she would sivilize me; but it was rough living in the house all the time, considering how dismal regular and decent the widow was in all her ways; and so when I couldn't stand it no longer I lit out.  I got into my old rags and my sugar-hogshead again, and was free and satisfied.  But Tom Sawyer he hunted me up and said he was going to start a band of robbers, and I might join if I would go back to the widow and be respectable.  So I went back." toLine:_lines.lastObject];
+        for (int i = 0; i < 6; ++i) {
+            [self addText:@"Now the way that the book winds up is this:  Tom and me found the money that the robbers hid in the cave, and it made us rich.  We got six thousand dollars apiece — all gold.  It was an awful sight of money when it was piled up.  Well, Judge Thatcher he took it and put it out at interest, and it fetched us a dollar a day apiece all the year round — more than a body could tell what to do with.  The Widow Douglas she took me for her son, and allowed she would sivilize me; but it was rough living in the house all the time, considering how dismal regular and decent the widow was in all her ways; and so when I couldn't stand it no longer I lit out.  I got into my old rags and my sugar-hogshead again, and was free and satisfied.  But Tom Sawyer he hunted me up and said he was going to start a band of robbers, and I might join if I would go back to the widow and be respectable.  So I went back." toLine:_lines.lastObject];
+            
+            [self addText:@"The widow she cried over me, and called me a poor lost lamb, and she called me a lot of other names, too, but she never meant no harm by it. She put me in them new clothes again, and I couldn't do nothing but sweat and sweat, and feel all cramped up.  Well, then, the old thing commenced again.  The widow rung a bell for supper, and you had to come to time. When you got to the table you couldn't go right to eating, but you had to wait for the widow to tuck down her head and grumble a little over the victuals, though there warn't really anything the matter with them, — that is, nothing only everything was cooked by itself.  In a barrel of odds and ends it is different; things get mixed up, and the juice kind of swaps around, and the things go better." toLine:_lines.lastObject];
+            
+            [self addText:@"After supper she got out her book and learned me about Moses and the Bulrushers, and I was in a sweat to find out all about him; but by and by she let it out that Moses had been dead a considerable long time; so then I didn't care no more about him, because I don't take no stock in dead people." toLine:_lines.lastObject];
+        }
         
-        [self addText:@"The widow she cried over me, and called me a poor lost lamb, and she called me a lot of other names, too, but she never meant no harm by it. She put me in them new clothes again, and I couldn't do nothing but sweat and sweat, and feel all cramped up.  Well, then, the old thing commenced again.  The widow rung a bell for supper, and you had to come to time. When you got to the table you couldn't go right to eating, but you had to wait for the widow to tuck down her head and grumble a little over the victuals, though there warn't really anything the matter with them, — that is, nothing only everything was cooked by itself.  In a barrel of odds and ends it is different; things get mixed up, and the juice kind of swaps around, and the things go better." toLine:_lines.lastObject];
+        int numWords = 0;
         
-        [self addText:@"After supper she got out her book and learned me about Moses and the Bulrushers, and I was in a sweat to find out all about him; but by and by she let it out that Moses had been dead a considerable long time; so then I didn't care no more about him, because I don't take no stock in dead people." toLine:_lines.lastObject];
+        for (CALayer * line in _lines) {
+            numWords += [line wordsForLayer].count;
+        }
         
-        [self addText:@"Now the way that the book winds up is this:  Tom and me found the money that the robbers hid in the cave, and it made us rich.  We got six thousand dollars apiece — all gold.  It was an awful sight of money when it was piled up.  Well, Judge Thatcher he took it and put it out at interest, and it fetched us a dollar a day apiece all the year round — more than a body could tell what to do with.  The Widow Douglas she took me for her son, and allowed she would sivilize me; but it was rough living in the house all the time, considering how dismal regular and decent the widow was in all her ways; and so when I couldn't stand it no longer I lit out.  I got into my old rags and my sugar-hogshead again, and was free and satisfied.  But Tom Sawyer he hunted me up and said he was going to start a band of robbers, and I might join if I would go back to the widow and be respectable.  So I went back." toLine:_lines.lastObject];
-        
-        [self addText:@"The widow she cried over me, and called me a poor lost lamb, and she called me a lot of other names, too, but she never meant no harm by it. She put me in them new clothes again, and I couldn't do nothing but sweat and sweat, and feel all cramped up.  Well, then, the old thing commenced again.  The widow rung a bell for supper, and you had to come to time. When you got to the table you couldn't go right to eating, but you had to wait for the widow to tuck down her head and grumble a little over the victuals, though there warn't really anything the matter with them, — that is, nothing only everything was cooked by itself.  In a barrel of odds and ends it is different; things get mixed up, and the juice kind of swaps around, and the things go better." toLine:_lines.lastObject];
-        
-        [self addText:@"After supper she got out her book and learned me about Moses and the Bulrushers, and I was in a sweat to find out all about him; but by and by she let it out that Moses had been dead a considerable long time; so then I didn't care no more about him, because I don't take no stock in dead people." toLine:_lines.lastObject];
-        
-        [self addText:@"Now the way that the book winds up is this:  Tom and me found the money that the robbers hid in the cave, and it made us rich.  We got six thousand dollars apiece — all gold.  It was an awful sight of money when it was piled up.  Well, Judge Thatcher he took it and put it out at interest, and it fetched us a dollar a day apiece all the year round — more than a body could tell what to do with.  The Widow Douglas she took me for her son, and allowed she would sivilize me; but it was rough living in the house all the time, considering how dismal regular and decent the widow was in all her ways; and so when I couldn't stand it no longer I lit out.  I got into my old rags and my sugar-hogshead again, and was free and satisfied.  But Tom Sawyer he hunted me up and said he was going to start a band of robbers, and I might join if I would go back to the widow and be respectable.  So I went back." toLine:_lines.lastObject];
-        
-        [self addText:@"The widow she cried over me, and called me a poor lost lamb, and she called me a lot of other names, too, but she never meant no harm by it. She put me in them new clothes again, and I couldn't do nothing but sweat and sweat, and feel all cramped up.  Well, then, the old thing commenced again.  The widow rung a bell for supper, and you had to come to time. When you got to the table you couldn't go right to eating, but you had to wait for the widow to tuck down her head and grumble a little over the victuals, though there warn't really anything the matter with them, — that is, nothing only everything was cooked by itself.  In a barrel of odds and ends it is different; things get mixed up, and the juice kind of swaps around, and the things go better." toLine:_lines.lastObject];
-        
-        [self addText:@"After supper she got out her book and learned me about Moses and the Bulrushers, and I was in a sweat to find out all about him; but by and by she let it out that Moses had been dead a considerable long time; so then I didn't care no more about him, because I don't take no stock in dead people." toLine:_lines.lastObject];
-        
-        [self addText:@"Now the way that the book winds up is this:  Tom and me found the money that the robbers hid in the cave, and it made us rich.  We got six thousand dollars apiece — all gold.  It was an awful sight of money when it was piled up.  Well, Judge Thatcher he took it and put it out at interest, and it fetched us a dollar a day apiece all the year round — more than a body could tell what to do with.  The Widow Douglas she took me for her son, and allowed she would sivilize me; but it was rough living in the house all the time, considering how dismal regular and decent the widow was in all her ways; and so when I couldn't stand it no longer I lit out.  I got into my old rags and my sugar-hogshead again, and was free and satisfied.  But Tom Sawyer he hunted me up and said he was going to start a band of robbers, and I might join if I would go back to the widow and be respectable.  So I went back." toLine:_lines.lastObject];
-        
-        [self addText:@"The widow she cried over me, and called me a poor lost lamb, and she called me a lot of other names, too, but she never meant no harm by it. She put me in them new clothes again, and I couldn't do nothing but sweat and sweat, and feel all cramped up.  Well, then, the old thing commenced again.  The widow rung a bell for supper, and you had to come to time. When you got to the table you couldn't go right to eating, but you had to wait for the widow to tuck down her head and grumble a little over the victuals, though there warn't really anything the matter with them, — that is, nothing only everything was cooked by itself.  In a barrel of odds and ends it is different; things get mixed up, and the juice kind of swaps around, and the things go better." toLine:_lines.lastObject];
-        
-        [self addText:@"After supper she got out her book and learned me about Moses and the Bulrushers, and I was in a sweat to find out all about him; but by and by she let it out that Moses had been dead a considerable long time; so then I didn't care no more about him, because I don't take no stock in dead people." toLine:_lines.lastObject];
-        
-        [self addText:@"Now the way that the book winds up is this:  Tom and me found the money that the robbers hid in the cave, and it made us rich.  We got six thousand dollars apiece — all gold.  It was an awful sight of money when it was piled up.  Well, Judge Thatcher he took it and put it out at interest, and it fetched us a dollar a day apiece all the year round — more than a body could tell what to do with.  The Widow Douglas she took me for her son, and allowed she would sivilize me; but it was rough living in the house all the time, considering how dismal regular and decent the widow was in all her ways; and so when I couldn't stand it no longer I lit out.  I got into my old rags and my sugar-hogshead again, and was free and satisfied.  But Tom Sawyer he hunted me up and said he was going to start a band of robbers, and I might join if I would go back to the widow and be respectable.  So I went back." toLine:_lines.lastObject];
-        
-        [self addText:@"The widow she cried over me, and called me a poor lost lamb, and she called me a lot of other names, too, but she never meant no harm by it. She put me in them new clothes again, and I couldn't do nothing but sweat and sweat, and feel all cramped up.  Well, then, the old thing commenced again.  The widow rung a bell for supper, and you had to come to time. When you got to the table you couldn't go right to eating, but you had to wait for the widow to tuck down her head and grumble a little over the victuals, though there warn't really anything the matter with them, — that is, nothing only everything was cooked by itself.  In a barrel of odds and ends it is different; things get mixed up, and the juice kind of swaps around, and the things go better." toLine:_lines.lastObject];
-        
-        [self addText:@"After supper she got out her book and learned me about Moses and the Bulrushers, and I was in a sweat to find out all about him; but by and by she let it out that Moses had been dead a considerable long time; so then I didn't care no more about him, because I don't take no stock in dead people." toLine:_lines.lastObject];
+        NSLog(@"numWords: %d", numWords);
         
         // end of testing code
         
@@ -247,7 +238,7 @@
     CALayer * lastWord = [line wordsForLine].lastObject;
     float newX = lastWord ? [lastWord maxX] : w.position.x;
     
-    if (newX + w.bounds.size.width > [NSNumber lineWidth]) {
+    if (newX + w.bounds.size.width > [NSNumber availableLineWidth]) {
         l = [self insertNewLineAfter:l];
         newX = w.position.x;
     }
@@ -284,7 +275,11 @@
 }
 
 - (NSDictionary *)hitForPoint:(CGPoint)p restricted:(BOOL)restricted {
-    float w = [self clipboardDropZone].origin.x;
+    float scale = 1.0/[self currentScale];
+    
+    float w = [self lineOriginForLineNumber:_lines.count].x + [NSNumber lineWidth];
+    
+    p = CGPointMake(scale*p.x, scale*p.y);
     
     for (int i = 0; i < _lines.count; ++i) {
         CALayer * line = _lines[i];
@@ -657,7 +652,7 @@
     if (_selectionInfo) [self unmarkMultiWordSelection];
     
     CGPoint dropPoint = [selectionInfo[@"dropPoint"] CGPointValue];
-    BOOL didDropOnClipboard = CGRectContainsPoint([self clipboardDropZone], [self.view convertPoint:dropPoint fromView:_scrollView]);
+    BOOL didDropOnClipboard = [self clipboardDropZoneContainsPoint:dropPoint];
     
     if (!didDropOnClipboard) {
         for (CALayer * l in selection) {
@@ -684,14 +679,12 @@
     if (words.count) {
         NSMutableArray * wordsAsStrings = [NSMutableArray new];
         
-        float scale = 0.5;
+        float scale = 0.6;
         CATransform3D transform = CATransform3DMakeScale(scale, scale, 1.0);
         
         for (CATextLayer * w in words) {
             [wordsAsStrings addObject:[w word]];
         }
-        
-        float wordsScale = [(CATextLayer *)(words.firstObject) transform].m11;
         
         NSString * text = [wordsAsStrings componentsJoinedByString:@" "];
         CATextLayer * textLayer = [CATextLayer makeWord:text];
@@ -700,17 +693,20 @@
         CALayer * firstLine = [selection firstLineOfSelection];
         CALayer * lastLine = [selection lastLineOfSelection];
         
-        float h = (1.0/wordsScale)*(lastLine.position.y - firstLine.position.y) + 1.25*[UIFont bronteLineHeight];
+        float h = fmaxf(scale*(lastLine.position.y - firstLine.position.y) + 1.5*[UIFont bronteLineHeight], 1.5*[UIFont bronteLineHeight]);
+        float w = fmaxf(fminf([UIFont bronteLineWidth], 1.25*[textLayer.string size].width), 140);
         
-        textLayer.frame = CGRectMake(0, 0, [UIFont bronteLineWidth], h);
+        textLayer.frame = CGRectMake(0, 0, w, h);
         textLayer.transform = transform;
         
-        //CGPoint dropPoint = [selectionInfo[@"dropPoint"] CGPointValue];
-        CGPoint pos = [_clipboardLayer convertPoint:firstLine.position fromLayer:_docLayer];
-        pos.x += h/2.0;
-        pos.y += h/2.0;
+        CGPoint dropPoint = [selectionInfo[@"dropPoint"] CGPointValue];
+        dropPoint.x -= _clipboardLayer.position.x - _scrollView.frame.origin.x;
+        
+        CGPoint pos = dropPoint;
+        pos.x -= scale*w / 2.0;
+        pos.y -= scale*h / 2.0;
         pos.x = [NSNumber bound:pos.x low:[self clipboardFrame].size.width high:_clipboardLayer.frame.size.width - 10];
-        pos.y = [NSNumber bound:pos.y low:10 high:_clipboardLayer.frame.size.height - 10];
+        pos.y = [NSNumber bound:pos.y low:10 high:_clipboardLayer.frame.size.height - textLayer.frame.size.height];
         textLayer.position = pos;
         textLayer.zPosition = 10;
         
@@ -1102,22 +1098,23 @@
 
 #pragma mark - Gestures
 
-- (CGRect)clipboardHandle {
-    CGRect frame = [self clipboardFrame];
-    frame.size.width *= 2;
-    return frame;
-}
-
 - (CGRect)clipboardFrame {
     float p = 0.09;
     float s = p*_scrollView.frame.size.width;
     return CGRectMake(_scrollView.frame.origin.x + _scrollView.frame.size.width - s, 0, s, _scrollView.frame.size.height);
 }
 
+- (CGRect)clipboardHandle {
+    CGRect frame = [self clipboardFrame];
+    frame.size.width += 80;
+    return frame;
+}
+
 - (CGRect)clipboardDropZone {
     CGRect dropZone = [self clipboardFrame];
     dropZone.size.width += [self width];
-    dropZone.origin.x = [self currentScale]*([self lineOriginForLineNumber:_lines.count].x + [NSNumber lineWidth]);
+    dropZone.size.height = _scrollView.contentSize.height;
+    dropZone.origin.x = ([self lineOriginForLineNumber:_lines.count].x + [NSNumber lineWidth]);
     return dropZone;
 }
 
@@ -1373,7 +1370,7 @@
         
         for (CATextLayer * word in words) {
             
-            if (o.x + word.bounds.size.width > [NSNumber lineWidth]) {
+            if (o.x + word.bounds.size.width > [NSNumber availableLineWidth]) {
                 o = [self originForFirstWord];
                 l = [self insertNewLineAfter:l];
             }
@@ -1445,7 +1442,7 @@
     NSMutableArray * itemsToRemove = [NSMutableArray new];
     
     for (CALayer * line in _lines) {
-        if ([line isLine] && [line wordsForLineUnsorted].count == 0) {
+        if ([line isLine] && [line wordsForLayer].count == 0) {
             [itemsToRemove addObject:line];
             [line removeFromSuperlayer];
             line.contents = nil;
@@ -1465,8 +1462,8 @@
 - (void)arrangeLineNumber:(NSUInteger)lineNo basedOnScale:(float)scale {
     CALayer * line = _lines[lineNo];
     CGPoint o = [self lineOriginForLineNumber:lineNo];
-    line.transform = CATransform3DMakeScale(scale, scale, 1.0);
-    line.position = CGPointMake(o.x*scale, o.y*scale);
+    //line.transform = CATransform3DMakeScale(scale, scale, 1.0);
+    line.position = CGPointMake(o.x, o.y);
 }
 
 - (void)arrangeLinesBasedOnScale:(float)scale {
@@ -1485,7 +1482,7 @@
 }
 
 - (void)zoomDocument:(float)scale focusLine:(CALayer *)focusLine animationDuration:(float)duration completion:(void (^)(BOOL finished))completion {
-    float delta = focusLine ? (_scrollView.contentOffset.y - focusLine.frame.origin.y) : 0;
+    float delta = focusLine ? (_scrollView.contentOffset.y - [self currentScale]*focusLine.frame.origin.y) : 0;
     
     [self cancelScrolling];
     
@@ -1506,12 +1503,16 @@
         [CATransaction setCompletionBlock:^{
             
         }];
-        [self arrangeLinesBasedOnScale:currentScale];
+        //[self arrangeLinesBasedOnScale:currentScale];
+        _docLayer.anchorPoint = CGPointZero;
+        _docLayer.position = CGPointZero;
+        _docLayer.transform = CATransform3DMakeScale(currentScale, currentScale, 1.0);
         _clipboardLayer.position = CGPointMake(_scrollView.frame.origin.x + _scrollView.frame.size.width, 0);
         [CATransaction commit];
         
         if (focusLine) {
-            float newOffset = focusLine.frame.origin.y + delta*currentScale;
+            float newOffset = focusLine.frame.origin.y*currentScale + delta;
+            //NSLog(@"offset: %f, newOffset: %f, origin: %f", _scrollView.contentOffset.y, newOffset, focusLine.frame.origin.y);
             [_scrollView setContentOffset:CGPointMake(0, newOffset) animated:NO];
         }
         
@@ -1528,7 +1529,7 @@
 }
 
 - (void)translateSelection:(NSArray *)selection withTranslation:(CGPoint)t {
-    float currentScale = [selection isDealingWithWords] ? [self currentScale] : 1.0f;
+    float currentScale = [self currentScale];
     
     [CATransaction begin];
     [CATransaction setAnimationDuration:0];
@@ -1606,8 +1607,17 @@ static BOOL _isScrollingBasedOnDrag = NO;
 
 static CAShapeLayer * _clipboardMask = nil;
 
+- (BOOL)clipboardDropZoneContainsPoint:(CGPoint)p {
+    float scale = [self currentScale];
+    
+    CGRect dropZone = [self clipboardDropZone]; // in self.view coordinates
+    dropZone.origin.x *= scale;
+    
+    return CGRectContainsPoint(dropZone, p);
+}
+
 - (void)checkIfShouldMarkClipboardAreaBasedOnPoint:(CGPoint)p {
-    if (CGRectContainsPoint([self clipboardDropZone], p)) {
+    if ([self clipboardDropZoneContainsPoint:p]) {
         [self markClipboardArea];
     } else {
         [self unmarkClipboardArea];
@@ -1809,11 +1819,12 @@ static CAShapeLayer * _clipboardMask = nil;
     [_scrollView pop_addAnimation:decayAnimation forKey:@"decelerate"];
 }
 
-- (CALayer *)zoomFocusLine {
-    CGPoint focusPoint = CGPointMake(_scrollView.bounds.size.width / 2.0, 20);
+- (CALayer *)focusLineForZoom {
+    CGPoint focusPoint = CGPointMake(_scrollView.frame.origin.x + _scrollView.frame.size.width / 2.0, 20);
     focusPoint = [self.view convertPoint:focusPoint toView:_scrollView];
-    NSDictionary * hitInfo = [self hitForPoint:focusPoint];
-    return hitInfo[@"line"];
+    focusPoint.x /= 2*[self currentScale];
+    CALayer * line = [[self hitForPoint:focusPoint] objectForKey:@"line"];
+    return line;
 }
 
 - (NSArray *)allowedSelectionForHitInfo:(NSDictionary *)hitInfo {
@@ -1895,7 +1906,7 @@ static CAShapeLayer * _clipboardMask = nil;
                 isScrollingOnSides = fabs(t.y) > fabs(t.x) || fabs(v.y) > fabs(v.x);
                 
                 if (!isScrollingOnSides) {
-                    focusLine = [self zoomFocusLine];
+                    focusLine = [self focusLineForZoom];
                 }
                 
                 stillDeciding = NO;
@@ -1916,14 +1927,16 @@ static CAShapeLayer * _clipboardMask = nil;
                 
                 CGPoint p = [gesture locationInView:self.view];
                 
-                if (p.x < [self minDocScale]*[self width]) {
+                if (p.x <= [self minDocScale]*[self width] || _scrollView.frame.origin.x < 0) {
                     [CATransaction begin];
                     [CATransaction setAnimationDuration:0];
                     
                     float origin = [NSNumber bound:(_scrollView.frame.origin.x + t.x) low:(-_scrollView.frame.size.width) high:0];
                     
+                    CGPoint offset = _scrollView.contentOffset;
                     _scrollView.frame = CGRectMake(origin, _scrollView.frame.origin.y,
                                                    _scrollView.frame.size.width, _scrollView.frame.size.height);
+                    _scrollView.contentOffset = offset;
                     _clipboardLayer.position = CGPointMake(_scrollView.frame.origin.x + _scrollView.frame.size.width, 0);
                     
                     [CATransaction commit];

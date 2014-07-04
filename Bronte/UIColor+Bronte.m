@@ -44,9 +44,9 @@
     static UIColor * color = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        //color = [UIColor colorWithHue:211/360.0 saturation:0.65 brightness:0.95 alpha:0.2];
+        color = [UIColor colorWithHue:211/360.0 saturation:0.6 brightness:0.5 alpha:0.2];
         //color = [UIColor colorWithHue:198/360.0 saturation:0.65 brightness:0.90 alpha:0.08];
-        color = [UIColor colorWithWhite:0.8 alpha:0.1];
+        //color = [UIColor colorWithWhite:0.8 alpha:0.1];
     });
     return color;
 }

@@ -20,7 +20,7 @@
 - (BOOL)isWord;
 - (BOOL)isLine;
 - (BOOL)isParagraphSeparator;
-- (NSArray *)wordsForLineUnsorted;
+- (NSArray *)wordsForLayer;
 - (NSArray *)wordsForLine;
 - (BOOL)shouldComeBeforePoint:(CGPoint)p;
 - (BOOL)shouldComeBeforeWord:(CALayer *)w;
