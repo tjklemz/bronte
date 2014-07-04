@@ -173,7 +173,7 @@
 }
 
 - (CGPoint)lineOriginForLineNumber:(NSUInteger)n {
-    float offset = n < _lines.count && [_lines[n] isParagraphSeparator] ? 63 : 0;
+    float offset = n < _lines.count && [_lines[n] isParagraphSeparator] ? 50 : 0;
     return CGPointMake(([self width] - [UIFont bronteLineWidth])/2.0 - [NSNumber lineHandleWidth] + 15 + offset, 50 + n*[NSNumber lineHeight]);
 }
 
@@ -700,6 +700,7 @@
         textLayer.transform = transform;
         
         CGPoint dropPoint = [selectionInfo[@"dropPoint"] CGPointValue];
+        dropPoint.y -= _scrollView.contentOffset.y;
         dropPoint.x -= _clipboardLayer.position.x - _scrollView.frame.origin.x;
         
         CGPoint pos = dropPoint;
