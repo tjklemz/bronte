@@ -284,7 +284,7 @@
 }
 
 - (NSDictionary *)hitForPoint:(CGPoint)p restricted:(BOOL)restricted {
-    float w = [self clipboardFrame].origin.x;
+    float w = [self clipboardDropZone].origin.x;
     
     for (int i = 0; i < _lines.count; ++i) {
         CALayer * line = _lines[i];
@@ -1117,6 +1117,7 @@
 - (CGRect)clipboardDropZone {
     CGRect dropZone = [self clipboardFrame];
     dropZone.size.width += [self width];
+    dropZone.origin.x = [self currentScale]*([self lineOriginForLineNumber:_lines.count].x + [NSNumber lineWidth]);
     return dropZone;
 }
 
