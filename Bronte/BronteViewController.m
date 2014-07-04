@@ -40,6 +40,7 @@
         _lines = [NSMutableArray new];
         
         self.view.backgroundColor = [UIColor bronteSecondaryBackgroundColor];
+        self.view.layer.zPosition = -11;
         
         DocumentScrollView * scrollView = [[DocumentScrollView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.height, self.view.bounds.size.width)];
         scrollView.touchDelegate = self;
@@ -124,6 +125,18 @@
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(keyboardWillHide:)
                                                      name:UIKeyboardWillHideNotification object:nil];
+        
+        _clipboard = [NSMutableDictionary new];
+        
+        _clipboardLayer = [CALayer layer];
+        _clipboardLayer.frame = _docLayer.bounds;
+        _clipboardLayer.anchorPoint = CGPointZero;
+        _clipboardLayer.position = CGPointMake(_scrollView.bounds.size.width, 0);
+        _clipboardLayer.backgroundColor = [UIColor clearColor].CGColor;
+        _clipboardLayer.opaque = NO;
+        _clipboardLayer.zPosition = _docLayer.zPosition;
+        _clipboardLayer.masksToBounds = NO;
+        [self.view.layer addSublayer:_clipboardLayer];
     }
     return self;
 }
@@ -644,7 +657,7 @@
     if (_selectionInfo) [self unmarkMultiWordSelection];
     
     CGPoint dropPoint = [selectionInfo[@"dropPoint"] CGPointValue];
-    BOOL didDropOnClipboard = CGRectContainsPoint([self clipboardHandle], dropPoint);
+    BOOL didDropOnClipboard = CGRectContainsPoint([self clipboardDropZone], [self.view convertPoint:dropPoint fromView:_scrollView]);
     
     if (!didDropOnClipboard) {
         for (CALayer * l in selection) {
@@ -657,9 +670,53 @@
             [self didDropLines:selectionInfo];
         }
     } else {
-        // TODO: do clipboard
+        [self moveSelectionToClipboard:selectionInfo];
+    }
+}
+
+#pragma mark - Clipboard
+
+- (void)moveSelectionToClipboard:(NSDictionary *)selectionInfo {
+    NSArray * selection = selectionInfo[@"selection"];
+    
+    NSArray * words = [selection wordsForSelection];
+    
+    if (words.count) {
+        NSMutableArray * wordsAsStrings = [NSMutableArray new];
         
-        [self putBackSelection:selection];
+        float scale = 0.5;
+        CATransform3D transform = CATransform3DMakeScale(scale, scale, 1.0);
+        
+        for (CATextLayer * w in words) {
+            [wordsAsStrings addObject:[w word]];
+        }
+        
+        float wordsScale = [(CATextLayer *)(words.firstObject) transform].m11;
+        
+        NSString * text = [wordsAsStrings componentsJoinedByString:@" "];
+        CATextLayer * textLayer = [CATextLayer makeWord:text];
+        textLayer.wrapped = YES;
+        
+        CALayer * firstLine = [selection firstLineOfSelection];
+        CALayer * lastLine = [selection lastLineOfSelection];
+        
+        float h = (1.0/wordsScale)*(lastLine.position.y - firstLine.position.y) + 1.25*[UIFont bronteLineHeight];
+        
+        textLayer.frame = CGRectMake(0, 0, [UIFont bronteLineWidth], h);
+        textLayer.transform = transform;
+        
+        //CGPoint dropPoint = [selectionInfo[@"dropPoint"] CGPointValue];
+        CGPoint pos = [_clipboardLayer convertPoint:firstLine.position fromLayer:_docLayer];
+        pos.x += h/2.0;
+        pos.y += h/2.0;
+        pos.x = [NSNumber bound:pos.x low:[self clipboardFrame].size.width high:_clipboardLayer.frame.size.width - 10];
+        pos.y = [NSNumber bound:pos.y low:10 high:_clipboardLayer.frame.size.height - 10];
+        textLayer.position = pos;
+        textLayer.zPosition = 10;
+        
+        [self deleteSelection:selection];
+        
+        [_clipboardLayer addSublayer:textLayer];
     }
 }
 
@@ -855,6 +912,10 @@
     __weak BronteViewController * me = self;
     
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        NSSet * lines = [selection linesForSelection];
+        for (CALayer * l in lines) {
+            [l removeFromSuperlayer];
+        }
         [me removeBlankLines];
         [me arrangeLinesBasedOnScale:[me currentScale]];
         [me adjustScrollViewContentSize];
@@ -1049,14 +1110,20 @@
 
 - (CGRect)clipboardFrame {
     float p = 0.09;
-    float s = p*_scrollView.bounds.size.width;
-    return CGRectMake(_scrollView.bounds.size.width - s, 0, s, _scrollView.bounds.size.height);
+    float s = p*_scrollView.frame.size.width;
+    return CGRectMake(_scrollView.frame.origin.x + _scrollView.frame.size.width - s, 0, s, _scrollView.frame.size.height);
+}
+
+- (CGRect)clipboardDropZone {
+    CGRect dropZone = [self clipboardFrame];
+    dropZone.size.width += [self width];
+    return dropZone;
 }
 
 - (CGRect)infoHandle {
     float p = 0.09;
-    float s = p*_scrollView.bounds.size.width;
-    return CGRectMake(0, 0, s, _scrollView.bounds.size.height);
+    float s = p*_scrollView.frame.size.width;
+    return CGRectMake(_scrollView.frame.origin.x, 0, s, _scrollView.frame.size.height);
 }
 
 - (void)dismissSelections {
@@ -1377,9 +1444,10 @@
     NSMutableArray * itemsToRemove = [NSMutableArray new];
     
     for (CALayer * line in _lines) {
-        if ([line isLine] && [line wordsForLine].count == 0) {
+        if ([line isLine] && [line wordsForLineUnsorted].count == 0) {
             [itemsToRemove addObject:line];
             [line removeFromSuperlayer];
+            line.contents = nil;
         }
     }
     
@@ -1438,6 +1506,7 @@
             
         }];
         [self arrangeLinesBasedOnScale:currentScale];
+        _clipboardLayer.position = CGPointMake(_scrollView.frame.origin.x + _scrollView.frame.size.width, 0);
         [CATransaction commit];
         
         if (focusLine) {
@@ -1537,7 +1606,7 @@ static BOOL _isScrollingBasedOnDrag = NO;
 static CAShapeLayer * _clipboardMask = nil;
 
 - (void)checkIfShouldMarkClipboardAreaBasedOnPoint:(CGPoint)p {
-    if (CGRectContainsPoint([self clipboardHandle], p)) {
+    if (CGRectContainsPoint([self clipboardDropZone], p)) {
         [self markClipboardArea];
     } else {
         [self unmarkClipboardArea];
@@ -1547,9 +1616,9 @@ static CAShapeLayer * _clipboardMask = nil;
 - (void)markClipboardArea {
     if (!_clipboardMask.superlayer) {
         _clipboardMask = [CAShapeLayer layer];
-        _clipboardMask.backgroundColor = [UIColor bronteSelectedFontColor].CGColor;
-        _clipboardMask.frame = [self clipboardHandle];
-        [_docLayer addSublayer:_clipboardMask];
+        _clipboardMask.backgroundColor = [UIColor bronteClipboardHandleColor].CGColor;
+        _clipboardMask.frame = [self clipboardFrame];
+        [self.view.layer addSublayer:_clipboardMask];
         _clipboardMask.zPosition = _docLayer.zPosition + 1;
     }
 }
@@ -1626,6 +1695,36 @@ static CAShapeLayer * _clipboardMask = nil;
                 [gesture setTranslation:CGPointZero inView:_scrollView];
             }
         }
+    }
+}
+
+- (void)handleClipboardDrag:(UIPanGestureRecognizer *)gesture {
+    static CALayer * hit = nil;
+    static CGPoint origPosition = {0, 0};
+    
+    if (gesture.state == UIGestureRecognizerStateBegan) {
+        hit = [_clipboardLayer hitTest:[gesture locationInView:self.view]];
+        
+        if (hit == _clipboardLayer) {
+            hit = nil;
+        }
+        
+        if (hit) {
+            origPosition = hit.position;
+        }
+    }
+    
+    if (hit) {
+        CGPoint t = [gesture translationInView:self.view];
+        
+        [CATransaction begin];
+        [CATransaction setAnimationDuration:0];
+        hit.position = CGPointMake(origPosition.x + t.x, origPosition.y + t.y);
+        [CATransaction commit];
+    }
+    
+    if (gesture.state == UIGestureRecognizerStateEnded || gesture.state == UIGestureRecognizerStateFailed || gesture.state == UIGestureRecognizerStateCancelled) {
+        hit = nil;
     }
 }
 
@@ -1748,6 +1847,7 @@ static CAShapeLayer * _clipboardMask = nil;
     static BOOL isDraggingInfoArea = NO;
     static BOOL isScrollingOnSides = NO;
     static BOOL stillDeciding = YES;
+    static BOOL didHitClipboardArea = NO;
     
     if (!_shouldAllowPan) {
         return;
@@ -1766,12 +1866,17 @@ static CAShapeLayer * _clipboardMask = nil;
             failed = YES;
         } else {
             CGPoint p = [gesture locationInView:self.view];
+            
             CGRect clipboardHandle = [self clipboardHandle];
             isDraggingClipboardArea = CGRectContainsPoint(clipboardHandle, p);
+            
             CGRect infoHandle = [self infoHandle];
             isDraggingInfoArea = CGRectContainsPoint(infoHandle, p);
+            
             [self cancelScrolling];
             origOffset = _scrollView.contentOffset.y;
+            
+            didHitClipboardArea = [_clipboardLayer hitTest:p] != nil;
         }
     }
     
@@ -1807,9 +1912,28 @@ static CAShapeLayer * _clipboardMask = nil;
                 [_scrollView setContentOffset:CGPointMake(0, newOffset)];
             } else if (isDraggingClipboardArea) {
                 CGFloat scale = [self currentScale] + t.x / [self width];
-                [self zoomDocument:scale focusLine:focusLine];
+                
+                CGPoint p = [gesture locationInView:self.view];
+                
+                if (p.x < [self minDocScale]*[self width]) {
+                    [CATransaction begin];
+                    [CATransaction setAnimationDuration:0];
+                    
+                    float origin = [NSNumber bound:(_scrollView.frame.origin.x + t.x) low:(-_scrollView.frame.size.width) high:0];
+                    
+                    _scrollView.frame = CGRectMake(origin, _scrollView.frame.origin.y,
+                                                   _scrollView.frame.size.width, _scrollView.frame.size.height);
+                    _clipboardLayer.position = CGPointMake(_scrollView.frame.origin.x + _scrollView.frame.size.width, 0);
+                    
+                    [CATransaction commit];
+                } else {
+                    [self zoomDocument:scale focusLine:focusLine];
+                }
+                
                 [gesture setTranslation:CGPointZero inView:_scrollView];
             }
+        } else if (didHitClipboardArea) {
+            [self handleClipboardDrag:gesture];
         } else {
             [self handleSelectionDrag:gesture];
         }
@@ -1825,6 +1949,7 @@ static CAShapeLayer * _clipboardMask = nil;
         isDraggingInfoArea = NO;
         isScrollingOnSides = NO;
         stillDeciding = YES;
+        didHitClipboardArea = NO;
         _didPan = NO;
     }
 }

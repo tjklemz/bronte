@@ -33,6 +33,9 @@
     
     BOOL _shouldAllowPan;
     BOOL _didPan;
+    
+    NSMutableDictionary * _clipboard;
+    CALayer * _clipboardLayer;
 }
 
 @end

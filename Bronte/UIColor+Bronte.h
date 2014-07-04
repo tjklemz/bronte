@@ -13,6 +13,7 @@
 + (UIColor *)bronteBackgroundColor;
 + (UIColor *)bronteFontColor;
 + (UIColor *)bronteSelectedFontColor;
++ (UIColor *)bronteClipboardHandleColor;
 + (UIColor *)bronteDuplicateFontColor;
 + (UIColor *)bronteCursorColorWithAlpha:(float)alpha;
 + (UIColor *)bronteSecondaryBackgroundColor;
