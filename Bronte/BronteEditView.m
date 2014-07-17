@@ -17,7 +17,7 @@
 @implementation BronteEditView
 
 - (float)buttonWidth {
-    return 50;
+    return 90;
 }
 
 - (float)buttonPadding {
@@ -25,11 +25,11 @@
 }
 
 - (float)buttonsPerRow {
-    return 3;
+    return 8;
 }
 
 - (float)startX {
-    return self.frame.size.width / 2 - 1.5*[self buttonWidth] - [self buttonPadding];
+    return (self.frame.size.width / 2) - 0.5*[self buttonsPerRow]*[self buttonWidth] - (0.5*[self buttonsPerRow] - 0.5)*[self buttonPadding];
 }
 
 - (float)offset {
@@ -92,39 +92,51 @@
         float w = [self buttonWidth];
         float p = [self buttonPadding];
         
-        float startX = [self startX];
+        float advanceX = w + p;
+        float advanceY = w + p;
         
-        float x = startX;
-        float y = [self startY];
+        float startX = [self startX];
+        float startY = [self startY];
+        
+        UIImage * leftInsertImage = [UIImage imageNamed:@"edit_icons_insert-left.png"];
+        UIImage * insertImage = [UIImage imageNamed:@"edit_icons_insert.png"];
+        UIImage * rightInsertImage = [UIImage imageNamed:@"edit_icons_insert-right.png"];
+        
+        float x = self.frame.size.width / 2.0 - insertImage.size.width / 2.0 - leftInsertImage.size.width - 50;
+        float y = startY + 25;
         
         UIButton * leftInsertButton = [UIButton buttonWithType:UIButtonTypeCustom];
         [leftInsertButton setImage:[UIImage imageNamed:@"edit_icons_insert-left_gray.png"] forState:UIControlStateNormal];
-        [leftInsertButton setImage:[UIImage imageNamed:@"edit_icons_insert-left.png"] forState:UIControlStateSelected];
-        [leftInsertButton setFrame:CGRectMake(x, y, w, w)];
-        [leftInsertButton addTarget:self action:@selector(insertDirectionChanged:) forControlEvents:UIControlEventTouchUpInside];
+        [leftInsertButton setImage:leftInsertImage forState:UIControlStateSelected];
+        [leftInsertButton setFrame:CGRectMake(x, y, leftInsertImage.size.width, leftInsertImage.size.height)];
+        [leftInsertButton addTarget:self action:@selector(insertDirectionChanged:) forControlEvents:UIControlEventTouchDown];
         [self addSubview:leftInsertButton];
         _insertLeftButton = leftInsertButton;
         
-        x += w + p;
+        x = self.frame.size.width / 2.0 - insertImage.size.width / 2.0;
         
         UIButton * insertButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        [insertButton setImage:[UIImage imageNamed:@"edit_icons_insert.png"] forState:UIControlStateNormal];
-        [insertButton setFrame:CGRectMake(x, y, w, w)];
+        [insertButton setImage:insertImage forState:UIControlStateNormal];
+        [insertButton setFrame:CGRectMake(x, startY - 10, insertImage.size.width, insertImage.size.height)];
         [insertButton addTarget:self action:@selector(insert:) forControlEvents:UIControlEventTouchUpInside];
         [self addSubview:insertButton];
         
-        x += w + p;
+        x = self.frame.size.width / 2.0 + insertImage.size.width / 2.0 + 50;
         
         UIButton * rightInsertButton = [UIButton buttonWithType:UIButtonTypeCustom];
         [rightInsertButton setImage:[UIImage imageNamed:@"edit_icons_insert-right_gray.png"] forState:UIControlStateNormal];
-        [rightInsertButton setImage:[UIImage imageNamed:@"edit_icons_insert-right.png"] forState:UIControlStateSelected];
-        [rightInsertButton setFrame:CGRectMake(x, y, w, w)];
+        [rightInsertButton setImage:rightInsertImage forState:UIControlStateSelected];
+        [rightInsertButton setFrame:CGRectMake(x, y, rightInsertImage.size.width, rightInsertImage.size.height)];
         [rightInsertButton setSelected:YES];
-        [rightInsertButton addTarget:self action:@selector(insertDirectionChanged:) forControlEvents:UIControlEventTouchUpInside];
+        [rightInsertButton addTarget:self action:@selector(insertDirectionChanged:) forControlEvents:UIControlEventTouchDown];
         [self addSubview:rightInsertButton];
         _insertRightButton = rightInsertButton;
         
-        y += w + p*2;
+        //
+        // button pad
+        //
+        
+        y = startY + 1.725*advanceY;
         x = startX;
         
         UIButton * capButton = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -133,7 +145,7 @@
         [capButton addTarget:self action:@selector(capitalizeSelection:) forControlEvents:UIControlEventTouchDown];
         [self addSubview:capButton];
         
-        x += w + p;
+        x += advanceX;
         
         UIButton * uncapButton = [UIButton buttonWithType:UIButtonTypeCustom];
         [uncapButton setImage:[UIImage imageNamed:@"edit_icons_lc.png"] forState:UIControlStateNormal];
@@ -141,7 +153,104 @@
         [uncapButton addTarget:self action:@selector(uncapitalizeSelection:) forControlEvents:UIControlEventTouchDown];
         [self addSubview:uncapButton];
         
-        x += w + p;
+        x += advanceX;
+        
+        UIButton * commaButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        [commaButton setImage:[UIImage imageNamed:@"edit_icons_comma.png"] forState:UIControlStateNormal];
+        [commaButton setFrame:CGRectMake(x, y, w, w)];
+        [commaButton addTarget:self action:@selector(commaSelection:) forControlEvents:UIControlEventTouchDown];
+        [self addSubview:commaButton];
+        
+        x += advanceX;
+        
+        UIButton * periodButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        [periodButton setImage:[UIImage imageNamed:@"edit_icons_period.png"] forState:UIControlStateNormal];
+        [periodButton setFrame:CGRectMake(x, y, w, w)];
+        [periodButton addTarget:self action:@selector(periodSelection:) forControlEvents:UIControlEventTouchDown];
+        [self addSubview:periodButton];
+        
+        x += advanceX;
+        
+        UIButton * semicolonButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        [semicolonButton setImage:[UIImage imageNamed:@"edit_icons_semicolon.png"] forState:UIControlStateNormal];
+        [semicolonButton setFrame:CGRectMake(x, y, w, w)];
+        [semicolonButton addTarget:self action:@selector(semicolonSelection:) forControlEvents:UIControlEventTouchDown];
+        [self addSubview:semicolonButton];
+        
+        x += advanceX;
+        
+        UIButton * colonButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        [colonButton setImage:[UIImage imageNamed:@"edit_icons_colon.png"] forState:UIControlStateNormal];
+        [colonButton setFrame:CGRectMake(x, y, w, w)];
+        [colonButton addTarget:self action:@selector(colonSelection:) forControlEvents:UIControlEventTouchDown];
+        [self addSubview:colonButton];
+        
+        x += advanceX;
+        
+        UIButton * exclamationButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        [exclamationButton setImage:[UIImage imageNamed:@"edit_icons_exclamation.png"] forState:UIControlStateNormal];
+        [exclamationButton setFrame:CGRectMake(x, y, w, w)];
+        [exclamationButton addTarget:self action:@selector(exclamationSelection:) forControlEvents:UIControlEventTouchDown];
+        [self addSubview:exclamationButton];
+        
+        x += advanceX;
+        
+        UIButton * questionButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        [questionButton setImage:[UIImage imageNamed:@"edit_icons_question.png"] forState:UIControlStateNormal];
+        [questionButton setFrame:CGRectMake(x, y, w, w)];
+        [questionButton addTarget:self action:@selector(questionSelection:) forControlEvents:UIControlEventTouchDown];
+        [self addSubview:questionButton];
+        
+        y += advanceY;
+        x = startX;
+        
+        UIButton * quote1 = [UIButton buttonWithType:UIButtonTypeCustom];
+        [quote1 setImage:[UIImage imageNamed:@"edit_icons_quote1.png"] forState:UIControlStateNormal];
+        [quote1 setFrame:CGRectMake(x, y, w, w)];
+        [quote1 addTarget:self action:@selector(singleQuoteSelection:) forControlEvents:UIControlEventTouchDown];
+        [self addSubview:quote1];
+        
+        x += advanceX;
+        
+        UIButton * quote2 = [UIButton buttonWithType:UIButtonTypeCustom];
+        [quote2 setImage:[UIImage imageNamed:@"edit_icons_quote2.png"] forState:UIControlStateNormal];
+        [quote2 setFrame:CGRectMake(x, y, w, w)];
+        [quote2 addTarget:self action:@selector(doubleQuoteSelection:) forControlEvents:UIControlEventTouchDown];
+        [self addSubview:quote2];
+        
+        x += advanceX;
+        
+        UIButton * guillemetsButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        [guillemetsButton setImage:[UIImage imageNamed:@"edit_icons_guillemets.png"] forState:UIControlStateNormal];
+        [guillemetsButton setFrame:CGRectMake(x, y, w, w)];
+        [guillemetsButton addTarget:self action:@selector(guillemetsSelection:) forControlEvents:UIControlEventTouchDown];
+        [self addSubview:guillemetsButton];
+        
+        x += advanceX;
+        
+        UIButton * parenButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        [parenButton setImage:[UIImage imageNamed:@"edit_icons_parentheses.png"] forState:UIControlStateNormal];
+        [parenButton setFrame:CGRectMake(x, y, w, w)];
+        [parenButton addTarget:self action:@selector(parenSelection:) forControlEvents:UIControlEventTouchDown];
+        [self addSubview:parenButton];
+        
+        x += advanceX;
+        
+        UIButton * braceButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        [braceButton setImage:[UIImage imageNamed:@"edit_icons_braces.png"] forState:UIControlStateNormal];
+        [braceButton setFrame:CGRectMake(x, y, w, w)];
+        [braceButton addTarget:self action:@selector(braceSelection:) forControlEvents:UIControlEventTouchDown];
+        [self addSubview:braceButton];
+        
+        x += advanceX;
+        
+        UIButton * bracketButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        [bracketButton setImage:[UIImage imageNamed:@"edit_icons_brackets.png"] forState:UIControlStateNormal];
+        [bracketButton setFrame:CGRectMake(x, y, w, w)];
+        [bracketButton addTarget:self action:@selector(bracketSelection:) forControlEvents:UIControlEventTouchDown];
+        [self addSubview:bracketButton];
+        
+        x += advanceX;
         
         UIButton * backspaceButton = [UIButton buttonWithType:UIButtonTypeCustom];
         [backspaceButton setImage:[UIImage imageNamed:@"edit_icons_backspace.png"] forState:UIControlStateNormal];
@@ -150,47 +259,13 @@
         [self addSubview:backspaceButton];
         _deleteCharacterButton = backspaceButton;
         
-        y += w + p - 5;
-        x = startX;
-        
-        UIButton * quote2 = [UIButton buttonWithType:UIButtonTypeCustom];
-        [quote2 setImage:[UIImage imageNamed:@"edit_icons_quote2.png"] forState:UIControlStateNormal];
-        [quote2 setFrame:CGRectMake(x, y, w, w)];
-        [quote2 addTarget:self action:@selector(doubleQuoteSelection:) forControlEvents:UIControlEventTouchDown];
-        [self addSubview:quote2];
-        
-        x += w + p;
-        
-        UIButton * quote1 = [UIButton buttonWithType:UIButtonTypeCustom];
-        [quote1 setImage:[UIImage imageNamed:@"edit_icons_quote1.png"] forState:UIControlStateNormal];
-        [quote1 setFrame:CGRectMake(x, y, w, w)];
-        [quote1 addTarget:self action:@selector(singleQuoteSelection:) forControlEvents:UIControlEventTouchDown];
-        [self addSubview:quote1];
-        
-        x += w + p;
+        x += advanceX;
         
         UIButton * deleteWordButton = [UIButton buttonWithType:UIButtonTypeCustom];
         [deleteWordButton setImage:[UIImage imageNamed:@"edit_icons_delete-word.png"] forState:UIControlStateNormal];
-        [deleteWordButton setFrame:CGRectMake(x, y + 2, w, w*2 + p)];
+        [deleteWordButton setFrame:CGRectMake(x, y, w, w)];
         [deleteWordButton addTarget:self action:@selector(deleteSelection:) forControlEvents:UIControlEventTouchUpInside];
         [self addSubview:deleteWordButton];
-        
-        y += w + p;
-        x = startX;
-        
-        UIButton * parenButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        [parenButton setImage:[UIImage imageNamed:@"edit_icons_parentheses.png"] forState:UIControlStateNormal];
-        [parenButton setFrame:CGRectMake(x, y, w, w)];
-        [parenButton addTarget:self action:@selector(parenSelection:) forControlEvents:UIControlEventTouchDown];
-        [self addSubview:parenButton];
-        
-        x += w + p;
-        
-        UIButton * bracketButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        [bracketButton setImage:[UIImage imageNamed:@"edit_icons_brackets.png"] forState:UIControlStateNormal];
-        [bracketButton setFrame:CGRectMake(x, y, w, w)];
-        [bracketButton addTarget:self action:@selector(bracketSelection:) forControlEvents:UIControlEventTouchDown];
-        [self addSubview:bracketButton];
     }
     return self;
 }
@@ -347,6 +422,54 @@
     [self wrapSelectionWithLeftString:@"[" rightString:@"]"];
 }
 
+- (void)braceSelection:(id)sender {
+    [self wrapSelectionWithLeftString:@"{" rightString:@"}"];
+}
+
+- (void)guillemetsSelection:(id)sender {
+    [self wrapSelectionWithLeftString:@"\u00AB" rightString:@"\u00BB"];
+}
+
+- (void)appendToSelection:(NSString *)string {
+    NSArray * words = [_selection wordsForSelection];
+    
+    NSString * lastWord = [words.lastObject word];
+    
+    if ([lastWord hasSuffix:string] && lastWord.length >= string.length && ![lastWord isEqualToString:string]) {
+        [words.lastObject setWord:[lastWord stringByReplacingCharactersInRange:NSMakeRange(lastWord.length - string.length, string.length) withString:@""]];
+    } else {
+        [words.lastObject setWord:[lastWord stringByAppendingString:string]];
+    }
+    
+    [self.delegate linesNeedArranging:[NSSet setWithObjects:[words.firstObject superlayer], [words.lastObject superlayer], nil]];
+    
+    [self adjustPosition];
+}
+
+- (void)periodSelection:(id)sender {
+    [self appendToSelection:@"."];
+}
+
+- (void)commaSelection:(id)sender {
+    [self appendToSelection:@","];
+}
+
+- (void)semicolonSelection:(id)sender {
+    [self appendToSelection:@";"];
+}
+
+- (void)colonSelection:(id)sender {
+    [self appendToSelection:@":"];
+}
+
+- (void)exclamationSelection:(id)sender {
+    [self appendToSelection:@"!"];
+}
+
+- (void)questionSelection:(id)sender {
+    [self appendToSelection:@"?"];
+}
+
 #pragma mark - Drawing
 
 - (void)drawRect:(CGRect)rect
@@ -378,22 +501,11 @@
     
     float offset = [self offset];
     
-    [[UIColor bronteSecondaryBackgroundColor] setFill];
+    [[UIColor colorWithWhite:0.875 alpha:1.0] setFill];
     UIRectFill(CGRectMake(rect.origin.x, rect.origin.y + offset, rect.size.width + rect.origin.x, rect.size.height - offset));
     
-    [[UIColor bronteBackgroundColor] setStroke];
-    
-    float w = [self buttonWidth];
-    float b = [self buttonsPerRow];
-    float p = [self buttonPadding];
-    
-    y = [self startY] + [self buttonWidth] + [self buttonPadding];
-    
-    UIBezierPath * line = [UIBezierPath bezierPath];
-    [line moveToPoint:CGPointMake([self startX], y)];
-    [line addLineToPoint:CGPointMake([self startX] + w*b + p*(b-1), y)];
-    line.lineWidth = 3.0;
-    [line stroke];
+    [[UIColor colorWithWhite:0.6 alpha:1.0] setFill];
+    UIRectFill(CGRectMake(rect.origin.x, rect.origin.y + offset + 180, rect.size.width + rect.origin.x, rect.size.height - offset));
 }
 
 @end

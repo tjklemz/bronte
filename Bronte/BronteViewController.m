@@ -1978,6 +1978,10 @@ static CAShapeLayer * _clipboardMask = nil;
 }
 
 - (void)longPressGesture:(UILongPressGestureRecognizer *)gesture {
+    if (_editView.superview) {
+        return;
+    }
+    
     _shouldAllowPan = gesture.state != UIGestureRecognizerStateBegan;
     
     static CGPoint firstPoint = {0, 0};
